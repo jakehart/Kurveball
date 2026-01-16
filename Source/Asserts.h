@@ -2,4 +2,4 @@
 #pragma once
 #include <assert.h>
 
-#define CURVELIB_VERIFY_RETURN(criterion, retVal) { assert((criterion)); if(!(criterion)) return retVal; }
+#define CURVELIB_VERIFY_RETURN(criterion, ...) { assert((criterion)); if(!(criterion)) return __VA_ARGS__; }
