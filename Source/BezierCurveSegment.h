@@ -8,7 +8,7 @@ namespace CurveLib
 {
 	// Implementation of de Casteljau's algorithm to solve a Bezier curve of any degree (linear, quadratic,
 	// cubic, etc.) by recursive lerping between point neighbors.
-	template<typename CurvePointT, size_t degree>
+	template<typename CurvePointT>
 	class BezierCurveSegment
 	{
 	public:
@@ -30,13 +30,8 @@ namespace CurveLib
 		// The result vector will always be one fewer than the input.
 		PointVector CalculateLerpedPoints(const PointVector& inputPoints, float t) const;
 
-		// The control points of this segment. In the case of cubic Bezier (degree 4),
+		// The control points of this segment. For example, in the case of cubic Bezier (degree 3), there are 4 points contained here.
 		PointVector mPoints{};
-
-		// Curves with degree 0 or 1 are inherently impossible, since there wouldn't be enough points to lerp between.
-		// (They would be impossible in a parametric curve implementation too.)
-		// There's no reason I couldn't support degrees over 4, but it's an uncommon use case and would be computationally expensive.
-		static_assert(degree > 0 && degree <= 4);
 	};
 }
 

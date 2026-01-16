@@ -4,8 +4,8 @@
 
 namespace CurveLib
 {
-	template<typename CurvePointT, size_t degree>
-	CurvePointT BezierCurve<CurvePointT, degree>::CalculatePositionAtT(float t)
+	template<typename CurvePointT>
+	CurvePointT BezierCurve<CurvePointT>::CalculatePositionAtT(float t)
 	{
 		// The whole part determines which segment to sample, and the fractional part determines where
 		// within that curve to sample.

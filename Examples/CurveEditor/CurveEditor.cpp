@@ -1,22 +1,15 @@
-// Dear ImGui: standalone example application for Windows API + OpenGL
-
-// Learn about Dear ImGui:
-// - FAQ                  https://dearimgui.com/faq
-// - Getting Started      https://dearimgui.com/getting-started
-// - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
-// - Introduction, links and more at the top of imgui.cpp
-
-// This is provided for completeness, however it is strongly recommended you use OpenGL with SDL or GLFW.
-
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_win32.h"
-#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
-#endif
+// Prevent windows.h from colliding/interfering with std::numeric_limits::max()
+#define NOMINMAX
 #include <windows.h>
 #include <GL/gl.h>
-#include <tchar.h>
+
+// CurveLib includes
+#include "BezierCurve.h"
+#include "Vector2.h"
 
 // Data stored per platform window
 struct WGL_WindowData { HDC hDC; };
@@ -30,7 +23,6 @@ static int              g_Height;
 // Forward declarations of helper functions
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
-void ResetDeviceWGL();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // Main code
@@ -79,30 +71,9 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
-	// Load Fonts
-	// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-	// - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-	// - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-	// - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-	// - Read 'docs/FONTS.md' for more instructions and details. If you like the default font but want it to scale better, consider using the 'ProggyVector' from the same author!
-	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-	//style.FontSizeBase = 20.0f;
-	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf");
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf");
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf");
-	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf");
-	//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf");
-	//IM_ASSERT(font != nullptr);
-
-	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	// Main loop
-	bool done = false;
-	while (!done)
+	while (true)
 	{
 		// Poll and handle messages (inputs, window resize, etc.)
 		// See the WndProc() function below for our to dispatch events to the Win32 backend.
@@ -112,10 +83,11 @@ int main(int, char**)
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 			if (msg.message == WM_QUIT)
-				done = true;
+			{
+				break;
+			}
 		}
-		if (done)
-			break;
+
 		if (::IsIconic(hwnd))
 		{
 			::Sleep(10);
@@ -127,40 +99,17 @@ int main(int, char**)
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
+		//ImGui::ShowDemoWindow(&show_demo_window);
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
 		{
-			static float f = 0.0f;
-			static int counter = 0;
+			using namespace CurveLib;
 
-			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+			std::vector<Float2> testPoints = { {0, 0}, {1, 0}, {2, 0}, {3,0} };
+			BezierCurveSegment<Float2> testCurveSegment(testPoints);
 
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-			ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-			ImGui::End();
-		}
-
-		// 3. Show another simple window.
-		if (show_another_window)
-		{
-			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			ImGui::Text("Hello from another window!");
-			if (ImGui::Button("Close Me"))
-				show_another_window = false;
+			ImGui::Begin("Curve Editor");
 			ImGui::End();
 		}
 

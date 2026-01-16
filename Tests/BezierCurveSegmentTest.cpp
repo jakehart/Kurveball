@@ -19,7 +19,7 @@ TEST_CASE("CalculatePositionAtT - cubic curve segment that comprises a straight 
 		Float3 {3, 0, 0}
 	};
 
-	const BezierCurveSegment<Float3, 4> segment(controlPoints);
+	const BezierCurveSegment<Float3> segment(controlPoints);
 	
 	// Sample the start of the line
 	const Float3 sample1 = segment.CalculatePositionAtT(0.f);

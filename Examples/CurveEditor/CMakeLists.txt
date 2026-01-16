@@ -7,7 +7,7 @@ file(GLOB CURVE_EDITOR_HEADERS "*.h")
 
 add_executable(CurveEditor ${CURVE_EDITOR_SOURCES})
 
-target_include_directories(CurveEditor PRIVATE Dependencies)
+target_include_directories(CurveEditor PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../Source" "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies")
 
 # Link CurveLib for velocity curve calculations and OpenGL for graphics
 find_package(OpenGL REQUIRED)

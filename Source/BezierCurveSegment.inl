@@ -4,17 +4,17 @@
 
 namespace CurveLib
 {
-	template<typename CurvePointT, size_t degree>
-	BezierCurveSegment<CurvePointT, degree>::BezierCurveSegment(const BezierCurveSegment::PointVector& points)
+	template<typename CurvePointT>
+	BezierCurveSegment<CurvePointT>::BezierCurveSegment(const BezierCurveSegment::PointVector& points)
 	{
 		// TODO: Complain if SetPoints fails
 		SetPoints(points);
 	}
 
-	template<typename CurvePointT, size_t degree>
-	bool BezierCurveSegment<CurvePointT, degree>::SetPoints(const PointVector& points)
+	template<typename CurvePointT>
+	bool BezierCurveSegment<CurvePointT>::SetPoints(const PointVector& points)
 	{
-		if (points.size() != degree)
+		if (points.size() == 0)
 		{
 			return false;
 		}
@@ -23,8 +23,8 @@ namespace CurveLib
 		return true;
 	}
 
-	template<typename CurvePointT, size_t degree>
-	CurvePointT BezierCurveSegment<CurvePointT, degree>::CalculatePositionAtT(float t) const
+	template<typename CurvePointT>
+	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(float t) const
 	{
 		const PointVector lerpedPoints = CalculateLerpedPoints(mPoints, t);
 		assert(lerpedPoints.size() == 1U);
@@ -39,15 +39,15 @@ namespace CurveLib
 		}
 	}
 
-	template<typename CurvePointT, size_t degree>
-	CurvePointT BezierCurveSegment<CurvePointT, degree>::CalculatePositionAtDistance(float distance) const
+	template<typename CurvePointT>
+	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtDistance(float distance) const
 	{
 		// TODO
 		return {};
 	}
 
-	template<typename CurvePointT, size_t degree>
-	BezierCurveSegment<CurvePointT, degree>::PointVector BezierCurveSegment<CurvePointT, degree>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT, degree>::PointVector& inputPoints, float t) const
+	template<typename CurvePointT>
+	BezierCurveSegment<CurvePointT>::PointVector BezierCurveSegment<CurvePointT>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT>::PointVector& inputPoints, float t) const
 	{
 		CURVELIB_VERIFY_RETURN(inputPoints.size() > 0, {});
 

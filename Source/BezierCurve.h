@@ -6,11 +6,11 @@
 
 namespace CurveLib
 {
-	template<typename CurvePointT, size_t degree>
+	template<typename CurvePointT>
 	class BezierCurve
 	{
 	public:
-		using CurveSegment = BezierCurveSegment<CurvePointT, degree>;
+		using CurveSegment = BezierCurveSegment<CurvePointT>;
 		CurvePointT CalculatePositionAtT(float t);
 
 	private:
