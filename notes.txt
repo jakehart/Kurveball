@@ -1,0 +1,60 @@
+need to be able to check stick intent -- have a function that checks against a target to see if the world input vector is pointed toward that target or not (within some degree measure)
+
+
+instead of GenerateJumpSpline, there should be a function that takes any arbitrary spline and stretches it to a certain height and to reach a certain destination.
+
+WYLO: i think the cube falls thru the floor because i'm not calling CurveLib::SetPosition when the cube hits collision.
+
+
+
+physics pawns (respect collision) need a collider component with its options in the physics section set like this:
+	simulate physics: true
+	update kinematic from simulation: true
+root component->collision->collision presets->BlockAllDynamic
+for some reason gravity has to be on ALL axes???
+
+
+prevent denormals in MathUtils
+
+how to save a struct as data: right click content browser, "data asset," select struct type
+
+
+
+
+fix camera-relative controls
+
+
+sensors in motion space??
+or just always in direction of motion
+	// If true, the sensor will orient itself along the overall direction of motion as output from
+	// VelocityCurveContext.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsRelativeToMotion = false;
+
+======== QoL ideas ========
+simple action to start 2x basic movement curves
+	this fills the info gap in UpdateVelocityCurves
+inherit from unreal curve editor and make it 0-1 default and have tag/loop point support etc.
+
+whenever basic movement changes, need to "bake distance to position" (zeroing distance and remembering current position as mStartPosition).
+can use that handy unreal action input thing to do it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+The player entity blueprint/prefab
+	Content/FirstPerson/Blueprints/BP_FirstPersonCharacter
+how to disable ImageMagick/NuGet spurious unfixable error
+	run c:\tools\fixNugetError.bat
+	or in the generated .csproj in <PropertyGroup>
+		<NuGetAudit>false</NuGetAudit>
+		<NoWarn>$(NoWarn);NU1902</NoWarn>

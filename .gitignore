@@ -1,0 +1,9 @@
+build/
+Debug/
+x64/
+CurveLib.dir/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+CMakeFiles/
+CurveLib.sln.lnk

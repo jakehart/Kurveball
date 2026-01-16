@@ -1,0 +1,68 @@
+================================= SCRATCH PAD =================================
+Q: should curve names be case-insensitive? what about space-insensitive?
+Q: (ref illustration in Downloads folder) in cases where there are loop start/endpoints, what should mStretchDuration affect? only the looped portion, or the intro and outro too? should the stretch duration be the duration of the looped portion, or the total duration?
+CURRENTLY the whole thing gets stretched to your chosen stretch duration, THEN looping is applied, so the total duration can be greater than the stretch duration. so e.g. you could stretch your whole curve to 10 seconds and then loop the middle second 10 times. but the loop points are in raw asset x coordinates, mostly so that they get preserved when the asset is stretched.
+Q: names? curveball?
+Q: anything else you would do differently from zoe with a fresh start?
+
+
+unreal new shit:
+state trees
+ability systems
+
+
+
+It's vitally important that smoothly syncing speeds between velocity curves is as easy as possible, and all gotchas are handled for the user as reasonably as they can be. Looking up a sync point is easy enough, but where there's a gap due to the geom of the curves, a sudden cutover can feel abrupt. therefore, syncing should always have a blend time. the user can say zero time for an instant switch, or have a blend to bridge that gap.
+movement line that gets thin or fat based on the 0-1 curve output, or based on speedMultiplier / maxSpeedMultiplierSeen
+It also needs to be easy to deal with velocity curves in terms of getting to a certain destination point, or specifying a DISTANCE to go at a speed instead of a time and speed. These can be provided via utils/wrappers
+Since timestretching a velocity curve causes a difference in the final endpoint of motion, maybe there should be some way to recalculate for this
+perhaps i should move AreaAccumulator into VelocityCurveOutput
+could have planar axes, sort of like AxisMode::horizontal rotated 90 degrees, where you pick a direction on that plane
+save VelocityCurveInstances directly on the pawn so they're ready to go without a ton of separate vars
+
+================================== PURE CALCULATION ==================================
+an immediate-mode API like ImGui
+VelocityCurveContext (was Component)
+CurveOutput
+VelocityCurveInstance
+	optional spline
+	optional debug info
+VelocityCurvePlayback
+	replaces VelocityCurveUpdater/Integrator. a namespace of functions that operate on VelocityCurveContext
+VelocityCurveApi
+	designer-facing Start/Stop/Update/AddSpline/etc calls (immediate mode)
+	
+================================= UNREAL HARNESS =================================
+events to send the immediate-mode calls?
+	or at least blueprint bindings
+UVelocityCurveComponent wraps VelocityCurveContext
+
+================================= ADVANCED IDEAS =================================
+NETWORKING
+see recording section below. p much just a matter of sending over the recorded curve and spline to be replayed. can generate splines from the rolling buffer of incoming positions - see "the continuity of splines" by freya
+teams-esque time stretch/squeeze
+expose easy-to-use nodes that can hook into unreal's networking
+
+CURVE AND SPLINE RECORDING
+continue to take UpdateVelocityCurve calls every frame, which is required for truly responsive input
+BUT have optional functionality that records a small rolling buffer of the positions, finds a best-fit spline segment for them. then make a curve to traverse that spline with the same feel, taking the same time. prioritize replayability -- meaning that the generated spline and curve should play out in such a way that they take the exact same amount of time to complete as the original real motion, and end at the exact same destination. the speed can be fudged slightly to achieve this (dependent variable).
+and the final recorded curve result might be obtained by multiplying discrete speedMultiplier changes against the original curve data
+this is kinda like breadcrumbing, but more integrated with the curve/spline system and more explicit.
+ALSO this might be a slippery slope but i could even make it possible to record motion data from other games using a memory location found with cheatengine
+could even record motion from video of real vehicles e.g. cars on racetracks to perfectly replicate their handling
+
+DETERMINISM
+there should be an optional FixedTimer class to filter the ticks through, since some users will be running on a variable time-only engine
+
+MULTI-AXIS DEBUGGING
+view curve debug output from two different axes in a 3D plot
+
+MOVEMENT LINE
+could piggyback off of spline recording. show which curves were active where. it can be like a subway map where it gets thicker or thinner with diff colour "lanes" added when multiple curves run at the same time
+
+================================= QUESTIONS =================================
+how to handle partials (after tick)?
+	or can i just assume that there's a fixed tick? does unreal have one
+	if not, i probably should store out the partial in the instance and wipe it before processing more ticks next time
+	if i have to do my own ticks, abstract that concern away from the main update math code in the form of a "scheduler" object or something
+
