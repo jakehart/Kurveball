@@ -3,17 +3,14 @@
 #include "BezierCurveSegment.h"
 #include "Vector3.h"
 
-//REQUIRE_THAT(context.mOutput.mDirection.X, Catch::Matchers::WithinAbs(0, DISTANCE_TOLERANCE));
-//REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
-
 TEST_CASE("CalculatePositionAtT - cubic curve segment that comprises a straight line in 3D")
 {
 	using namespace CurveLib;
 
 	const float POSITION_AXIS_TOLERANCE = sFloatEpsilon * 4;
 
-	// Cubic curve with evenly spaced control points. This simplifies away the need to deal with t
-	// expansion/contraction when checking the result
+	// Cubic Bezier curve with linearly placed, evenly spaced control points. This simplifies away
+	// the need to deal with t expansion/contraction when checking the result
 	const std::vector<Float3> controlPoints =
 	{
 		Float3 {0, 0, 0},

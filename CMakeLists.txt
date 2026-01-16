@@ -18,8 +18,8 @@ set(ALL_SOURCES ${SOURCE_FILES} ${DEPENDENCY_SOURCES})
 add_library(CurveLib STATIC ${ALL_SOURCES})
 
 target_include_directories(CurveLib PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source
+	${CMAKE_CURRENT_SOURCE_DIR}/Dependencies
 )
 
 # Set C++ standard
@@ -37,4 +37,8 @@ target_sources(CurveLib PRIVATE
 
 # Unit tests
 add_subdirectory(Tests)
-add_subdirectory(examples/CurveEditor)
+add_subdirectory(Examples/CurveEditor)
+
+# Generate the .lib files in the Lib directory
+set_target_properties(CurveLib PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
+set_target_properties(CurveLib PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/Lib)

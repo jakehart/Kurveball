@@ -6,12 +6,6 @@ Q: names? curveball?
 Q: anything else you would do differently from zoe with a fresh start?
 
 
-unreal new shit:
-state trees
-ability systems
-
-
-
 It's vitally important that smoothly syncing speeds between velocity curves is as easy as possible, and all gotchas are handled for the user as reasonably as they can be. Looking up a sync point is easy enough, but where there's a gap due to the geom of the curves, a sudden cutover can feel abrupt. therefore, syncing should always have a blend time. the user can say zero time for an instant switch, or have a blend to bridge that gap.
 movement line that gets thin or fat based on the 0-1 curve output, or based on speedMultiplier / maxSpeedMultiplierSeen
 It also needs to be easy to deal with velocity curves in terms of getting to a certain destination point, or specifying a DISTANCE to go at a speed instead of a time and speed. These can be provided via utils/wrappers
@@ -59,6 +53,9 @@ view curve debug output from two different axes in a 3D plot
 
 MOVEMENT LINE
 could piggyback off of spline recording. show which curves were active where. it can be like a subway map where it gets thicker or thinner with diff colour "lanes" added when multiple curves run at the same time
+
+IMPORT/EXPORT
+import/export from maya
 
 ================================= QUESTIONS =================================
 how to handle partials (after tick)?
