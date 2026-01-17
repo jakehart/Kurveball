@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "implot.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_win32.h"
 #define WIN32_LEAN_AND_MEAN
@@ -71,6 +72,8 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
+	ImPlot::CreateContext();
+
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	while (true)
@@ -104,12 +107,20 @@ int main(int, char**)
 		{
 			using namespace CurveLib;
 
-			std::vector<Float2> testPoints = { {0, 0}, {1, 0}, {2, 0}, {3,0} };
-			BezierCurveSegment<Float2> testCurveSegment(testPoints);
-
-
+			using Double2 = CurveLib::Vector2<double>;
+			static std::vector<Double2> testPoints = { {0, 0}, {1, 0}, {2, 0}, {3,0} };
+			static BezierCurveSegment<Double2> testCurveSegment(testPoints);
+			static const ImVec4 pointColor{ 1, 0, 0, 1 };
 
 			ImGui::Begin("Curve Editor");
+			ImPlot::BeginPlot("CurvePlot");
+
+			for (size_t i = 0; i < testPoints.size(); ++i)
+			{
+				ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor);
+			}
+			
+			ImPlot::EndPlot();
 			ImGui::End();
 		}
 
