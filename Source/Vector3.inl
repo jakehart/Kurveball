@@ -12,32 +12,32 @@ namespace CurveLib
 		return Float3(otherVector.X, otherVector.Y, otherVector.Z);
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType>::Vector3()
+	template<typename ScalarT>
+	Vector3<ScalarT>::Vector3()
 		:X (0), Y(0), Z(0)
 	{
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType>::Vector3(ScalarType x, ScalarType y, ScalarType z)
+	template<typename ScalarT>
+	Vector3<ScalarT>::Vector3(ScalarT x, ScalarT y, ScalarT z)
 		: X(x), Y(y), Z(z)
 	{
 	}
 
-	template<typename ScalarType>
-	ScalarType Vector3<ScalarType>::GetLengthSquared() const
+	template<typename ScalarT>
+	ScalarT Vector3<ScalarT>::GetLengthSquared() const
 	{
 		return X * X + Y * Y + Z * Z;
 	}
 
-	template<typename ScalarType>
-	ScalarType Vector3<ScalarType>::GetLength() const
+	template<typename ScalarT>
+	ScalarT Vector3<ScalarT>::GetLength() const
 	{
 		return sqrt(GetLengthSquared());
 	}
 
-	template<typename ScalarType>
-	bool Vector3<ScalarType>::IsZero() const
+	template<typename ScalarT>
+	bool Vector3<ScalarT>::IsZero() const
 	{
 		return std::abs(X) < sFloatEpsilon &&
 				std::abs(Y) < sFloatEpsilon &&
@@ -45,10 +45,10 @@ namespace CurveLib
 	}
 
 
-	template<typename ScalarType>
-	Vector3<ScalarType> Vector3<ScalarType>::GetNormalized() const
+	template<typename ScalarT>
+	Vector3<ScalarT> Vector3<ScalarT>::GetNormalized() const
 	{
-		const ScalarType length{ this->GetLength() };
+		const ScalarT length{ this->GetLength() };
 		if (length > sFloatEpsilon)
 		{
 			return *this / length;
@@ -57,8 +57,8 @@ namespace CurveLib
 		return {};
 	}
 
-	template<typename ScalarType>
-	void Vector3<ScalarType>::NormalizeInPlace()
+	template<typename ScalarT>
+	void Vector3<ScalarT>::NormalizeInPlace()
 	{
 		const auto length{ this->GetLength() };
 		if (length > sFloatEpsilon)
@@ -69,30 +69,30 @@ namespace CurveLib
 		}
 	}
 
-	template<typename ScalarType>
-	void Vector3<ScalarType>::Set(ScalarType x, ScalarType y, ScalarType z)
+	template<typename ScalarT>
+	void Vector3<ScalarT>::Set(ScalarT x, ScalarT y, ScalarT z)
 	{
 		X = x;
 		Y = y;
 		Z = z;
 	}
 
-	template<typename ScalarType>
-	bool Vector3<ScalarType>::Equals(const Vector3<ScalarType> otherVector, ScalarType tolerance)
+	template<typename ScalarT>
+	bool Vector3<ScalarT>::Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance)
 	{
 		return std::abs(X - otherVector.X) < tolerance &&
 				std::abs(Y - otherVector.Y) < tolerance &&
 				std::abs(Z - otherVector.Z) < tolerance;
 	}
 
-	template<typename ScalarType>
-	float Vector3<ScalarType>::Dot(const Vector3<ScalarType> otherVector)
+	template<typename ScalarT>
+	float Vector3<ScalarT>::Dot(const Vector3<ScalarT> otherVector)
 	{
 		return X * otherVector.X + Y * otherVector.Y + Z * otherVector.Z;
 	}
 
-	template<typename ScalarType>
-	void Vector3<ScalarType>::FloorToZero()
+	template<typename ScalarT>
+	void Vector3<ScalarT>::FloorToZero()
 	{
 		// From MathUtils.h
 		X = CurveLib::FloorToZero(X, sFloatMinDenormal);
@@ -100,8 +100,8 @@ namespace CurveLib
 		Z = CurveLib::FloorToZero(Z, sFloatMinDenormal);
 	}
 
-	template<typename ScalarType>
-	Position Vector3<ScalarType>::RotateEulerZYX(EulerAngles anglesDegrees) const
+	template<typename ScalarT>
+	Position Vector3<ScalarT>::RotateEulerZYX(EulerAngles anglesDegrees) const
 	{
 		Vector3 result = *this;
 
@@ -135,37 +135,37 @@ namespace CurveLib
 		return result;
 	}
 
-	template<typename ScalarType>
-	Position Vector3<ScalarType>::LocalToWorldPosition(Position entityPosition, EulerAngles entityRotation) const
+	template<typename ScalarT>
+	Position Vector3<ScalarT>::LocalToWorldPosition(Position entityPosition, EulerAngles entityRotation) const
 	{
 		const auto rotatedPosition = RotateEulerZYX(entityRotation);
 		return rotatedPosition + entityPosition;
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType> Vector3<ScalarType>::Lerp(const Vector3<ScalarType>& first, const Vector3<ScalarType>& second, float lerpT)
+	template<typename ScalarT>
+	Vector3<ScalarT> Vector3<ScalarT>::Lerp(const Vector3<ScalarT>& first, const Vector3<ScalarT>& second, float lerpT)
 	{
 		return Lerp3D(first, second, lerpT);
 	}
 
-	template<typename ScalarType>
-	std::string Vector3<ScalarType>::ToString() const
+	template<typename ScalarT>
+	std::string Vector3<ScalarT>::ToString() const
 	{
 		std::stringstream ss;
 		ss << "(" << X << ", " << Y << ", " << Z << ")";
 		return ss.str();
 	}
 
-	template<typename ScalarType>
-	bool Vector3<ScalarType>::operator==(const Vector3<ScalarType>& other) const
+	template<typename ScalarT>
+	bool Vector3<ScalarT>::operator==(const Vector3<ScalarT>& other) const
 	{
 		return std::abs(X - other.X) < sFloatEpsilon &&
 				std::abs(Y - other.Y) < sFloatEpsilon &&
 				std::abs(Z - other.Z) < sFloatEpsilon;
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType>& Vector3<ScalarType>::operator*=(ScalarType scalar)
+	template<typename ScalarT>
+	Vector3<ScalarT>& Vector3<ScalarT>::operator*=(ScalarT scalar)
 	{
 		X *= scalar;
 		Y *= scalar;
@@ -173,8 +173,8 @@ namespace CurveLib
 		return *this;
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType>& Vector3<ScalarType>::operator+=(const Vector3<ScalarType>& rhs)
+	template<typename ScalarT>
+	Vector3<ScalarT>& Vector3<ScalarT>::operator+=(const Vector3<ScalarT>& rhs)
 	{
 		X += rhs.X;
 		Y += rhs.Y;
@@ -182,38 +182,38 @@ namespace CurveLib
 		return *this;
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType> operator*(const Vector3<ScalarType>& vector, ScalarType scalar)
+	template<typename ScalarT>
+	Vector3<ScalarT> operator*(const Vector3<ScalarT>& vector, ScalarT scalar)
 	{
 		return Vector3(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
 	}
 
-	template<typename FirstScalarType, typename SecondScalarType>
-	Vector3<FirstScalarType> operator*(const Vector3<FirstScalarType>& lhs, const Vector3<SecondScalarType>& rhs)
+	template<typename FirstScalarT, typename SecondScalarT>
+	Vector3<FirstScalarT> operator*(const Vector3<FirstScalarT>& lhs, const Vector3<SecondScalarT>& rhs)
 	{
 		return Vector3(lhs.X * rhs.X, lhs.Y * rhs.Y, lhs.Z * rhs.Z);
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType> operator/(const Vector3<ScalarType>& vector, const ScalarType scalar)
+	template<typename ScalarT>
+	Vector3<ScalarT> operator/(const Vector3<ScalarT>& vector, const ScalarT scalar)
 	{
 		return Vector3(vector.X / scalar, vector.Y / scalar, vector.Z / scalar);
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType> operator+(const Vector3<ScalarType>& lhs, const Vector3<ScalarType>& rhs)
+	template<typename ScalarT>
+	Vector3<ScalarT> operator+(const Vector3<ScalarT>& lhs, const Vector3<ScalarT>& rhs)
 	{
 		return Vector3(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z);
 	}
 
-	template<typename ScalarType>
-	Vector3<ScalarType> operator-(const Vector3<ScalarType>& lhs, const Vector3<ScalarType>& rhs)
+	template<typename ScalarT>
+	Vector3<ScalarT> operator-(const Vector3<ScalarT>& lhs, const Vector3<ScalarT>& rhs)
 	{
 		return Vector3(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
 	}
 
-	template<typename ScalarType>
-	inline std::ostream& operator<<(std::ostream& os, const Vector3<ScalarType>& vec)
+	template<typename ScalarT>
+	inline std::ostream& operator<<(std::ostream& os, const Vector3<ScalarT>& vec)
 	{
 		os << vec.ToString();
 		return os;

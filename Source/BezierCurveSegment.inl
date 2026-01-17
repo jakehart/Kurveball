@@ -30,7 +30,7 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(float t) const
+	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(ScalarType t) const
 	{
 		const PointVector lerpedPoints = CalculateLerpedPoints(mPoints, t);
 		assert(lerpedPoints.size() == 1U);
@@ -46,7 +46,7 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtDistance(float distance) const
+	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtDistance(ScalarType distance) const
 	{
 		// TODO
 		return {};

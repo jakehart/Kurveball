@@ -120,17 +120,17 @@ int main(int, char**)
 
 			const float SAMPLE_X_STEP = 0.1f;
 
-			std::vector<float> sampleX;
-			std::vector<float> sampleY;
+			std::vector<double> sampleX;
+			std::vector<double> sampleY;
 
 			// Sample the curve to generate some lines for ImPlot to draw
-			for (float x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
+			for (double x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
 			{
 				sampleX.push_back(x);
 				sampleY.push_back(testCurveSegment.CalculatePositionAtDistance(x).Y);
 			}
 
-			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), sampleX.size());
+			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
 			for (size_t i = 0; i < testPoints.size(); ++i)
 			{

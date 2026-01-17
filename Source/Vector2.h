@@ -5,12 +5,14 @@
 
 namespace CurveLib
 {
-	template<typename ScalarType>
+	template<typename ScalarT>
 	class Vector2
 	{
 	public:
-		ScalarType X {};
-		ScalarType Y {};
+		using ScalarType = ScalarT;
+
+		ScalarT X {};
+		ScalarT Y {};
 
 		[[nodiscard]] static Vector2 Lerp(const Vector2& first, const Vector2& second, float lerpT)
 		{

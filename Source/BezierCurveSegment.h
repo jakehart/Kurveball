@@ -13,6 +13,7 @@ namespace CurveLib
 	{
 	public:
 		using PointVector = std::vector<CurvePointT>;
+		using ScalarType = CurvePointT::ScalarType;
 
 		BezierCurveSegment() = default;
 		BezierCurveSegment(const PointVector& points);
@@ -22,10 +23,10 @@ namespace CurveLib
 		std::vector<CurvePointT>& AccessPoints();
 
 		// Samples the curve using pure lerp T.
-		CurvePointT CalculatePositionAtT(float t) const;
+		CurvePointT CalculatePositionAtT(ScalarType t) const;
 		// Uses the arc length to sample the curve instead of t. This produces a consistent, evenly spaced result, whereas
 		// sampling by T causes "expansion" and "contraction"
-		CurvePointT CalculatePositionAtDistance(float distance) const;
+		CurvePointT CalculatePositionAtDistance(ScalarType distance) const;
 
 	private:
 		// Lerps between each point and its neighbor according to t, returning the lerped points.

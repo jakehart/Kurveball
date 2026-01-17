@@ -4,7 +4,7 @@
 
 namespace CurveLib
 {
-    template<typename ScalarType>
+    template<typename ScalarT>
     class Vector3;
 
     using Float3 = Vector3<float>;
@@ -17,43 +17,43 @@ namespace CurveLib
     Float3 ConvertFloat3(const ExternalVectorT& otherVector);
 
     // Vector * float scalar
-    template<typename ScalarType>
-    Vector3<ScalarType> operator*(const Vector3<ScalarType>& vector, ScalarType scalar);
+    template<typename ScalarT>
+    Vector3<ScalarT> operator*(const Vector3<ScalarT>& vector, ScalarT scalar);
 
     // Vector * vector
-    template<typename FirstScalarType, typename SecondScalarType>
-    Vector3<FirstScalarType> operator*(const Vector3<FirstScalarType>& lhs, const Vector3<SecondScalarType>& rhs);
+    template<typename FirstScalarT, typename SecondScalarT>
+    Vector3<FirstScalarT> operator*(const Vector3<FirstScalarT>& lhs, const Vector3<SecondScalarT>& rhs);
 
     // Vector / scalar
-    template<typename ScalarType>
-    Vector3<ScalarType> operator/(const Vector3<ScalarType>& vector, ScalarType scalar);
+    template<typename ScalarT>
+    Vector3<ScalarT> operator/(const Vector3<ScalarT>& vector, ScalarT scalar);
 
-    template<typename ScalarType>
-    Vector3<ScalarType> operator+(const Vector3<ScalarType>& lhs, const Vector3<ScalarType>& rhs);
+    template<typename ScalarT>
+    Vector3<ScalarT> operator+(const Vector3<ScalarT>& lhs, const Vector3<ScalarT>& rhs);
 
-    template<typename ScalarType>
-    Vector3<ScalarType> operator-(const Vector3<ScalarType>& lhs, const Vector3<ScalarType>& rhs);
+    template<typename ScalarT>
+    Vector3<ScalarT> operator-(const Vector3<ScalarT>& lhs, const Vector3<ScalarT>& rhs);
     
-    template<typename ScalarType>
+    template<typename ScalarT>
     class Vector3
     {
     public:
-        using Scalar = ScalarType;
+        using ScalarType = ScalarT;
         Vector3();
-        Vector3(ScalarType x, ScalarType y, ScalarType z);
+        Vector3(ScalarT x, ScalarT y, ScalarT z);
 
-        ScalarType X {};
-        ScalarType Y {};
-        ScalarType Z {};
+        ScalarT X {};
+        ScalarT Y {};
+        ScalarT Z {};
 
-        ScalarType GetLengthSquared() const;
-        ScalarType GetLength() const;
+        ScalarT GetLengthSquared() const;
+        ScalarT GetLength() const;
         bool IsZero() const;
-        Vector3<ScalarType> GetNormalized() const;
+        Vector3<ScalarT> GetNormalized() const;
         void NormalizeInPlace();
-        void Set(ScalarType x, ScalarType y, ScalarType z);
-        bool Equals(const Vector3<ScalarType> otherVector, ScalarType tolerance = sFloatEpsilon);
-        float Dot(const Vector3<ScalarType> otherVector);
+        void Set(ScalarT x, ScalarT y, ScalarT z);
+        bool Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance = sFloatEpsilon);
+        float Dot(const Vector3<ScalarT> otherVector);
         
         // Turns all components that are denormals into 0. Any components that exceed this threshold
         // (positive or negative) get left alone.
@@ -75,10 +75,10 @@ namespace CurveLib
         [[nodiscard]] std::string ToString() const;
 
         // Equality
-        bool operator==(const Vector3<ScalarType>& other) const;
+        bool operator==(const Vector3<ScalarT>& other) const;
 
         // Vector *= scalar
-        Vector3& operator*=(ScalarType scalar);
+        Vector3& operator*=(ScalarT scalar);
 
         // Vector += vector
         Vector3& operator+=(const Vector3& rhs);
@@ -88,8 +88,8 @@ namespace CurveLib
         friend Vector3<T> operator*(const Vector3<T>& vector, T scalar);
 
         // Vector * vector
-        template<typename FirstScalarType, typename SecondScalarType>
-        friend Vector3<FirstScalarType> operator*(const Vector3<FirstScalarType>& lhs, const Vector3<SecondScalarType>& rhs);
+        template<typename FirstScalarT, typename SecondScalarT>
+        friend Vector3<FirstScalarT> operator*(const Vector3<FirstScalarT>& lhs, const Vector3<SecondScalarT>& rhs);
         
         // Vector / scalar
         template<typename T>
