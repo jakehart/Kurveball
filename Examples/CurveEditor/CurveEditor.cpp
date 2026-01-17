@@ -118,19 +118,18 @@ int main(int, char**)
 			ImGui::Begin("Curve Editor");
 			ImPlot::BeginPlot("CurvePlot", ImVec2(-1, 0), ImPlotFlags_NoBoxSelect);
 
-			const float SAMPLE_X_STEP = 0.01f;
+			const float SAMPLE_T_STEP = 0.01f;
 
 			std::vector<double> sampleX{};
 			std::vector<double> sampleY{};
 
 			// Sample the curve to generate some lines for ImPlot to draw
-			for (double x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
+			for (double t = testPoints.front().X; t < testPoints.back().X; t += SAMPLE_T_STEP)
 			{
-				sampleX.push_back(x);
-
 				// TODO: Implement something like CalculateY(x). For now I'm using x as t, which is not right
-				const double y = testCurveSegment.CalculatePositionAtT(x).Y;
-				sampleY.push_back(y);
+				const Double2 position = testCurveSegment.CalculatePositionAtT(t);
+				sampleX.push_back(position.X);
+				sampleY.push_back(position.Y);
 			}
 
 			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
