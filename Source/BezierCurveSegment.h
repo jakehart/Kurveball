@@ -22,7 +22,7 @@ namespace CurveLib
 		const std::vector<CurvePointT>& GetPoints() const;
 		std::vector<CurvePointT>& AccessPoints();
 
-		// Samples the curve using pure lerp T.
+		// Samples the curve by pure T, using De Casteljau's algorithm.
 		CurvePointT CalculatePositionAtT(ScalarType t) const;
 		// Uses the arc length to sample the curve instead of t. This produces a consistent, evenly spaced result, whereas
 		// sampling by T causes "expansion" and "contraction"

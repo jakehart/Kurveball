@@ -59,7 +59,7 @@ namespace CurveLib
 
 		if (inputPoints.size() == 1U)
 		{
-			// Done! Nothing left to lerp, so return the input by copy
+			// Done! Nothing left to lerp, so return the input points by copy
 			return inputPoints;
 		}
 		else

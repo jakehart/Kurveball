@@ -112,13 +112,13 @@ int main(int, char**)
 			using Double2 = CurveLib::Vector2<double>;
 			static const ImVec4 pointColor{ 1, 0, 0, 1 };
 			
-			static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 1, 1 }, { 2, 1 }, { 3, 0 } });
+			static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
 			auto& testPoints = testCurveSegment.AccessPoints();
 
 			ImGui::Begin("Curve Editor");
-			ImPlot::BeginPlot("CurvePlot");
+			ImPlot::BeginPlot("CurvePlot", ImVec2(-1, 0), ImPlotFlags_NoBoxSelect);
 
-			const float SAMPLE_X_STEP = 0.1f;
+			const float SAMPLE_X_STEP = 0.01f;
 
 			std::vector<double> sampleX{};
 			std::vector<double> sampleY{};
@@ -127,7 +127,10 @@ int main(int, char**)
 			for (double x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
 			{
 				sampleX.push_back(x);
-				sampleY.push_back(testCurveSegment.CalculatePositionAtT(x).Y);
+
+				// TODO: Implement something like CalculateY(x). For now I'm using x as t, which is not right
+				const double y = testCurveSegment.CalculatePositionAtT(x).Y;
+				sampleY.push_back(y);
 			}
 
 			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
