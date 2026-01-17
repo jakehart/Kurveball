@@ -17,3 +17,5 @@ namespace CurveLib
 		std::vector<CurveSegment> mSegments{};
 	};
 }
+
+#include "BezierCurve.inl"
