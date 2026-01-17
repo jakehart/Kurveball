@@ -110,16 +110,34 @@ int main(int, char**)
 			using namespace CurveLib;
 
 			using Double2 = CurveLib::Vector2<double>;
-			static std::vector<Double2> testPoints = { {0, 0}, {1, 0}, {2, 0}, {3,0} };
-			static BezierCurveSegment<Double2> testCurveSegment(testPoints);
 			static const ImVec4 pointColor{ 1, 0, 0, 1 };
+			
+			static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 1, 1 }, { 2, 1 }, { 3, 0 } });
+			auto& testPoints = testCurveSegment.AccessPoints();
 
 			ImGui::Begin("Curve Editor");
 			ImPlot::BeginPlot("CurvePlot");
 
+			const float SAMPLE_X_STEP = 0.1f;
+
+			std::vector<float> sampleX;
+			std::vector<float> sampleY;
+
+			// Sample the curve to generate some lines for ImPlot to draw
+			for (float x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
+			{
+				sampleX.push_back(x);
+				sampleY.push_back(testCurveSegment.CalculatePositionAtDistance(x).Y);
+			}
+
+			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), sampleX.size());
+
 			for (size_t i = 0; i < testPoints.size(); ++i)
 			{
-				ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor);
+				if (ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor))
+				{
+					testCurveSegment.SetPoints(testPoints);
+				}
 			}
 			
 			ImPlot::EndPlot();

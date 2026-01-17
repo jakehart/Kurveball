@@ -17,7 +17,9 @@ namespace CurveLib
 		BezierCurveSegment() = default;
 		BezierCurveSegment(const PointVector& points);
 
-		bool SetPoints(const PointVector& points);
+		void SetPoints(const PointVector& points);
+		const std::vector<CurvePointT>& GetPoints() const;
+		std::vector<CurvePointT>& AccessPoints();
 
 		// Samples the curve using pure lerp T.
 		CurvePointT CalculatePositionAtT(float t) const;

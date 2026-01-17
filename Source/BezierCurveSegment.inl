@@ -12,15 +12,21 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	bool BezierCurveSegment<CurvePointT>::SetPoints(const PointVector& points)
+	void BezierCurveSegment<CurvePointT>::SetPoints(const PointVector& points)
 	{
-		if (points.size() == 0)
-		{
-			return false;
-		}
-
 		mPoints = points;
-		return true;
+	}
+
+	template<typename CurvePointT>
+	const std::vector<CurvePointT>& BezierCurveSegment<CurvePointT>::GetPoints() const
+	{
+		return mPoints;
+	}
+
+	template<typename CurvePointT>
+	std::vector<CurvePointT>& BezierCurveSegment<CurvePointT>::AccessPoints() 
+	{
+		return mPoints;
 	}
 
 	template<typename CurvePointT>
