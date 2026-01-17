@@ -14,7 +14,7 @@ namespace CurveLib
 		ScalarT X {};
 		ScalarT Y {};
 
-		[[nodiscard]] static Vector2 Lerp(const Vector2& first, const Vector2& second, float lerpT)
+		[[nodiscard]] static Vector2 Lerp(const Vector2& first, const Vector2& second, ScalarT lerpT)
 		{
 			return Lerp2D(first, second, lerpT);
 		}

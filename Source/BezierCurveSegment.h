@@ -31,7 +31,7 @@ namespace CurveLib
 	private:
 		// Lerps between each point and its neighbor according to t, returning the lerped points.
 		// The result vector will always be one fewer than the input.
-		PointVector CalculateLerpedPoints(const PointVector& inputPoints, float t) const;
+		PointVector CalculateLerpedPoints(const PointVector& inputPoints, ScalarType t) const;
 
 		// The control points of this segment. For example, in the case of cubic Bezier (degree 3), there are 4 points contained here.
 		PointVector mPoints{};

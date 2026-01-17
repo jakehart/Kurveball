@@ -53,7 +53,7 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	BezierCurveSegment<CurvePointT>::PointVector BezierCurveSegment<CurvePointT>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT>::PointVector& inputPoints, float t) const
+	BezierCurveSegment<CurvePointT>::PointVector BezierCurveSegment<CurvePointT>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT>::PointVector& inputPoints, ScalarType t) const
 	{
 		CURVELIB_VERIFY_RETURN(inputPoints.size() > 0, {});
 

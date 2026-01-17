@@ -143,7 +143,7 @@ namespace CurveLib
 	}
 
 	template<typename ScalarT>
-	Vector3<ScalarT> Vector3<ScalarT>::Lerp(const Vector3<ScalarT>& first, const Vector3<ScalarT>& second, float lerpT)
+	Vector3<ScalarT> Vector3<ScalarT>::Lerp(const Vector3<ScalarT>& first, const Vector3<ScalarT>& second, ScalarT lerpT)
 	{
 		return Lerp3D(first, second, lerpT);
 	}

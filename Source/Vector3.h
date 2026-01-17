@@ -70,7 +70,7 @@ namespace CurveLib
         // which maps to yaw->pitch->roll in Unreal.
         inline Position LocalToWorldDirection(EulerAngles anglesDegrees) { return RotateEulerZYX(anglesDegrees); }
 
-        [[nodiscard]] static Vector3 Lerp(const Vector3& first, const Vector3& second, float lerpT);
+        [[nodiscard]] static Vector3 Lerp(const Vector3& first, const Vector3& second, ScalarT lerpT);
 
         [[nodiscard]] std::string ToString() const;
 

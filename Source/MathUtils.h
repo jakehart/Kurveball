@@ -14,15 +14,15 @@ namespace CurveLib
 		return first * (1 - lerpT) + second * lerpT;
 	}
 
-	template<typename VectorT>
-	VectorT Lerp2D(const VectorT& first, const VectorT& second, float lerpT)
+	template<typename VectorT, typename ScalarT>
+	VectorT Lerp2D(const VectorT& first, const VectorT& second, ScalarT lerpT)
 	{
 		return VectorT(Lerp(first.X, second.X, lerpT),
 						Lerp(first.Y, second.Y, lerpT));
 	}
 
-	template<typename VectorT>
-	VectorT Lerp3D(const VectorT& first, const VectorT& second, float lerpT)
+	template<typename VectorT, typename ScalarT>
+	VectorT Lerp3D(const VectorT& first, const VectorT& second, ScalarT lerpT)
 	{
 		return VectorT(Lerp(first.X, second.X, lerpT),
 				Lerp(first.Y, second.Y, lerpT),

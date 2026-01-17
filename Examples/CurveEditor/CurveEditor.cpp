@@ -120,14 +120,14 @@ int main(int, char**)
 
 			const float SAMPLE_X_STEP = 0.1f;
 
-			std::vector<double> sampleX;
-			std::vector<double> sampleY;
+			std::vector<double> sampleX{};
+			std::vector<double> sampleY{};
 
 			// Sample the curve to generate some lines for ImPlot to draw
 			for (double x = testPoints.front().X; x < testPoints.back().X; x += SAMPLE_X_STEP)
 			{
 				sampleX.push_back(x);
-				sampleY.push_back(testCurveSegment.CalculatePositionAtDistance(x).Y);
+				sampleY.push_back(testCurveSegment.CalculatePositionAtT(x).Y);
 			}
 
 			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
@@ -150,8 +150,6 @@ int main(int, char**)
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// Present
 		::SwapBuffers(g_MainWindow.hDC);
 	}
 
