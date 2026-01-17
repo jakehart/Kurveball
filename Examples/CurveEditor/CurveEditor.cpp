@@ -55,6 +55,8 @@ int main(int, char**)
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
+	
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
@@ -72,7 +74,7 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
-	ImPlot::CreateContext();
+	
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -138,6 +140,7 @@ int main(int, char**)
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+	ImPlot::DestroyContext();
 
 	CleanupDeviceWGL(hwnd, &g_MainWindow);
 	wglDeleteContext(g_hRC);
