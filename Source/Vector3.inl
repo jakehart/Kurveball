@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <ostream>
 #include <sstream>
 #include "MathUtils.h"
 #include "UnitTypes.h"
@@ -154,6 +155,31 @@ namespace CurveLib
 		std::stringstream ss;
 		ss << "(" << X << ", " << Y << ", " << Z << ")";
 		return ss.str();
+	}
+
+	template<typename ScalarT>
+	void Vector3<ScalarT>::ToBinary(std::ostream& outStream) const
+	{
+		outStream.write((const char*)&X, sizeof(ScalarType));
+		outStream.write((const char*)&Y, sizeof(ScalarType));
+		outStream.write((const char*)&Z, sizeof(ScalarType));
+
+		outStream.flush();
+	}
+
+
+	template<typename ScalarT>
+	Vector3<ScalarT> Vector3<ScalarT>::FromBinary(std::istream& istream)
+	{
+		ScalarT x = 0;
+		ScalarT y = 0;
+		ScalarT z = 0;
+
+		istream.read((char*)&x, sizeof(ScalarType));
+		istream.read((char*)&y, sizeof(ScalarType));
+		istream.read((char*)&z, sizeof(ScalarType));
+
+		return Vector3(x, y, z);
 	}
 
 	template<typename ScalarT>

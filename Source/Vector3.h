@@ -73,6 +73,10 @@ namespace CurveLib
         [[nodiscard]] static Vector3 Lerp(const Vector3& first, const Vector3& second, ScalarT lerpT);
 
         [[nodiscard]] std::string ToString() const;
+        
+		void ToBinary(std::ostream& outStream) const;
+
+		static Vector3 FromBinary(std::istream& istream);
 
         // Equality
         bool operator==(const Vector3<ScalarT>& other) const;

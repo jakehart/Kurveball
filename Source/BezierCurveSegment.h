@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 #include <vector>
 
 namespace CurveLib
@@ -27,6 +28,9 @@ namespace CurveLib
 		// Uses the arc length to sample the curve instead of t. This produces a consistent, evenly spaced result, whereas
 		// sampling by T causes "expansion" and "contraction"
 		CurvePointT CalculatePositionAtDistance(ScalarType distance) const;
+
+		void ToBinary(std::ostream& outStream) const;
+		static BezierCurveSegment FromBinary(std::istream& istream);
 
 	private:
 		// Lerps between each point and its neighbor according to t, returning the lerped points.

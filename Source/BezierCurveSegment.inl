@@ -53,6 +53,37 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
+	void BezierCurveSegment<CurvePointT>::ToBinary(std::ostream& outStream) const
+	{
+		const size_t numPoints = mPoints.size();
+		outStream.write((const char*) &numPoints, sizeof(size_t));
+
+		for (const auto point : mPoints)
+		{
+			point.ToBinary(outStream);
+		}
+
+		outStream.flush();
+	}
+
+	template<typename CurvePointT>
+	BezierCurveSegment<CurvePointT> BezierCurveSegment<CurvePointT>::FromBinary(std::istream& istream)
+	{
+		size_t numPoints = 0U;
+		istream.read((char*)&numPoints, sizeof(size_t));
+
+		CURVELIB_VERIFY_RETURN(numPoints > 0U, {});
+
+		PointVector points;
+		for (size_t i = 0; i < numPoints; ++i)
+		{
+			points.push_back(CurvePointT::FromBinary(istream));
+		}
+
+		return BezierCurveSegment(points);
+	}
+
+	template<typename CurvePointT>
 	BezierCurveSegment<CurvePointT>::PointVector BezierCurveSegment<CurvePointT>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT>::PointVector& inputPoints, ScalarType t) const
 	{
 		CURVELIB_VERIFY_RETURN(inputPoints.size() > 0, {});
