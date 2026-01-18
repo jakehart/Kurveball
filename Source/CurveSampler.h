@@ -5,7 +5,7 @@
 
 namespace CurveLib
 {
-	// A function that looks at a raw x coordinate on a curve and returns the y there. Generally
+	// A function that looks at a curve's raw x coordinate (not t) and returns the y there. Generally
 	// a lambda that captures the curve data itself.
-	using CurveSampler = std::function<float(float)>;
+	using CurveSamplerXY = std::function<float(float)>;
 }

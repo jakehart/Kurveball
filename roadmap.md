@@ -8,6 +8,7 @@ Networked play using UE networking
 "Create movement mechanic" menu item  
 Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
 Movement line  
+Proper log category  
 
 ## Documentation
 NAME the library  

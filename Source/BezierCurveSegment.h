@@ -38,6 +38,7 @@ namespace CurveLib
 		PointVector CalculateLerpedPoints(const PointVector& inputPoints, ScalarType t) const;
 
 		// The control points of this segment. For example, in the case of cubic Bezier (degree 3), there are 4 points contained here.
+		// TODO: Use std::view on a list of points on the parent BezierCurve
 		PointVector mPoints{};
 	};
 }

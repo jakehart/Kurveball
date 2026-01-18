@@ -4,7 +4,6 @@
 #include "CurveLib/UnrealWrapper/UVelocityCurveComponent.h"
 
 #include <Blueprint/UserWidget.h>
-#include <Components/SplineComponent.h>
 #include <Engine/Engine.h>
 #include <GameFramework/PlayerController.h>
 #include <Kismet/GameplayStatics.h>
@@ -84,15 +83,15 @@ void UVelocityCurveComponent::BeginPlay()
 	CurveLib::SetPosition(mCurveContext, position.X, position.Y, position.Z);
 }
 
-void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* curve)
+void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
 {
-	if (!curve)
+	if (!mechanic)
 	{
 		UE_LOG(LogTemp, Error, TEXT("ERROR: StartVelocityCurve (in Blueprint) needs to have a Movement Mechanic Asset specified!"));
 		return;
 	}
 
-	if (!curve->VelocityCurveAsset)
+	if (!mechanic->VelocityCurveAsset)
 	{
 		UE_LOG(LogTemp, Error, TEXT("ERROR: Movement Mechanic (in Content Browser) needs to have a Velocity Curve Asset specified!"));
 		return;
@@ -105,26 +104,15 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* curve)
 		return;
 	}
 
-	CurveLib::VelocityCurveInstance curveInstance{.mMechanic = curve->ToNative()};
+	CurveLib::VelocityCurveInstance curveInstance{.mMechanic = mechanic->ToNative()};
 	
 	double minX = 0, maxX = 0;
-	curve->VelocityCurveAsset->GetTimeRange(minX, maxX);
+	mechanic->VelocityCurveAsset->GetTimeRange(minX, maxX);
 
 	// TODO: Properly support curves with negative x content
 	curveInstance.mMechanic.mRawAssetDuration = CurveLib::Seconds(maxX - minX);
 	
-	curveInstance.mSpeedSampler = [this, curve](float curveX)
-	{
-		// Since this lambda can be called later, ensure pointer is still valid
-		if (!curve->VelocityCurveAsset)
-		{
-			return 0.f;
-		}
-
-		return curve->VelocityCurveAsset->GetFloatValue(curveX);
-	};
-
-	// curveInstance.mMechanic.mDistanceAccumulator and mRecentOutputs are already default-initialized, which is what we want
+	curveInstance.mSpeedSampler = CurveLib::CreateSamplerXY(mechanic->VelocityCurveAsset);
 	CurveLib::StartVelocityCurve(mCurveContext, curveInstance);
 }
 
@@ -276,17 +264,7 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
 		return;
 	}
 
-	curveInstance->mPositionSampler = [splineComponent](const float distance) -> CurveLib::Float3
-		{
-			// Make sure the spline is still valid at the time of sampling
-			if (splineComponent)
-			{
-				const FVector rawPosition = splineComponent->GetWorldLocationAtDistanceAlongSpline(distance);
-				return CurveLib::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z);
-			}
-
-			return {};
-		};
+	curveInstance->mPositionSampler = CurveLib::CreateSplineSampler(splineComponent);
 }
 
 /*const void UVelocityCurveComponent::StretchSpline(USplineComponent* splineComponent, FVector startPosition, FVector endPosition, float height, ECoordinateSpace coordinateSpace)

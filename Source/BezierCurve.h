@@ -2,6 +2,7 @@
 #pragma once
 
 #include "BezierCurveSegment.h"
+#include "CurveSampler.h"
 #include <vector>
 
 namespace CurveLib
@@ -13,7 +14,10 @@ namespace CurveLib
 		using CurveSegment = BezierCurveSegment<CurvePointT>;
 		CurvePointT CalculatePositionAtT(float t);
 
+		CurveSamplerXY CreateCurveSamplerXY(const BezierCurve& curve);
+
 	private:
+		// TODO: Knot points should not use redundant memory
 		std::vector<CurveSegment> mSegments{};
 	};
 }

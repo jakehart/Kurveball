@@ -20,4 +20,14 @@ namespace CurveLib
 
 		return mSegments.at(segmentIndex).CalculatePositionAtT(tWithinCurve);
 	}
+
+	template<typename CurvePointT>
+	CurveSamplerXY CurveLib::BezierCurve<CurvePointT>::CreateCurveSamplerXY(const BezierCurve& curve)
+	{
+		return [&curve](float) -> float
+			{
+				// TODO: need to be able to sample by x
+				return -999;
+			};
+	}
 }

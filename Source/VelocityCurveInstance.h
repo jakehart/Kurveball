@@ -27,7 +27,7 @@ namespace CurveLib
 		AreaAccumulator mDistanceAccumulator {};
 		
 		// Given a time (x), returns a speed value (y).
-		CurveSampler mSpeedSampler;
+		CurveSamplerXY mSpeedSampler;
 		
 		// Given some distance travelled, returns a position. This exists so that we can use a velocity curve
 		// to move along a 3D world-space spline.
