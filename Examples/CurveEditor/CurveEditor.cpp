@@ -16,10 +16,10 @@
 struct WGL_WindowData { HDC hDC; };
 
 // Data
-static HGLRC            g_hRC;
-static WGL_WindowData   g_MainWindow;
-static int              g_Width;
-static int              g_Height;
+static HGLRC            ghRC;
+static WGL_WindowData   gMainWindow;
+static int              gWidth;
+static int              gHeight;
 
 // Forward declarations of helper functions
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
@@ -36,17 +36,17 @@ int main(int, char**)
 	// Create application window
 	WNDCLASSEXW wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
 	::RegisterClassExW(&wc);
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, (int)(1280 * main_scale), (int)(800 * main_scale), nullptr, nullptr, wc.hInstance, nullptr);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
 
 	// Initialize OpenGL
-	if (!CreateDeviceWGL(hwnd, &g_MainWindow))
+	if (!CreateDeviceWGL(hwnd, &gMainWindow))
 	{
-		CleanupDeviceWGL(hwnd, &g_MainWindow);
+		CleanupDeviceWGL(hwnd, &gMainWindow);
 		::DestroyWindow(hwnd);
 		::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 		return 1;
 	}
-	wglMakeCurrent(g_MainWindow.hDC, g_hRC);
+	wglMakeCurrent(gMainWindow.hDC, ghRC);
 
 	// Show the window
 	::ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -57,7 +57,7 @@ int main(int, char**)
 	ImGui::CreateContext();
 	ImPlot::CreateContext();
 	
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
@@ -74,9 +74,7 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
-	
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	ImVec4 clear_color = ImVec4(0.7f, 0.45f, 0.45f, 1.00f);
 
 	while (true)
 	{
@@ -99,12 +97,9 @@ int main(int, char**)
 			continue;
 		}
 
-		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-
-		//ImGui::ShowDemoWindow(&show_demo_window);
 
 		{
 			using namespace CurveLib;
@@ -148,11 +143,11 @@ int main(int, char**)
 
 		// Rendering
 		ImGui::Render();
-		glViewport(0, 0, g_Width, g_Height);
+		glViewport(0, 0, gWidth, gHeight);
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		::SwapBuffers(g_MainWindow.hDC);
+		::SwapBuffers(gMainWindow.hDC);
 	}
 
 	ImGui_ImplOpenGL3_Shutdown();
@@ -160,8 +155,8 @@ int main(int, char**)
 	ImGui::DestroyContext();
 	ImPlot::DestroyContext();
 
-	CleanupDeviceWGL(hwnd, &g_MainWindow);
-	wglDeleteContext(g_hRC);
+	CleanupDeviceWGL(hwnd, &gMainWindow);
+	wglDeleteContext(ghRC);
 	::DestroyWindow(hwnd);
 	::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
@@ -187,8 +182,8 @@ bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data)
 	::ReleaseDC(hWnd, hDc);
 
 	data->hDC = ::GetDC(hWnd);
-	if (!g_hRC)
-		g_hRC = wglCreateContext(data->hDC);
+	if (!ghRC)
+		ghRC = wglCreateContext(data->hDC);
 	return true;
 }
 
@@ -216,8 +211,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 		if (wParam != SIZE_MINIMIZED)
 		{
-			g_Width = LOWORD(lParam);
-			g_Height = HIWORD(lParam);
+			gWidth = LOWORD(lParam);
+			gHeight = HIWORD(lParam);
 		}
 		return 0;
 	case WM_SYSCOMMAND:
