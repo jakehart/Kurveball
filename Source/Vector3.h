@@ -18,7 +18,7 @@ namespace CurveLib
     template<typename ExternalVectorT>
     Float3 ConvertFloat3(const ExternalVectorT& otherVector);
 
-    // Vector * float scalar
+    // Vector * scalar
     template<typename ScalarT>
     Vector3<ScalarT> operator*(const Vector3<ScalarT>& vector, ScalarT scalar);
 

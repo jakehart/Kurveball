@@ -32,17 +32,15 @@ namespace CurveLib
 	template<typename CurvePointT>
 	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(ScalarType t) const
 	{
-		const PointVector lerpedPoints = CalculateLerpedPoints(mPoints, t);
-		assert(lerpedPoints.size() == 1U);
+		const auto influences = CalculatePointInfluences(t);
+		CURVELIB_VERIFY_RETURN(influences.size() == mPoints.size(), {});
 
-		if (lerpedPoints.size() == 1U)
+		CurvePointT finalPoint;
+		for(size_t i = 0; i < mPoints.size(); ++i)
 		{
-			return lerpedPoints.at(0);
+			finalPoint = finalPoint + mPoints[i] * influences[i];
 		}
-		else
-		{
-			return {};
-		}
+		return finalPoint;
 	}
 
 	template<typename CurvePointT>
@@ -72,7 +70,7 @@ namespace CurveLib
 		size_t numPoints = 0U;
 		istream.read((char*)&numPoints, sizeof(size_t));
 
-		CURVELIB_VERIFY_RETURN(numPoints > 0U, {});
+		CURVELIB_VERIFY_RETURN(numPoints > 0, {});
 
 		PointVector points;
 		for (size_t i = 0; i < numPoints; ++i)
@@ -84,28 +82,34 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	BezierCurveSegment<CurvePointT>::PointVector BezierCurveSegment<CurvePointT>::CalculateLerpedPoints(const BezierCurveSegment<CurvePointT>::PointVector& inputPoints, ScalarType t) const
+	BezierCurveSegment<CurvePointT>::PointInfluenceVector BezierCurveSegment<CurvePointT>::CalculatePointInfluences(ScalarType t) const
 	{
-		CURVELIB_VERIFY_RETURN(inputPoints.size() > 0, {});
+		const size_t numPoints = mPoints.size();
+		CURVELIB_VERIFY_RETURN(numPoints > 0, {});
+		CURVELIB_VERIFY_RETURN(numPoints <= MAX_SUPPORTED_POINTS, {});
 
-		if (inputPoints.size() == 1U)
+		// Which Bernstein polynomials to use depends on how many points we're blending between.
+		// I've expressed them in monomial form (already FOILed/simplified), with zeroed terms (like 0t)
+		// removed, and with extra parentheses around each term for clarity.
+		switch (numPoints)
 		{
-			// Done! Nothing left to lerp, so return the input points by copy
-			return inputPoints;
-		}
-		else
-		{
-			PointVector lerpedPoints{};
-			lerpedPoints.reserve(inputPoints.size() - 1);
+		case 1:
+			return { 1 };
+		case 2:
+			return { 1 - t,
+					t };
+		case 3:
+			return { 1 - (2 * t) + (t * t),
+					(2 * t) - (2 * t * t),
+					(t * t) };
+		case 4:
+			return { 1 - (3 * t) + (3 * t * t) - (t * t * t),
+					(3 * t) - (6 * t * t) + (3 * t * t * t),
+					(3 * t * t) - (3 * t * t * t),
+					(t * t * t) };
 
-			for(size_t i = 0U; i < inputPoints.size() - 1; ++i)
-			{
-				const CurvePointT lerpedPoint = CurvePointT::Lerp(inputPoints[i], inputPoints[i + 1], t);
-				lerpedPoints.push_back(lerpedPoint);
-			}
-
-			// Recursively lerp until there's nothing left to lerp between
-			return CalculateLerpedPoints(lerpedPoints, t);
+		default:
+			return {};
 		}
 	}
 }

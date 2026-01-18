@@ -15,6 +15,7 @@ namespace CurveLib
 	public:
 		using PointVector = std::vector<CurvePointT>;
 		using ScalarType = CurvePointT::ScalarType;
+		uint8_t MAX_SUPPORTED_POINTS = 4; // Cubic Bezier
 
 		BezierCurveSegment() = default;
 		BezierCurveSegment(const PointVector& points);
@@ -33,11 +34,12 @@ namespace CurveLib
 		[[nodiscard]] static BezierCurveSegment FromBinary(std::istream& istream);
 
 	private:
-		// Lerps between each point and its neighbor according to t, returning the lerped points.
-		// The result vector will always be one fewer than the input.
-		PointVector CalculateLerpedPoints(const PointVector& inputPoints, ScalarType t) const;
+		using PointInfluenceVector = std::vector<ScalarType>;
 
-		// The control points of this segment. For example, in the case of cubic Bezier (degree 3), there are 4 points contained here.
+		// Uses Bernstein basis polynomials to calculate the "influence" coefficients of each point in this segment.
+		PointInfluenceVector CalculatePointInfluences(ScalarType t) const;
+
+		// The control points of this segment. For example, in the case of cubic Bezier (polynomial degree 3), there are 4 points contained here.
 		// TODO: Use std::view on a list of points on the parent BezierCurve
 		PointVector mPoints{};
 	};

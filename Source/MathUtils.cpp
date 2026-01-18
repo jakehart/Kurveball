@@ -9,4 +9,5 @@ namespace CurveLib
 		// Avoiding a loop for speed
 		return fmodf(degrees + 1080.f, 360.f);
 	}
+
 }
