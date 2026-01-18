@@ -2,7 +2,6 @@
 This summarizes all the features and fixes that are needed in order to release CurveLib.
 
 ## Unreal Demo
-Collision support via SetPosition  
 Climbing mechanic  
 Networked play using UE networking  
 "Create movement mechanic" menu item  

@@ -22,12 +22,22 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
-	CurveSamplerXY CurveLib::BezierCurve<CurvePointT>::CreateCurveSamplerXY(const BezierCurve& curve)
+	CurveSamplerXY CurveLib::BezierCurve<CurvePointT>::CreateCurveSamplerXY() const
 	{
 		return [&curve](float) -> float
 			{
 				// TODO: need to be able to sample by x
 				return -999;
+			};
+	}
+
+	template<typename CurvePointT>
+	CurveSampler3D CurveLib::BezierCurve<CurvePointT>::CreateCurveSampler3D() const
+	{
+		return [&curve](float) -> float
+			{
+				// TODO: need to be able to sample by arc distance
+				return {};
 			};
 	}
 }

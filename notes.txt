@@ -1,3 +1,9 @@
+optional "cancel on collision" functionality
+	if there was a collision, and the dot between the direction to the collision point and the direction the curve is going, cancel the curve
+
+hub world in demo?
+
+
 need to be able to check stick intent -- have a function that checks against a target to see if the world input vector is pointed toward that target or not (within some degree measure)
 
 

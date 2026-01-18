@@ -95,7 +95,7 @@ namespace CurveLib
 		{
 		case 1:
 			return { 1 };
-		case 2:
+		case 2: // Same as lerp
 			return { 1 - t,
 					t };
 		case 3:
