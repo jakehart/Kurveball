@@ -30,7 +30,7 @@ namespace CurveLib
 		CurvePointT CalculatePositionAtDistance(ScalarType distance) const;
 
 		void ToBinary(std::ostream& outStream) const;
-		static BezierCurveSegment FromBinary(std::istream& istream);
+		[[nodiscard]] static BezierCurveSegment FromBinary(std::istream& istream);
 
 	private:
 		// Lerps between each point and its neighbor according to t, returning the lerped points.

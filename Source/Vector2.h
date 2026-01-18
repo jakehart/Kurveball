@@ -36,7 +36,7 @@ namespace CurveLib
 			outStream.flush();
 		}
 
-		static Vector2 FromBinary(std::istream& istream)
+		[[nodiscard]] static Vector2 FromBinary(std::istream& istream)
 		{
 			ScalarT x = 0;
 			ScalarT y = 0;

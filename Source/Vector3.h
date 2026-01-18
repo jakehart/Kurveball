@@ -76,7 +76,7 @@ namespace CurveLib
         
 		void ToBinary(std::ostream& outStream) const;
 
-		static Vector3 FromBinary(std::istream& istream);
+		[[nodiscard]] static Vector3 FromBinary(std::istream& istream);
 
         // Equality
         bool operator==(const Vector3<ScalarT>& other) const;
