@@ -72,7 +72,7 @@ public:
 	const CurveLib::VelocityCurveContext& GetCurveContext() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool RespectCollision = false;
+	bool RespectCollision = true;
 
 	// If true, control the actor using velocity and leave the physics simulation up to Unreal.
 	// If false, control the actor using position and ignore Unreal physics.
@@ -83,9 +83,6 @@ private:
 	// Helper function to return the camera's rotation if isCameraRelative == true, or the character's
 	// rotation otherwise.
 	FRotator GetRotationToApply(bool isCameraRelative);
-
-	// Limits the actor's movement according to collision sensor results, modifying the position in place.
-	void ApplyCollision(CurveLib::VelocityCurveOutput& combinedOutput) const;
 
 	void SendVelocityToUnreal(const CurveLib::Float3& velocity, const CurveLib::Float3& angularVelocity);
 

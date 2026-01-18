@@ -44,10 +44,12 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	const auto absoluteTime = world->TimeSeconds;
 
+	// Tell CurveLib about any position change that happened due to collision or simulated physics
+	const auto position = owner->GetActorLocation();
+	CurveLib::SetPosition(mCurveContext, position.X, position.Y, position.Z);
+
 	CurveLib::TickPlayback(mCurveContext, CurveLib::Seconds(absoluteTime));
 
-	ApplyCollision(mCurveContext.mOutput);
-	
 	// The velocity curve context doesn't care which world units we use as long as we're consistent.
 	// Here we're using Unreal units (cm) directly.
 	const FVector newPosition = CurveLib::ToFVector(mCurveContext.mOutput.mPosition);
@@ -60,7 +62,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 	else
 	{
-		owner->TeleportTo(newPosition, newRotation, false, true);
+		owner->TeleportTo(newPosition, newRotation, false, !RespectCollision);
 	}
 }
 
@@ -77,10 +79,6 @@ void UVelocityCurveComponent::BeginPlay()
 	// Unreal uses Z+ up. CurveLib needs to know this so that it can mask off the
 	// correct axes when you use eAxisMode::vertical or eAxisMode::horizontal.
 	CurveLib::SetVerticalAxis(mCurveContext, Axis::Z);
-
-	// Inform the curve simulation of our spawn position
-	const auto position = owner->GetActorLocation();
-	CurveLib::SetPosition(mCurveContext, position.X, position.Y, position.Z);
 }
 
 void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
@@ -415,45 +413,6 @@ FRotator UVelocityCurveComponent::GetRotationToApply(bool isCameraRelative)
 	}
 
 	return {};
-}
-
-void UVelocityCurveComponent::ApplyCollision(CurveLib::VelocityCurveOutput& combinedOutput) const
-{
-	return;
-
-	if (!RespectCollision)
-	{
-		return;
-	}
-
-	const auto* owner = GetOwner();
-	if (!owner)
-	{
-		return;
-	}
-
-	const auto* sensorComponent = owner->GetComponentByClass<USensorComponent>();
-	if (!sensorComponent)
-	{
-		return;
-	}
-
-	if (sensorComponent->ApplyCollisionToVelocity(combinedOutput))
-	{
-		// Velocity has changed, so re-Euler integrate the position
-		combinedOutput.mPosition = mCurveContext.mPreviousPosition + combinedOutput.mVelocity * mCurveContext.mDeltaTime.count();
-		combinedOutput.mPositionDelta = combinedOutput.mPosition - mCurveContext.mPreviousPosition;
-		
-		combinedOutput.mSpeed = combinedOutput.mVelocity.GetLength();
-		if (combinedOutput.mSpeed > CurveLib::sFloatEpsilon)
-		{
-			combinedOutput.mDirection = combinedOutput.mPosition / combinedOutput.mSpeed;
-		}
-		else
-		{
-			combinedOutput.mDirection.Set(0, 0, 0);
-		}
-	}
 }
 
 void UVelocityCurveComponent::SendVelocityToUnreal(const CurveLib::Float3& velocity, const CurveLib::Float3& angularVelocity)

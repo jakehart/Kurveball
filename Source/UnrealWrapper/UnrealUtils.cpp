@@ -30,6 +30,7 @@ namespace CurveLib
 				// Since this lambda can be called later, ensure pointer is still valid
 				if (curveAsset)
 				{
+					// TODO: This is sampling, by t, not X! Fix this!
 					return curveAsset->GetFloatValue(curveX);
 				}
 
