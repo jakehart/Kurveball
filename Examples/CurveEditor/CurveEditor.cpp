@@ -14,8 +14,6 @@
 
 // Data stored per platform window
 struct WGL_WindowData { HDC hDC; };
-
-// Data
 static HGLRC            ghRC;
 static WGL_WindowData   gMainWindow;
 static int              gWidth;
@@ -25,8 +23,8 @@ static int              gHeight;
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+void DrawGUI();
 
-// Main code
 int main(int, char**)
 {
 	// Make process DPI aware and obtain main monitor scale
@@ -65,7 +63,7 @@ int main(int, char**)
 	ImGui::StyleColorsDark();
 	//ImGui::StyleColorsClassic();
 
-	// Setup scaling
+	// Set up scaling
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
 	style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
@@ -74,7 +72,7 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
-	ImVec4 clear_color = ImVec4(0.7f, 0.45f, 0.45f, 1.00f);
+	ImVec4 clear_color = ImVec4(0.1f, 0.f, 0.1f, 1.00f);
 
 	while (true)
 	{
@@ -101,45 +99,7 @@ int main(int, char**)
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		{
-			using namespace CurveLib;
-
-			using Double2 = CurveLib::Vector2<double>;
-			static const ImVec4 pointColor{ 1, 0, 0, 1 };
-			
-			static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-			auto& testPoints = testCurveSegment.AccessPoints();
-
-			ImGui::Begin("Curve Editor");
-			ImPlot::BeginPlot("CurvePlot", ImVec2(-1, 0), ImPlotFlags_NoBoxSelect);
-
-			const float SAMPLE_T_STEP = 0.01f;
-
-			std::vector<double> sampleX{};
-			std::vector<double> sampleY{};
-
-			// Sample the curve to generate some lines for ImPlot to draw
-			for (double t = testPoints.front().X; t < testPoints.back().X; t += SAMPLE_T_STEP)
-			{
-				// TODO: Implement something like CalculateY(x). For now I'm using x as t, which is not right
-				const Double2 position = testCurveSegment.CalculatePositionAtT(t);
-				sampleX.push_back(position.X);
-				sampleY.push_back(position.Y);
-			}
-
-			ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
-
-			for (size_t i = 0; i < testPoints.size(); ++i)
-			{
-				if (ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor))
-				{
-					testCurveSegment.SetPoints(testPoints);
-				}
-			}
-			
-			ImPlot::EndPlot();
-			ImGui::End();
-		}
+		DrawGUI();
 
 		// Rendering
 		ImGui::Render();
@@ -163,7 +123,6 @@ int main(int, char**)
 	return 0;
 }
 
-// Helper functions
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data)
 {
 	HDC hDc = ::GetDC(hWnd);
@@ -224,4 +183,44 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 	return ::DefWindowProcW(hWnd, msg, wParam, lParam);
+}
+
+void DrawGUI()
+{
+	using namespace CurveLib;
+
+	static const ImVec4 pointColor{ 1, 0, 0, 1 };
+
+	static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
+	auto& testPoints = testCurveSegment.AccessPoints();
+
+	ImGui::Begin("Curve Editor");
+	ImPlot::BeginPlot("CurvePlot", ImVec2(-1, 0), ImPlotFlags_NoBoxSelect);
+
+	const float SAMPLE_T_STEP = 0.01f;
+
+	std::vector<double> sampleX{};
+	std::vector<double> sampleY{};
+
+	// Sample the curve to generate some lines for ImPlot to draw
+	for (double t = testPoints.front().X; t < testPoints.back().X; t += SAMPLE_T_STEP)
+	{
+		// TODO: Implement something like CalculateY(x).
+		const Double2 position = testCurveSegment.CalculatePositionAtT(t);
+		sampleX.push_back(position.X);
+		sampleY.push_back(position.Y);
+	}
+
+	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
+
+	for (size_t i = 0; i < testPoints.size(); ++i)
+	{
+		if (ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor))
+		{
+			testCurveSegment.SetPoints(testPoints);
+		}
+	}
+
+	ImPlot::EndPlot();
+	ImGui::End();
 }

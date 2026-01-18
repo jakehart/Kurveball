@@ -49,4 +49,5 @@ namespace CurveLib
 	};
 
 	using Float2 = Vector2<float>;
+	using Double2 = Vector2<double>;
 }

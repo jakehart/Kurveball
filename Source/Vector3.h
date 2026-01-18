@@ -12,6 +12,8 @@ namespace CurveLib
     using Position = Float3;
     using EulerAngles = Float3;
 
+	using Double3 = Vector3<double>;
+
     // Duck-typed constructor that can initialize from any type that has numeric members called X, Y, and Z.
     template<typename ExternalVectorT>
     Float3 ConvertFloat3(const ExternalVectorT& otherVector);

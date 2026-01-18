@@ -2,6 +2,7 @@
 This summarizes all the features and fixes that are needed in order to release CurveLib.
 
 ## Unreal Demo
+Collision support via SetPosition  
 Climbing mechanic  
 Networked play using UE networking  
 "Create movement mechanic" menu item  
@@ -11,7 +12,7 @@ Movement line
 ## Documentation
 NAME the library  
 Explainer video  
-README.md with example code  
+README.md with example code and clip  
 
 ## Playback
 3D position sampler  
@@ -19,8 +20,8 @@ README.md with example code
 ## BezierCurveSegment: Pack-in curve implementation
 2D and 3D samplers  
 Sample Bezier by arc distance  
-Sample Bezier by x (solving for x to get t, then use t to get y)  
-Should be able to share points between adjacent segments. Either with refs, or by making an optimized 
+Sample Bezier by x (plug desired x to get t, then use t to get y)  
+Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments 
 "Polynomial coefficients" implementation? (see Freya video)  
 
 ## Networking
