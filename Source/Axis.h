@@ -3,7 +3,7 @@
 
 enum class Axis : uint8_t
 {
-	X = 0,
-	Y,
-	Z
+    X = 0,
+    Y,
+    Z
 };

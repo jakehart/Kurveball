@@ -68,8 +68,8 @@ const UVelocityCurveComponent* UVelocityCurveDebugger::GetCurveComponent() const
 
 void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const
 {
-	static FSlateBrush legendBackgroundBrush;
-	legendBackgroundBrush.DrawAs = ESlateBrushDrawType::Box;
+    static FSlateBrush legendBackgroundBrush;
+    legendBackgroundBrush.DrawAs = ESlateBrushDrawType::Box;
 
     const auto* curveComponent = GetCurveComponent();
     if (!curveComponent)

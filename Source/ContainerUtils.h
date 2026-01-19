@@ -7,8 +7,8 @@
 
 namespace CurveLib
 {
-	// Zero-copy join for two arbitrary STL containers
-	template<typename ContainerT>
+    // Zero-copy join for two arbitrary STL containers
+    template<typename ContainerT>
     auto GetJoinedContainerReferences(const ContainerT& first, const ContainerT& second)
     {
         // The type we need to store in the array is a non-owning VIEW of the container.

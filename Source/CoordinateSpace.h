@@ -1,12 +1,12 @@
-#pragma once	
+#pragma once    
 
 namespace CurveLib
 {
-	enum class CoordinateSpace : std::uint8_t
-	{
-		local = 0,
-		world,
+    enum class CoordinateSpace : std::uint8_t
+    {
+        local = 0,
+        world,
 
-		numEntries
-	};
+        numEntries
+    };
 }

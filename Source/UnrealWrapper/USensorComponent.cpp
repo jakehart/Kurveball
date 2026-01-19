@@ -20,7 +20,7 @@ void USensorComponent::BeginPlay()
         SanitizeSensorDescription(sensor);
     }
 }
-	
+    
 void USensorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     for (auto& [sensorName, sensor] : SensorDescriptions)

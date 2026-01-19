@@ -6,7 +6,7 @@
 
 namespace CurveLib
 {
-	// Takes a distance value and returns the position there. Generally
-	// a lambda that captures the curve data itself.
-	using CurveSampler3D = std::function<Float3(float)>;
+    // Takes a distance value and returns the position there. Generally
+    // a lambda that captures the curve data itself.
+    using CurveSampler3D = std::function<Float3(float)>;
 }

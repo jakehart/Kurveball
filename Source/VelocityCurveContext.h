@@ -9,31 +9,31 @@
 
 namespace CurveLib
 {
-	static constexpr size_t sNumRecordedTicks{ 4U };
-	static_assert(sNumRecordedTicks > 0U);
+    static constexpr size_t sNumRecordedTicks{ 4U };
+    static_assert(sNumRecordedTicks > 0U);
 
-	struct VelocityCurveContext
-	{
-		CurveMap mLinearCurves;
-		CurveMap mRotationCurves;
+    struct VelocityCurveContext
+    {
+        CurveMap mLinearCurves;
+        CurveMap mRotationCurves;
 
-		// Absolute time since start, as received from the user and saved by TickPlayback. (Usually excludes pause time)
-		Seconds mAbsoluteTime{ 0 };
-		
-		// Automatically updated in TickPlayback, based on the current vs. previous mAbsoluteTime.
-		Seconds mDeltaTime{ 0 };
+        // Absolute time since start, as received from the user and saved by TickPlayback. (Usually excludes pause time)
+        Seconds mAbsoluteTime{ 0 };
+        
+        // Automatically updated in TickPlayback, based on the current vs. previous mAbsoluteTime.
+        Seconds mDeltaTime{ 0 };
 
-		// The most recent output from TickPlayback().
-		VelocityCurveOutput mOutput;
-		bool mHasEverUpdated{ false };
+        // The most recent output from TickPlayback().
+        VelocityCurveOutput mOutput;
+        bool mHasEverUpdated{ false };
 
-		Float3 mPreviousPosition{};
+        Float3 mPreviousPosition{};
 
-		// These are set by CurveLib::SetVerticalAxis, and they denote which axes "survive" when
-		// applying AxisMode::horizontal or AxisMode::vertical.
-		Vector3<bool> mVerticalAxisMask{ false, true, false };
-		Vector3<bool> mHorizontalAxisMask{ true, false, true };
+        // These are set by CurveLib::SetVerticalAxis, and they denote which axes "survive" when
+        // applying AxisMode::horizontal or AxisMode::vertical.
+        Vector3<bool> mVerticalAxisMask{ false, true, false };
+        Vector3<bool> mHorizontalAxisMask{ true, false, true };
 
-		// TODO: Add optional debug recording using the CurveOutputs
-	};
+        // TODO: Add optional debug recording using the CurveOutputs
+    };
 }

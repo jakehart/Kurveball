@@ -7,7 +7,7 @@
 
 namespace CurveLib
 {
-	// Calculus integration function for a single sample of the area under the curve. 
-	// Performs Riemann, trapezoidal, or another approximation algorithm. See IntegratorFunctions.h
-	using IntegratorFunction = std::function<float(const Float2&, const Float2&)>;
+    // Calculus integration function for a single sample of the area under the curve. 
+    // Performs Riemann, trapezoidal, or another approximation algorithm. See IntegratorFunctions.h
+    using IntegratorFunction = std::function<float(const Float2&, const Float2&)>;
 }

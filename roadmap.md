@@ -36,4 +36,3 @@ Show distance travelled at each point
 
 ## Housekeeping
 Naming consistency  
-Replace \t with four spaces  

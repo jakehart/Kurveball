@@ -12,7 +12,7 @@ namespace CurveLib
     using Position = Float3;
     using EulerAngles = Float3;
 
-	using Double3 = Vector3<double>;
+    using Double3 = Vector3<double>;
 
     // Duck-typed constructor that can initialize from any type that has numeric members called X, Y, and Z.
     template<typename ExternalVectorT>
@@ -77,9 +77,9 @@ namespace CurveLib
 
         [[nodiscard]] std::string ToString() const;
         
-		void ToBinary(std::ostream& outStream) const;
+        void ToBinary(std::ostream& outStream) const;
 
-		[[nodiscard]] static Vector3 FromBinary(std::istream& istream);
+        [[nodiscard]] static Vector3 FromBinary(std::istream& istream);
 
         // Equality
         bool operator==(const Vector3<ScalarT>& other) const;

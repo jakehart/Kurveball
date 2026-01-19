@@ -8,20 +8,20 @@
 
 namespace CurveLib
 {
-	template<typename CurvePointT>
-	class BezierCurve
-	{
-	public:
-		using CurveSegment = BezierCurveSegment<CurvePointT>;
-		CurvePointT CalculatePositionAtT(float t);
+    template<typename CurvePointT>
+    class BezierCurve
+    {
+    public:
+        using CurveSegment = BezierCurveSegment<CurvePointT>;
+        CurvePointT CalculatePositionAtT(float t);
 
-		[[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
-		[[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
+        [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
+        [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
 
-	private:
-		// TODO: Knot points should not use redundant memory. Can use std::view for this
-		std::vector<CurveSegment> mSegments{};
-	};
+    private:
+        // TODO: Knot points should not use redundant memory. Can use std::view for this
+        std::vector<CurveSegment> mSegments{};
+    };
 }
 
 #include "BezierCurve.inl"

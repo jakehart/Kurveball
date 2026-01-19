@@ -4,5 +4,5 @@
 
 namespace CurveLib
 {
-	using CurveInstanceId = std::uint32_t;
+    using CurveInstanceId = std::uint32_t;
 }

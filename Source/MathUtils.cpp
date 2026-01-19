@@ -4,10 +4,10 @@
 
 namespace CurveLib
 {
-	float RestrictDegreeRange(float degrees)
-	{
-		// Avoiding a loop for speed
-		return fmodf(degrees + 1080.f, 360.f);
-	}
+    float RestrictDegreeRange(float degrees)
+    {
+        // Avoiding a loop for speed
+        return fmodf(degrees + 1080.f, 360.f);
+    }
 
 }
