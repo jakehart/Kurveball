@@ -24,7 +24,7 @@ namespace CurveLib
         ioContext.mAbsoluteTime = absoluteTime;
         
         // Default to a dead stop. If velocity curves are running, they will overwrite these values below.
-        // Note that we preserve the current position and rotation.
+        // Note that we preserve the position and rotation from the previous tick.
         ioContext.mOutput.mSpeed = 0.f;
         ioContext.mOutput.mVelocity = {};
         ioContext.mOutput.mAngularVelocity.Set(0, 0, 0);
@@ -65,11 +65,7 @@ namespace CurveLib
     float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceId curveInstanceId)
     {
         const VelocityCurveInstance* curveInstance = GetCurveInstance(context, curveInstanceId);
-        if (!curveInstance)
-        {
-            // TODO: Log
-            return 0.f;
-        }
+        CURVELIB_VERIFY_RETURN(curveInstance, 0.f);
 
         return Internal::CalculateCurveX(*curveInstance, context.mAbsoluteTime);
     }
@@ -140,11 +136,7 @@ namespace CurveLib
 
         void TickSingleCurve(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context)
         {
-            if (!ioCurveInstance.mSpeedSampler)
-            {
-                // TODO: Error log
-                return;
-            }
+            CURVELIB_VERIFY_RETURN(ioCurveInstance.mSpeedSampler);
 
             const float curvePlayheadX{ CalculateCurveX(ioCurveInstance, context.mAbsoluteTime) };
             const float sampledSpeed{ ioCurveInstance.mSpeedSampler(curvePlayheadX) * ioCurveInstance.mMechanic.mSpeedMultiplier };
@@ -161,7 +153,7 @@ namespace CurveLib
                 ApplyAccumulatorToPosition(ioCurveInstance, context);
             }
 
-            // Sanitize output
+            // Replace any output denormals with zero for performance
             ioCurveInstance.mOutput.mDirection.FloorToZero();
             ioCurveInstance.mOutput.mPositionDelta.FloorToZero();
             ioCurveInstance.mOutput.mPosition.FloorToZero();
@@ -186,6 +178,7 @@ namespace CurveLib
                 singleOutput.mDirection = ioCurveInstance.mMechanic.mDirection;
             }
 
+            // The area under the curve is the distance travelled
             const float totalDistance = ioCurveInstance.mDistanceAccumulator.GetTotalArea();
 
             const float rawSpeedSample = ioCurveInstance.mDistanceAccumulator.GetLatestSample().Y;
@@ -216,7 +209,7 @@ namespace CurveLib
             VelocityCurveOutput& singleOutput = ioCurveInstance.mOutput;
             singleOutput = {};
 
-            // Area is signed. Portions of the curve that are below zero have negative area,
+            // The area we accumulated is signed. Portions of the curve that are below zero have negative area,
             // which allows us to rotate both ways
             const float areaUnderCurve = ioCurveInstance.mDistanceAccumulator.GetTotalArea();
             // Normalize to [0, 360). Add a significant offset to get rid of overly negative angles

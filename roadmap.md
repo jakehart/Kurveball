@@ -4,19 +4,16 @@ This summarizes all the features and fixes that are needed in order to release C
 ## Unreal Demo
 Fix behavior on slopes  
 Climbing mechanic  
+Fix killplane logic  
 Networked play using UE networking  
 "Create movement mechanic" menu item  
 Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
 Movement line  
 Other genres  
 
-## Documentation
-NAME the library  
-Explainer video  
-README.md with example code and clip  
-
 ## Playback
-3D position sampler  
+Cancel on collision  
+Speed sync
 
 ## BezierCurveSegment: Pack-in curve implementation
 2D and 3D samplers  
@@ -32,7 +29,13 @@ Bug: does not support Windows display scales other than 100% -- check the event 
 Load/save functionality  
 Support for multiple segments  
 Visualize playback (e.g. using a 1D or 2D point)  
-Show distance travelled at each point  
+Show distance travelled on mouseover
+	Since this depends on the top speed of the mechanic, would it make sense for CurveEditor to be aware of MovementMechanic?
 
 ## Housekeeping
 Naming consistency  
+
+## Documentation
+NAME the library  
+Explainer video  
+README.md with example code and clip  

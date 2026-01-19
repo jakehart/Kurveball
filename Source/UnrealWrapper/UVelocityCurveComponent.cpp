@@ -46,9 +46,9 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     const auto absoluteTime = world->TimeSeconds;
 
     // Tell CurveLib about any position change that happened due to collision or simulated physics
-    const auto position = owner->GetActorLocation();
+    const FVector position = owner->GetActorLocation();
     CurveLib::SetPosition(mCurveContext, position.X, position.Y, position.Z);
-
+    
     CurveLib::TickPlayback(mCurveContext, CurveLib::Seconds(absoluteTime));
 
     // The velocity curve context doesn't care which world units we use as long as we're consistent.
@@ -80,6 +80,12 @@ void UVelocityCurveComponent::BeginPlay()
     // Unreal uses Z+ up. CurveLib needs to know this so that it can mask off the
     // correct axes when you use eAxisMode::vertical or eAxisMode::horizontal.
     CurveLib::SetVerticalAxis(mCurveContext, Axis::Z);
+
+    const FRotator rotation = owner->GetActorRotation();
+    const FVector euler = rotation.Euler();
+    CurveLib::SetRotation(mCurveContext, euler.X, euler.Y, euler.Z);
+
+    // Position is updated in TickComponent
 }
 
 void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
