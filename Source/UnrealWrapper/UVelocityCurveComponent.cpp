@@ -10,6 +10,7 @@
 
 #include <sstream>
 
+#include "CurveLibLog.h"
 #include "CurveLib/ContainerUtils.h"
 #include "CurveLib/MathUtils.h"
 #include "CurveLib/UnrealWrapper/USensorComponent.h"
@@ -85,13 +86,13 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("ERROR: StartVelocityCurve (in Blueprint) needs to have a Movement Mechanic Asset specified!"));
+		UE_LOG(CurveLibLog, Error, TEXT("ERROR: StartVelocityCurve (in Blueprint) needs to have a Movement Mechanic Asset specified!"));
 		return;
 	}
 
 	if (!mechanic->VelocityCurveAsset)
 	{
-		UE_LOG(LogTemp, Error, TEXT("ERROR: Movement Mechanic (in Content Browser) needs to have a Velocity Curve Asset specified!"));
+		UE_LOG(CurveLibLog, Error, TEXT("ERROR: Movement Mechanic (in Content Browser) needs to have a Velocity Curve Asset specified!"));
 		return;
 	}
 
@@ -118,7 +119,7 @@ void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UpdateVelocityCurve: Mechanic pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("UpdateVelocityCurve: Mechanic pin must be connected"));
 		return;
 	}
 
@@ -134,7 +135,7 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
 {
 	if (!forwardMechanic || !sideMechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("InputToVelocityCurves: Must connect forwardCurve and sideCurve pins"));
+		UE_LOG(CurveLibLog, Error, TEXT("InputToVelocityCurves: Must connect forwardCurve and sideCurve pins"));
 		return;
 	}
 
@@ -200,7 +201,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("InputAxisToVelocityCurve: Must connect mechanic pin"));
+		UE_LOG(CurveLibLog, Error, TEXT("InputAxisToVelocityCurve: Must connect mechanic pin"));
 		return;
 	}
 
@@ -225,7 +226,7 @@ void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
 		return;
 	}
 
@@ -237,7 +238,7 @@ bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) con
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("IsCurveRunning: Mechanic pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("IsCurveRunning: Mechanic pin must be connected"));
 		return false;
 	}
 
@@ -249,7 +250,7 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
 {
 	if (!splineComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AttachSpline: SplineComponent pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("AttachSpline: SplineComponent pin must be connected"));
 		return;
 	}
 
@@ -258,7 +259,7 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
 
 	if (!curveInstance)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Velocity curve not found"));
+		UE_LOG(CurveLibLog, Error, TEXT("Velocity curve not found"));
 		return;
 	}
 
@@ -269,7 +270,7 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
 {
 	if (!splineComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("StretchSpline: SplineComponent pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("StretchSpline: SplineComponent pin must be connected"));
 		return;
 	}
 	//splineComponent->ApplyComponentInstanceData(FSplineComponentInstanceData
@@ -292,7 +293,7 @@ void UVelocityCurveComponent::ShowCurveDebugger(bool show)
 		UWorld* world = GetWorld();
 		if (!world)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Cannot create UVelocityCurveDebugger: World is null."));
+			UE_LOG(CurveLibLog, Error, TEXT("Cannot create UVelocityCurveDebugger: World is null."));
 			return;
 		}
 
@@ -311,7 +312,7 @@ void UVelocityCurveComponent::ShowCurveDebugger(bool show)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("UVelocityCurveDebugger could not be created."));
+			UE_LOG(CurveLibLog, Error, TEXT("UVelocityCurveDebugger could not be created."));
 		}
 	}
 	else
@@ -327,7 +328,7 @@ FString UVelocityCurveComponent::GetCurveOutputAsDebugString(const UCurveMechani
 {
 	if (!mechanic)
 	{
-		UE_LOG(LogTemp, Error, TEXT("GetCurveOutputAsDebugString: Mechanic pin must be connected"));
+		UE_LOG(CurveLibLog, Error, TEXT("GetCurveOutputAsDebugString: Mechanic pin must be connected"));
 		return "GetCurveOutputAsDebugString: Mechanic pin must be connected";
 	}
 
@@ -426,7 +427,7 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const CurveLib::Float3& veloc
 	auto* primitiveComponent = owner->GetComponentByClass<UPrimitiveComponent>();
 	if (!primitiveComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Primitive component not found. Either disable VelocityCurveComponent::OutputVelocity or enable SimulatePhysics on your actor's root component"));
+		UE_LOG(CurveLibLog, Error, TEXT("Primitive component not found. Either disable VelocityCurveComponent::OutputVelocity or enable SimulatePhysics on your actor's root component"));
 		return;
 	}
 

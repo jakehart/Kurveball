@@ -1,5 +1,6 @@
 #include "UnrealUtils.h"
 #include "CurveLib/Vector3.h"
+#include "CurveLibLog.h"
 
 #include <Components/SplineComponent.h>
 
@@ -21,7 +22,7 @@ namespace CurveLib
 		
 		if (!curveAsset)
 		{
-			UE_LOG(LogTemp, Error, TEXT("CreateSamplerXY received null curveAsset"));
+			UE_LOG(CurveLibLog, Error, TEXT("CreateSamplerXY received null curveAsset"));
 			return NULL_SAMPLER;
 		}
 
@@ -34,7 +35,7 @@ namespace CurveLib
 					return curveAsset->GetFloatValue(curveX);
 				}
 
-				UE_LOG(LogTemp, Warning, TEXT("CreateSamplerXY sampling from curve that became null"));
+				UE_LOG(CurveLibLog, Warning, TEXT("CreateSamplerXY sampling from curve that became null"));
 				return 0.f;
 			};
 	}
@@ -45,7 +46,7 @@ namespace CurveLib
 
 		if (!splineComponent)
 		{
-			UE_LOG(LogTemp, Error, TEXT("CreateSplineSampler received null spline"));
+			UE_LOG(CurveLibLog, Error, TEXT("CreateSplineSampler received null spline"));
 			return NULL_SAMPLER;
 		}
 
@@ -59,7 +60,7 @@ namespace CurveLib
 					return CurveLib::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z);
 				}
 
-				UE_LOG(LogTemp, Warning, TEXT("CreateSplineSampler sampling from spline that became null"));
+				UE_LOG(CurveLibLog, Warning, TEXT("CreateSplineSampler sampling from spline that became null"));
 				return CurveLib::Float3(0, 0, 0);
 			};
 	}

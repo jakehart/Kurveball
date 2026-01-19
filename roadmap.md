@@ -7,7 +7,7 @@ Networked play using UE networking
 "Create movement mechanic" menu item  
 Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
 Movement line  
-Proper log category  
+Other genres  
 
 ## Documentation
 NAME the library  
@@ -22,7 +22,6 @@ README.md with example code and clip
 Sample Bezier by arc distance  
 Sample Bezier by x (plug desired x to get t, then use t to get y)  
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments 
-"Polynomial coefficients" implementation? (see Freya video)  
 
 ## Networking
 Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)  
