@@ -2,6 +2,7 @@
 This summarizes all the features and fixes that are needed in order to release CurveLib.
 
 ## Unreal Demo
+Fix behavior on slopes  
 Climbing mechanic  
 Networked play using UE networking  
 "Create movement mechanic" menu item  

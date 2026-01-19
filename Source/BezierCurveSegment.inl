@@ -30,6 +30,14 @@ namespace CurveLib
 	}
 
 	template<typename CurvePointT>
+	BezierCurveSegment<CurvePointT>::ScalarType BezierCurveSegment<CurvePointT>::GetStartX() const
+	{
+		CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
+
+		return mPoints[0].X;
+	}
+
+	template<typename CurvePointT>
 	CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(ScalarType t) const
 	{
 		const auto influences = CalculatePointInfluences(t);

@@ -87,6 +87,14 @@ namespace CurveLib
 	}
 
 	template<typename ScalarT>
+	bool Vector3<ScalarT>::Equals(ScalarType x, ScalarType y, ScalarType z, ScalarT tolerance)
+	{
+		return std::abs(X - x) < tolerance &&
+			std::abs(Y - y) < tolerance &&
+			std::abs(Z - z) < tolerance;
+	}
+
+	template<typename ScalarT>
 	float Vector3<ScalarT>::Dot(const Vector3<ScalarT> otherVector)
 	{
 		return X * otherVector.X + Y * otherVector.Y + Z * otherVector.Z;

@@ -19,7 +19,7 @@ namespace CurveLib
 		[[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
 
 	private:
-		// TODO: Knot points should not use redundant memory
+		// TODO: Knot points should not use redundant memory. Can use std::view for this
 		std::vector<CurveSegment> mSegments{};
 	};
 }

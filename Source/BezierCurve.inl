@@ -7,24 +7,25 @@ namespace CurveLib
 	template<typename CurvePointT>
 	CurvePointT BezierCurve<CurvePointT>::CalculatePositionAtT(float t)
 	{
-		// The whole part determines which segment to sample, and the fractional part determines where
-		// within that curve to sample.
-		const float megaT = t * mSegments.size();
+		// Binary search to find the Bezier segment that includes the desired t.
+		const auto segmentIter = std::lower_bound(mSegments.begin(), mSegments.end(), t, [](const CurveSegment& curveSegment, float searchT)
+			{
+				return curveSegment.GetStartX() < searchT;
+			});
 
-		// Truncate to get the whole part
-		const size_t segmentIndex = static_cast<size_t>(megaT);
-		CURVELIB_VERIFY_RETURN(segmentIndex < mSegments.size(), {});
+		if (segmentIter == mSegments.end())
+		{
+			// t is before the beginning of the curve
+			return 0.f;
+		}
 
-		// Fractional part
-		const float tWithinCurve = fmodf(megaT, 1.f);
-
-		return mSegments.at(segmentIndex).CalculatePositionAtT(tWithinCurve);
+		return segmentIter->CalculatePositionAtT(t);
 	}
 
 	template<typename CurvePointT>
 	CurveSamplerXY CurveLib::BezierCurve<CurvePointT>::CreateCurveSamplerXY() const
 	{
-		return [&curve](float) -> float
+		return [this](float) -> float
 			{
 				// TODO: need to be able to sample by x
 				return -999;
@@ -34,7 +35,7 @@ namespace CurveLib
 	template<typename CurvePointT>
 	CurveSampler3D CurveLib::BezierCurve<CurvePointT>::CreateCurveSampler3D() const
 	{
-		return [&curve](float) -> float
+		return [this](float) -> float
 			{
 				// TODO: need to be able to sample by arc distance
 				return {};

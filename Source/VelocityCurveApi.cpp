@@ -209,11 +209,13 @@ namespace CurveLib
 
 	void SetPosition(VelocityCurveContext& ioCurveContext, float x, float y, float z)
 	{
-		// Set velocity to zero so we are stationary at the new position
-		ioCurveContext.mOutput.mVelocity.Set(0, 0, 0);
-
-		ioCurveContext.mOutput.mPosition.Set(x, y, z);
+		if (ioCurveContext.mOutput.mPosition.Equals(x, y, z))
+		{
+			return;
+		}
+		
 		ioCurveContext.mPreviousPosition = ioCurveContext.mOutput.mPosition;
+		ioCurveContext.mOutput.mPosition.Set(x, y, z);
 	}
 
 	void SetRotation(VelocityCurveContext& ioCurveContext, float x, float y, float z)
