@@ -2,9 +2,9 @@
 #include "implot.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_win32.h"
-#define WIN32_LEAN_AND_MEAN
 // Prevent windows.h from colliding/interfering with std::numeric_limits::max()
 #define NOMINMAX
+#include <fstream>
 #include <windows.h>
 #include <GL/gl.h>
 
@@ -24,6 +24,11 @@ bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 void DrawGUI();
+
+// TODO: Encapsulate these globals properly in application state
+static CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
+static CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
+static CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
 
 int main(int, char**)
 {
@@ -185,6 +190,56 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 }
 
+// Blocking function to open a Windows save dialog and save a curve as a .cvb binary file.
+void DrawSaveDialog()
+{
+	OPENFILENAME ofn;
+
+	char szFileName[MAX_PATH] = "";
+
+	ZeroMemory(&ofn, sizeof(ofn));
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+	ofn.lpstrFile = (LPSTR)szFileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.lpstrDefExt = (LPCSTR)"cvb";
+
+	BOOL isOK = GetSaveFileName(&ofn);
+	if (isOK)
+	{
+		std::ofstream fileOut(ofn.lpstrFile);
+		defaultCurve.ToBinary(fileOut);
+		fileOut.close();
+	}
+}
+
+void DrawOpenDialog()
+{
+	OPENFILENAME ofn;
+
+	char szFileName[MAX_PATH] = "";
+
+	ZeroMemory(&ofn, sizeof(ofn));
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+	ofn.lpstrFile = (LPSTR)szFileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.lpstrDefExt = (LPCSTR)"cvb";
+
+	BOOL isOK = GetOpenFileName(&ofn);
+	if (isOK)
+	{
+		std::ifstream fileIn(ofn.lpstrFile);
+		defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
+		fileIn.close();
+	}
+}
 
 void DrawGUI()
 {
@@ -192,12 +247,20 @@ void DrawGUI()
 
 	static const ImVec4 pointColor{ 1, 0, 0, 1 };
 
-	static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-	static BezierCurveSegment<Double2> testCurveSegment2(std::vector<Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
-	static BezierCurve<Double2> testCurve({ testCurveSegment, testCurveSegment2 });
-
 	ImGui::Begin("Curve Editor");
-	ImPlot::BeginPlot("CurvePlot", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect);
+	
+	if (ImGui::Button("Save"))
+	{
+		DrawSaveDialog();
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button("Open"))
+	{
+		DrawOpenDialog();
+	}
+
+	ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect);
 
 	const float SAMPLE_T_STEP = 0.01f;
 	const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
@@ -208,31 +271,36 @@ void DrawGUI()
 	// Sample the curve to generate some lines for ImPlot to draw
 	for (double t = 0; t < 2; t += SAMPLE_T_STEP)
 	{
-		// TODO: Implement something like CalculateY(x).
-		const Double2 position = testCurve.CalculatePositionAtT(t);
+		const Double2 position = defaultCurve.CalculatePositionAtT(t);
 		sampleX.push_back(position.X);
 		sampleY.push_back(position.Y);
 	}
+
+	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
 	// Render from lookup table
 	/*for (size_t i = 0; i < numSamples; ++i)
 	{
 		const double xCoord = i * SAMPLE_X_STEP;
 		sampleX.push_back(xCoord);
-		sampleY.push_back((double)testCurve.CalculatePositionAtXCoordinate(xCoord).Y);
+		sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
 	}*/
 
-	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
-
 	int pointID = 0;
-	auto& segments = testCurve.AccessSegments();
+	auto& segments = defaultCurve.AccessSegments();
 	for (auto& segment : segments)
 	{
 		auto& points = segment.AccessPoints();
-		for (size_t i = 0; i < points.size(); ++i)
+		for (auto & point : points)
 		{
-			ImPlot::DragPoint(pointID++, &points[i].X, &points[i].Y, pointColor);
+			ImPlot::DragPoint(pointID++, &point.X, &point.Y, pointColor);
 		}
+
+		// Tangent line
+		std::vector<double> tangentXs{ points.front().X, points.back().X };
+		std::vector<double> tangentYs{ points.front().Y, points.back().Y };
+		
+		ImPlot::PlotLine("Tangents", tangentXs.data(), tangentYs.data(), 2);
 	}
 
 	ImPlot::EndPlot();

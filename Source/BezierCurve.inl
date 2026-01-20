@@ -26,6 +26,39 @@ namespace CurveLib
         return mSegments;
     }
 
+	template<typename PositionT>
+	void BezierCurve<PositionT>::ToBinary(std::ostream& outStream) const
+	{
+		const size_t numSegments = mSegments.size();
+		outStream.write((const char*)&numSegments, sizeof(size_t));
+
+		for (const auto segment : mSegments)
+		{
+			segment.ToBinary(outStream);
+		}
+
+		outStream.flush();
+	}
+
+	template<typename PositionT>
+    BezierCurve<PositionT> BezierCurve<PositionT>::FromBinary(std::istream& inStream)
+	{
+		size_t numSegments = 0U;
+        inStream.read((char*)&numSegments, sizeof(size_t));
+
+		CURVELIB_VERIFY_RETURN(numSegments > 0, {});
+
+        std::vector<BezierCurveSegment<PositionT>> segments{};
+        segments.reserve(numSegments);
+
+		for (size_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)
+		{
+			segments.push_back(BezierCurveSegment<PositionT>::FromBinary(inStream));
+		}
+
+        return BezierCurve(segments);
+	}
+
     template<typename PositionT>
     PositionT BezierCurve<PositionT>::CalculatePositionAtT(ScalarType t) const
     {

@@ -104,6 +104,8 @@ namespace CurveLib
         CURVELIB_VERIFY_RETURN(numPoints > 0, {});
 
         PointVector points;
+        points.reserve(numPoints);
+
         for (size_t i = 0; i < numPoints; ++i)
         {
             points.push_back(PositionT::FromBinary(istream));

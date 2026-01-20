@@ -4,6 +4,7 @@
 #include "BezierCurveSegment.h"
 #include "CurveSampler.h"
 #include "CurveSampler3D.h"
+#include <ostream>
 #include <vector>
 
 namespace CurveLib
@@ -21,8 +22,11 @@ namespace CurveLib
         const auto& GetSegments() const;
         auto& AccessSegments();
 
-        PositionT CalculatePositionAtT(ScalarType t) const;
-        PositionT CalculatePositionAtXCoordinate(ScalarType x) const;
+		void ToBinary(std::ostream& outStream) const;
+		[[nodiscard]] static BezierCurve FromBinary(std::istream& istream);
+
+        [[nodiscard]] PositionT CalculatePositionAtT(ScalarType t) const;
+        [[nodiscard]] PositionT CalculatePositionAtXCoordinate(ScalarType x) const;
 
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
         [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
