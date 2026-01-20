@@ -21,8 +21,8 @@ namespace CurveLib
         const auto& GetSegments() const;
         auto& AccessSegments();
 
-        PositionT CalculatePositionAtT(float t);
-        PositionT CalculatePositionAtXCoordinate(float x);
+        PositionT CalculatePositionAtT(ScalarType t) const;
+        PositionT CalculatePositionAtXCoordinate(ScalarType x) const;
 
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
         [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;

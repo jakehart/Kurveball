@@ -27,11 +27,11 @@ namespace CurveLib
     }
 
     template<typename PositionT>
-    PositionT BezierCurve<PositionT>::CalculatePositionAtT(float t)
+    PositionT BezierCurve<PositionT>::CalculatePositionAtT(ScalarType t) const
     {
         // Regardless of the characteristics of each segment, its t always has a range of 1.
         // For example, the first segment has t=[0, 1], the second has t=[1, 2], etc.
-        const size_t segmentIndex = std::floor(t);
+        const size_t segmentIndex = (size_t)std::floor(t);
         if (segmentIndex >= mSegments.size())
         {
             // This t is outside the curve
@@ -41,8 +41,8 @@ namespace CurveLib
         return mSegments.at(segmentIndex).CalculatePositionAtT(t - segmentIndex);
     }
 
-	template<typename PositionT>
-    PositionT CurveLib::BezierCurve<PositionT>::CalculatePositionAtXCoordinate(float x)
+    template<typename PositionT>
+    PositionT CurveLib::BezierCurve<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
     {
         const auto segmentIter = std::lower_bound(mSegments.begin(), mSegments.end(), x,
                                                   [](const BezierCurveSegment<PositionT>& segment, ScalarType findX)
@@ -60,10 +60,9 @@ namespace CurveLib
     template<typename PositionT>
     CurveSamplerXY CurveLib::BezierCurve<PositionT>::CreateCurveSamplerXY() const
     {
-        return [this](float) -> float
+        return [this](ScalarType x) -> ScalarType
             {
-                // TODO: need to be able to sample by x
-                return -999;
+                return CalculatePositionAtXCoordinate(x);
             };
     }
 

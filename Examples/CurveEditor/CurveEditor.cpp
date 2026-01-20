@@ -200,7 +200,7 @@ void DrawGUI()
 	ImPlot::BeginPlot("CurvePlot", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect);
 
 	const float SAMPLE_T_STEP = 0.01f;
-	const size_t numSamples = std::floor(2.f / SAMPLE_T_STEP);
+	const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
 
 	std::vector<double> sampleX{};
 	std::vector<double> sampleY{};
@@ -214,6 +214,7 @@ void DrawGUI()
 		sampleY.push_back(position.Y);
 	}
 
+	// Render from lookup table
 	/*for (size_t i = 0; i < numSamples; ++i)
 	{
 		const double xCoord = i * SAMPLE_X_STEP;
