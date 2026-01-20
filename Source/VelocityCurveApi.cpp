@@ -72,7 +72,13 @@ namespace CurveLib
 
         if (direction.has_value())
         {
-            curveInstance->mMechanic.mDirection = *direction;
+            Float3 sanitizedDirection = *direction;
+            if (sanitizedDirection.GetLengthSquared() > 1)
+            {
+                sanitizedDirection.NormalizeInPlace();
+            }
+
+            curveInstance->mMechanic.mDirection = sanitizedDirection;
         }
     }
 
@@ -183,7 +189,7 @@ namespace CurveLib
         {
             ioCurveInstance.mMechanic.mDirection.Set(1, 0, 0);
         }
-        else
+        else if(ioCurveInstance.mMechanic.mDirection.GetLengthSquared() > 1)
         {
             ioCurveInstance.mMechanic.mDirection.NormalizeInPlace();
         }
