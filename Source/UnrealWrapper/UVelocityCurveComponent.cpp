@@ -57,11 +57,11 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // Rotation always uses degrees
     const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.X, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.Y);
     
-    if (OutputVelocity)
+    /*if (OutputVelocity)
     {
         SendVelocityToUnreal(mCurveContext.mOutput.mVelocity, mCurveContext.mOutput.mAngularVelocity);
     }
-    else
+    else*/
     {
         owner->TeleportTo(newPosition, newRotation, false, !RespectCollision);
     }
@@ -119,6 +119,23 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
     
     curveInstance.mSpeedSampler = CurveLib::CreateSamplerXY(mechanic->VelocityCurveAsset);
     CurveLib::StartVelocityCurve(mCurveContext, curveInstance);
+}
+
+void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
+{
+    if (!mechanic)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
+        return;
+    }
+
+    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    CurveLib::StopVelocityCurve(mCurveContext, curveInstanceId);
+}
+
+void UVelocityCurveComponent::StopAllVelocityCurves()
+{
+    CurveLib::StopAllVelocityCurves(mCurveContext);
 }
 
 void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction)
@@ -226,18 +243,6 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
         mechanic->GetCurveId(),
         inputAxis * mechanic->SpeedMultiplier,
         CurveLib::Float3(1, 0, 0));
-}
-
-void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
-{
-    if (!mechanic)
-    {
-        UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
-        return;
-    }
-
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::StopVelocityCurve(mCurveContext, curveInstanceId);
 }
 
 bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) const

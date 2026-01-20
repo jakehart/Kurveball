@@ -14,7 +14,7 @@
 
 #include "UCurveMechanic.generated.h"
 
-// Wraps CurveLib::VelocityCurveDescription in a way that Unreal can understand, adding
+// Wraps CurveLib::CurveMechanic in a way that Unreal can understand, adding
 // the ability for users to create them as Unreal DataAssets or in DataTables right there
 // in their Content pane. This makes it easier to modularly load and unload movement
 // mechanics.

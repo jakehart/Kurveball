@@ -26,7 +26,7 @@ namespace CurveLib
         // total distance travelled and is used to calculate the current position).
         AreaAccumulator mDistanceAccumulator {};
         
-        // Given a time (x), returns a speed value (y).
+        // Given an x coordinate, returns a speed value (y).
         CurveSamplerXY mSpeedSampler;
         
         // Given some distance travelled, returns a position. This exists so that we can use a velocity curve
@@ -58,10 +58,7 @@ namespace CurveLib
 
     inline std::ostream& operator<<(std::ostream& os, const VelocityCurveInstance& instance)
     {
-        // Call object's string method
         os << instance.ToString();
-
-        // Return stream
         return os;
     }
 }

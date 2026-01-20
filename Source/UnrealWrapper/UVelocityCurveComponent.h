@@ -30,6 +30,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StartVelocityCurve(const UCurveMechanic* curve);
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void StopVelocityCurve(const UCurveMechanic* mechanic);
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void StopAllVelocityCurves();
+
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction);
     // Sends an input axis into two velocity curves, using camera-relative or character-relative ("tank") controls depending on isCameraRelative.
     // forwardMechanic and sideMechanic can be anything, but forwardSpace is usually a local-space forward-facing mechanic, and sideMechanic is
@@ -40,8 +45,7 @@ public:
     // Sends a single input axis into a single velocity curve, starting or stopping the curve as needed.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void InputAxisToVelocityCurve(const UCurveMechanic* mechanic, float inputAxis);
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
-    void StopVelocityCurve(const UCurveMechanic* mechanic);
+
     // Returns true if the actor is running the specific mechanic given.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     bool IsCurveRunning(const UCurveMechanic* mechanic) const;
@@ -64,19 +68,19 @@ public:
     FVector GetVelocity();
 
     // Returns the angular velocity around each axis in degrees per second.
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FVector GetAngularVelocity();
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void ShowCurveDebugger(bool show = true);
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetCurveOutputAsDebugString(const UCurveMechanic* mechanic) const;
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetFinalOutputAsDebugString() const;
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetRunningCurvesAsDebugString() const;
 
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     int32 CurveNameToInstanceId(const FString& curveName) const;
 
     CurveLib::VelocityCurveContext& AccessCurveContext();
