@@ -2,7 +2,6 @@
 #pragma once
 
 #include <functional>
-#include <map>
 #include "UnitTypes.h"
 
 namespace CurveLib
@@ -10,9 +9,17 @@ namespace CurveLib
     // Restricts a degree measure to [0, 360).
     float RestrictDegreeRange(float degrees);
 
+	template <typename T>
+	T Clamp(const T& v, const T& lo, const T& hi)
+	{
+		return std::max(lo, std::min(v, hi));
+	}
+
     template<typename ScalarT>
     ScalarT Lerp(ScalarT first, ScalarT second, ScalarT lerpT)
     {
+        lerpT = Clamp(lerpT, (ScalarT)0, (ScalarT)1);
+
         return first * (1 - lerpT) + second * lerpT;
     }
 
@@ -20,7 +27,7 @@ namespace CurveLib
     VectorT Lerp2D(const VectorT& first, const VectorT& second, ScalarT lerpT)
     {
         return VectorT(Lerp(first.X, second.X, lerpT),
-                        Lerp(first.Y, second.Y, lerpT));
+                       Lerp(first.Y, second.Y, lerpT));
     }
 
     template<typename VectorT, typename ScalarT>

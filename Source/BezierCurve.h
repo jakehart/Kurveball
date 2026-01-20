@@ -8,12 +8,21 @@
 
 namespace CurveLib
 {
-    template<typename CurvePointT>
+    template<typename PositionT>
     class BezierCurve
     {
     public:
-        using CurveSegment = BezierCurveSegment<CurvePointT>;
-        CurvePointT CalculatePositionAtT(float t);
+        using CurveSegment = BezierCurveSegment<PositionT>;
+        using ScalarType = PositionT::ScalarType;
+
+        BezierCurve() = default;
+        BezierCurve(std::vector<CurveSegment> segments);
+
+        const auto& GetSegments() const;
+        auto& AccessSegments();
+
+        PositionT CalculatePositionAtT(float t);
+        PositionT CalculatePositionAtXCoordinate(float x);
 
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
         [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;

@@ -6,5 +6,5 @@
 
 namespace CurveLib
 {
-    using CurveMap = std::map<CurveInstanceId, VelocityCurveInstance>;
+    using CurveMap = std::unordered_map<CurveInstanceId, VelocityCurveInstance>;
 }

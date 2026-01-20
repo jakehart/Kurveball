@@ -185,6 +185,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 }
 
+
 void DrawGUI()
 {
 	using namespace CurveLib;
@@ -192,32 +193,44 @@ void DrawGUI()
 	static const ImVec4 pointColor{ 1, 0, 0, 1 };
 
 	static BezierCurveSegment<Double2> testCurveSegment(std::vector<Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-	auto& testPoints = testCurveSegment.AccessPoints();
+	static BezierCurveSegment<Double2> testCurveSegment2(std::vector<Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
+	static BezierCurve<Double2> testCurve({ testCurveSegment, testCurveSegment2 });
 
 	ImGui::Begin("Curve Editor");
-	ImPlot::BeginPlot("CurvePlot", ImVec2(-1, 0), ImPlotFlags_NoBoxSelect);
+	ImPlot::BeginPlot("CurvePlot", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect);
 
 	const float SAMPLE_T_STEP = 0.01f;
+	const size_t numSamples = std::floor(2.f / SAMPLE_T_STEP);
 
 	std::vector<double> sampleX{};
 	std::vector<double> sampleY{};
 
 	// Sample the curve to generate some lines for ImPlot to draw
-	for (double t = testPoints.front().X; t < testPoints.back().X; t += SAMPLE_T_STEP)
+	for (double t = 0; t < 2; t += SAMPLE_T_STEP)
 	{
 		// TODO: Implement something like CalculateY(x).
-		const Double2 position = testCurveSegment.CalculatePositionAtT(t);
+		const Double2 position = testCurve.CalculatePositionAtT(t);
 		sampleX.push_back(position.X);
 		sampleY.push_back(position.Y);
 	}
 
+	/*for (size_t i = 0; i < numSamples; ++i)
+	{
+		const double xCoord = i * SAMPLE_X_STEP;
+		sampleX.push_back(xCoord);
+		sampleY.push_back((double)testCurve.CalculatePositionAtXCoordinate(xCoord).Y);
+	}*/
+
 	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
-	for (size_t i = 0; i < testPoints.size(); ++i)
+	int pointID = 0;
+	auto& segments = testCurve.AccessSegments();
+	for (auto& segment : segments)
 	{
-		if (ImPlot::DragPoint((int)i, &testPoints[i].X, &testPoints[i].Y, pointColor))
+		auto& points = segment.AccessPoints();
+		for (size_t i = 0; i < points.size(); ++i)
 		{
-			testCurveSegment.SetPoints(testPoints);
+			ImPlot::DragPoint(pointID++, &points[i].X, &points[i].Y, pointColor);
 		}
 	}
 

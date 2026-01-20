@@ -1,49 +1,58 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
-#include "MathUtils.h"
 #include "Asserts.h"
+#include "LookupTable.h"
+#include "MathUtils.h"
 
 namespace CurveLib
 {
-    template<typename CurvePointT>
-    BezierCurveSegment<CurvePointT>::BezierCurveSegment(const BezierCurveSegment::PointVector& points)
+    template<typename PositionT>
+    BezierCurveSegment<PositionT>::BezierCurveSegment(const BezierCurveSegment::PointVector& points)
     {
         // TODO: Complain if SetPoints fails
         SetPoints(points);
     }
 
-    template<typename CurvePointT>
-    void BezierCurveSegment<CurvePointT>::SetPoints(const PointVector& points)
+    template<typename PositionT>
+    void BezierCurveSegment<PositionT>::SetPoints(const PointVector& points)
     {
         mPoints = points;
     }
 
-    template<typename CurvePointT>
-    const std::vector<CurvePointT>& BezierCurveSegment<CurvePointT>::GetPoints() const
+    template<typename PositionT>
+    const std::vector<PositionT>& BezierCurveSegment<PositionT>::GetPoints() const
     {
         return mPoints;
     }
 
-    template<typename CurvePointT>
-    std::vector<CurvePointT>& BezierCurveSegment<CurvePointT>::AccessPoints() 
+    template<typename PositionT>
+    std::vector<PositionT>& BezierCurveSegment<PositionT>::AccessPoints() 
     {
         return mPoints;
     }
 
-    template<typename CurvePointT>
-    BezierCurveSegment<CurvePointT>::ScalarType BezierCurveSegment<CurvePointT>::GetStartX() const
+    template<typename PositionT>
+    BezierCurveSegment<PositionT>::ScalarType BezierCurveSegment<PositionT>::GetStartX() const
     {
         CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
 
-        return mPoints[0].X;
+        return mPoints.front().X;
     }
 
-    template<typename CurvePointT>
-    CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtT(ScalarType t) const
+	template<typename PositionT>
+    BezierCurveSegment<PositionT>::ScalarType BezierCurveSegment<PositionT>::GetEndX() const
+    {
+		CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
+
+        return mPoints.back().X;
+	}
+
+    template<typename PositionT>
+    PositionT BezierCurveSegment<PositionT>::CalculatePositionAtT(ScalarType t) const
     {
         const auto influences = CalculatePointInfluences(t);
         CURVELIB_VERIFY_RETURN(influences.size() == mPoints.size(), {});
 
-        CurvePointT finalPoint;
+        PositionT finalPoint;
         for(size_t i = 0; i < mPoints.size(); ++i)
         {
             finalPoint = finalPoint + mPoints[i] * influences[i];
@@ -51,15 +60,29 @@ namespace CurveLib
         return finalPoint;
     }
 
-    template<typename CurvePointT>
-    CurvePointT BezierCurveSegment<CurvePointT>::CalculatePositionAtDistance(ScalarType distance) const
+    template<typename PositionT>
+    PositionT BezierCurveSegment<PositionT>::CalculatePositionAtDistance(ScalarType distance) const
     {
-        // TODO
+        // TODO : use arc distance calculation
         return {};
     }
 
-    template<typename CurvePointT>
-    void BezierCurveSegment<CurvePointT>::ToBinary(std::ostream& outStream) const
+	template<typename PositionT>
+	PositionT BezierCurveSegment<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
+    {
+        if (!mLookupTable)
+        {
+            GenerateXTLookupTable();
+        }
+
+        CURVELIB_VERIFY_RETURN(mLookupTable, {});
+
+        const ScalarType t = mLookupTable->CalculateValue(x);
+        return CalculatePositionAtT(t);
+    }
+
+    template<typename PositionT>
+    void BezierCurveSegment<PositionT>::ToBinary(std::ostream& outStream) const
     {
         const size_t numPoints = mPoints.size();
         outStream.write((const char*) &numPoints, sizeof(size_t));
@@ -72,8 +95,8 @@ namespace CurveLib
         outStream.flush();
     }
 
-    template<typename CurvePointT>
-    BezierCurveSegment<CurvePointT> BezierCurveSegment<CurvePointT>::FromBinary(std::istream& istream)
+    template<typename PositionT>
+    BezierCurveSegment<PositionT> BezierCurveSegment<PositionT>::FromBinary(std::istream& istream)
     {
         size_t numPoints = 0U;
         istream.read((char*)&numPoints, sizeof(size_t));
@@ -83,14 +106,50 @@ namespace CurveLib
         PointVector points;
         for (size_t i = 0; i < numPoints; ++i)
         {
-            points.push_back(CurvePointT::FromBinary(istream));
+            points.push_back(PositionT::FromBinary(istream));
         }
 
         return BezierCurveSegment(points);
     }
 
-    template<typename CurvePointT>
-    BezierCurveSegment<CurvePointT>::PointInfluenceVector BezierCurveSegment<CurvePointT>::CalculatePointInfluences(ScalarType t) const
+	template<typename PositionT>
+	bool BezierCurveSegment<PositionT>::HasXTLookupTable() const
+    {
+        return mLookupTable.has_value();
+    }
+
+	template<typename PositionT>
+	void BezierCurveSegment<PositionT>::GenerateXTLookupTable() const
+    {
+        mLookupTable = LookupTable<ScalarType>(LOOKUP_TABLE_SAMPLE_RATE);
+
+        for (uint32_t sampleNum = 0; sampleNum < LOOKUP_TABLE_SAMPLE_RATE; ++sampleNum)
+        {
+            const ScalarType t = (ScalarType)sampleNum / LOOKUP_TABLE_SAMPLE_RATE;
+            const PositionT position = CalculatePositionAtT(t);
+            
+            assert(t >= 0 && t <= 1);
+            assert(position.X >= mPoints.front().X && position.X <= mPoints.back().X);
+
+            mLookupTable->AddSample(FloorToZero(position.X), FloorToZero(t));
+        }
+    }
+
+	template<typename PositionT>
+    bool BezierCurveSegment<PositionT>::IncludesXCoordinate(ScalarType x) const
+    {
+        if (!HasXTLookupTable())
+        {
+            GenerateXTLookupTable();
+        }
+
+		CURVELIB_VERIFY_RETURN(mLookupTable, {});
+
+        return x >= mLookupTable->GetMinX() && x <= mLookupTable->GetMaxX();
+    }
+
+    template<typename PositionT>
+    BezierCurveSegment<PositionT>::PointInfluenceVector BezierCurveSegment<PositionT>::CalculatePointInfluences(ScalarType t) const
     {
         const size_t numPoints = mPoints.size();
         CURVELIB_VERIFY_RETURN(numPoints > 0, {});
@@ -105,7 +164,7 @@ namespace CurveLib
             return { 1 };
         case 2: // Same as lerp
             return { 1 - t,
-                    t };
+                     t };
         case 3:
             return { 1 - (2 * t) + (t * t),
                     (2 * t) - (2 * t * t),

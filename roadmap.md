@@ -20,6 +20,7 @@ Speed sync
 Sample Bezier by arc distance  
 Sample Bezier by x (plug desired x to get t, then use t to get y)  
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments 
+Point reordering
 
 ## Networking
 Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)  
@@ -34,6 +35,7 @@ Show distance travelled on mouseover
 
 ## Housekeeping
 Naming consistency  
+clang compilation check  
 
 ## Documentation
 NAME the library  
