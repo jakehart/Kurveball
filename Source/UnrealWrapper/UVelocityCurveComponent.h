@@ -42,8 +42,12 @@ public:
     void InputAxisToVelocityCurve(const UCurveMechanic* mechanic, float inputAxis);
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopVelocityCurve(const UCurveMechanic* mechanic);
-    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    // Returns true if the actor is running the specific mechanic given.
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     bool IsCurveRunning(const UCurveMechanic* mechanic) const;
+    // Returns true if this actor is running any velocity curve.
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
+    bool IsAnyCurveRunning(bool includeLinear = true, bool includeRotational = true) const;
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent);
@@ -55,6 +59,13 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void SetLocation(FVector location);
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
+    FVector GetVelocity();
+
+    // Returns the angular velocity around each axis in degrees per second.
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    FVector GetAngularVelocity();
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void ShowCurveDebugger(bool show = true);

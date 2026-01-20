@@ -8,11 +8,10 @@ Networked play using UE networking
 "Create movement mechanic" menu item  
 Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
 Movement line  
-Other genres  
 
 ## Playback
-Cancel on collision -- since the curve sim doesn't know directly about collisions, this would need to be in the wrapper layer  
-Speed sync
+Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, this would need to be in the wrapper layer  
+Speed sync  
 
 ## BezierCurveSegment: Pack-in curve implementation
 Sample Bezier by arc distance  
@@ -38,3 +37,4 @@ clang compilation check
 NAME the library  
 Explainer video  
 README.md with example code and clip  
+Tooltips on everything in Unreal

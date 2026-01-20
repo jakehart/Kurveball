@@ -117,14 +117,24 @@ namespace CurveLib
     }
 
 
-    bool IsCurveRunning(const VelocityCurveContext& ioContext, CurveInstanceId instanceId)
+    bool IsCurveRunning(const VelocityCurveContext& context, CurveInstanceId instanceId)
     {
-        return ioContext.mLinearCurves.contains(instanceId) || ioContext.mRotationCurves.contains(instanceId);
+        return context.mLinearCurves.contains(instanceId) || context.mRotationCurves.contains(instanceId);
     }
 
-    void AddSpline()
+    bool IsAnyCurveRunning(const VelocityCurveContext& ioContext, bool includeLinear, bool includeRotational)
     {
-        // TODO
+        if (includeLinear && !ioContext.mLinearCurves.empty())
+        {
+            return true;
+        }
+
+        if (includeRotational && !ioContext.mRotationCurves.empty())
+        {
+            return true;
+        }
+
+        return false;
     }
 
     const VelocityCurveInstance* GetCurveInstance(const VelocityCurveContext& context, CurveInstanceId instanceId)

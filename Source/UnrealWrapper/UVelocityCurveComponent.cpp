@@ -252,6 +252,11 @@ bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) con
     return CurveLib::IsCurveRunning(mCurveContext, curveInstanceId);
 }
 
+bool UVelocityCurveComponent::IsAnyCurveRunning(bool includeLinear, bool includeRotational) const
+{
+    return CurveLib::IsAnyCurveRunning(mCurveContext, includeLinear, includeRotational);
+}
+
 void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent)
 {
     if (!splineComponent)
@@ -289,6 +294,16 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
 void UVelocityCurveComponent::SetLocation(FVector location)
 {
     CurveLib::SetPosition(mCurveContext, location.X, location.Y, location.Z);
+}
+
+FVector UVelocityCurveComponent::GetVelocity()
+{
+    return ToFVector(mCurveContext.mOutput.mVelocity);
+}
+
+FVector UVelocityCurveComponent::GetAngularVelocity()
+{
+    return ToFVector(mCurveContext.mOutput.mAngularVelocity);
 }
 
 void UVelocityCurveComponent::ShowCurveDebugger(bool show)

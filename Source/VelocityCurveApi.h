@@ -31,9 +31,8 @@ namespace CurveLib
     // absoluteTime is forgotten, EVERYthing.
     void ResetContext(VelocityCurveContext& ioContext);
 
-    bool IsCurveRunning(const VelocityCurveContext& ioContext, CurveInstanceId instanceId);
-
-    void AddSpline();
+    bool IsCurveRunning(const VelocityCurveContext& context, CurveInstanceId instanceId);
+    bool IsAnyCurveRunning(const VelocityCurveContext& ioContext, bool includeLinear = true, bool includeRotational = true);
 
     const VelocityCurveInstance* GetCurveInstance(const VelocityCurveContext& context, CurveInstanceId instanceId);
     VelocityCurveInstance* AccessCurveInstance(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
