@@ -25,7 +25,7 @@ namespace CurveLib
     
     // Stops looping the curve, seeks to its mLoopEnd, plays the outro of the curve, and
     // allows it to end naturally.
-    void SeekToLoopEndpoint(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
+    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
 
     // This clears everything back to the startup state. All curve instances are forgotten,
     // absoluteTime is forgotten, EVERYthing.

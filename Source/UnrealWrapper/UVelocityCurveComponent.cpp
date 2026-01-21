@@ -133,6 +133,18 @@ void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
     CurveLib::StopVelocityCurve(mCurveContext, curveInstanceId);
 }
 
+void UVelocityCurveComponent::SoftStopVelocityCurve(const UCurveMechanic* mechanic)
+{
+    if (!mechanic)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
+        return;
+    }
+
+    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    CurveLib::SoftStopVelocityCurve(mCurveContext, curveInstanceId);
+}
+
 void UVelocityCurveComponent::StopAllVelocityCurves()
 {
     CurveLib::StopAllVelocityCurves(mCurveContext);
@@ -191,7 +203,7 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
 
     if (CurveLib::IsZero(localInputDir.Y))
     {
-        CurveLib::SeekToLoopEndpoint(mCurveContext, forwardCurveId);
+        CurveLib::SoftStopVelocityCurve(mCurveContext, forwardCurveId);
     }
     else if (!CurveLib::IsCurveRunning(mCurveContext, forwardCurveId))
     {
@@ -201,7 +213,7 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
 
     if (CurveLib::IsZero(localInputDir.X))
     {
-        CurveLib::SeekToLoopEndpoint(mCurveContext, sideCurveId);
+        CurveLib::SoftStopVelocityCurve(mCurveContext, sideCurveId);
     }
     else if (!CurveLib::IsCurveRunning(mCurveContext, sideCurveId))
     {
@@ -231,18 +243,21 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, mechanic->GetCurveId());
     if (CurveLib::IsZero(inputAxis) && playheadPosition < mechanic->LoopEndX)
     {
-        CurveLib::SeekToLoopEndpoint(mCurveContext, mechanic->GetCurveId());
+        CurveLib::SoftStopVelocityCurve(mCurveContext, mechanic->GetCurveId());
     }
-    else if (!CurveLib::IsCurveRunning(mCurveContext, mechanic->GetCurveId()))
+    else
     {
-        // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
-        StartVelocityCurve(mechanic);
-    }
+        if (!CurveLib::IsCurveRunning(mCurveContext, mechanic->GetCurveId()))
+        {
+            // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
+            StartVelocityCurve(mechanic);
+        }
 
-    CurveLib::UpdateVelocityCurve(mCurveContext,
-        mechanic->GetCurveId(),
-        inputAxis * mechanic->SpeedMultiplier,
-        CurveLib::Float3(1, 0, 0));
+        CurveLib::UpdateVelocityCurve(mCurveContext,
+            mechanic->GetCurveId(),
+            inputAxis * mechanic->SpeedMultiplier,
+            CurveLib::Float3(1, 0, 0));
+    }
 }
 
 bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) const

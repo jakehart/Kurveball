@@ -31,6 +31,9 @@ public:
     void StartVelocityCurve(const UCurveMechanic* curve);
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopVelocityCurve(const UCurveMechanic* mechanic);
+    // Seeks to the loop endpoint of the curve and lets it play to the end.
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void SoftStopVelocityCurve(const UCurveMechanic* mechanic);
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopAllVelocityCurves();
 

@@ -102,12 +102,19 @@ namespace CurveLib
         }
     }
     
-    void SeekToLoopEndpoint(VelocityCurveContext& ioContext, CurveInstanceId instanceId)
+    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
         if (!curveInstance)
         {
             // TODO: log
+            return;
+        }
+
+        if (curveInstance->mMechanic.mLoopStartX == curveInstance->mMechanic.mLoopEndX == 0.f)
+        {
+            // This curve has no loop points, so just stop it immediately
+            StopVelocityCurve(ioContext, instanceId);
             return;
         }
 
