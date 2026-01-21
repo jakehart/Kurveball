@@ -80,6 +80,7 @@ namespace CurveLib
         const auto segmentIter = std::lower_bound(mSegments.begin(), mSegments.end(), x,
                                                   [](const BezierCurveSegment<PositionT>& segment, ScalarType findX)
                                                   {
+                                                      return segment.IncludesXCoordinate(findX);
                                                   });
 
         if (segmentIter == mSegments.end())

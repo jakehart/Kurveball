@@ -260,6 +260,22 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }
 }
 
+float UVelocityCurveComponent::GetMechanicSpeed(const UCurveMechanic* mechanic) const
+{
+    if (!mechanic)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("GetMechanicSpeed: Must connect mechanic pin"));
+        return;
+    }
+    
+    return CurveLib::GetMechanicSpeed(mCurveContext, mechanic->GetCurveId());
+}
+
+float UVelocityCurveComponent::GetTotalSpeed() const
+{
+    return CurveLib::GetTotalSpeed(mCurveContext);
+}
+
 bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) const
 {
     if (!mechanic)

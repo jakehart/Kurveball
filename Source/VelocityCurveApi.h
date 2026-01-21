@@ -27,6 +27,9 @@ namespace CurveLib
     // allows it to end naturally.
     void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
 
+    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId);
+    float GetTotalSpeed(const VelocityCurveContext& context);
+
     // This clears everything back to the startup state. All curve instances are forgotten,
     // absoluteTime is forgotten, EVERYthing.
     void ResetContext(VelocityCurveContext& ioContext);

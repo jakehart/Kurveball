@@ -49,6 +49,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void InputAxisToVelocityCurve(const UCurveMechanic* mechanic, float inputAxis);
 
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
+    float GetMechanicSpeed(const UCurveMechanic* mechanic) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
+    float GetTotalSpeed() const;
+
     // Returns true if the actor is running the specific mechanic given.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     bool IsCurveRunning(const UCurveMechanic* mechanic) const;

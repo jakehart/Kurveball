@@ -277,15 +277,20 @@ void DrawGUI()
 	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
 	// Render from lookup table
-	/*for (size_t i = 0; i < numSamples; ++i)
+	/*sampleX.clear(); sampleY.clear();
+	for (size_t i = 0; i < numSamples; ++i)
 	{
-		const double xCoord = i * SAMPLE_X_STEP;
+		const double xCoord = i * 0.01;
 		sampleX.push_back(xCoord);
 		sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
-	}*/
+	}
+	ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());*/
 
 	int pointID = 0;
 	auto& segments = defaultCurve.AccessSegments();
+	std::vector<double> tangentXs{};
+	std::vector<double> tangentYs{};
+
 	for (auto& segment : segments)
 	{
 		auto& points = segment.AccessPoints();
@@ -295,8 +300,8 @@ void DrawGUI()
 		}
 
 		// Tangent lines
-		std::vector<double> tangentXs{ points[0].X, points[1].X };
-		std::vector<double> tangentYs{ points[0].Y, points[1].Y };
+		tangentXs = { points[0].X, points[1].X };
+		tangentYs = { points[0].Y, points[1].Y };
 		ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
 		
 		const Double2& secondToLastPoint = points.at(points.size() - 2);

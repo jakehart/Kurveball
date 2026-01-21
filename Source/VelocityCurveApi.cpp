@@ -111,17 +111,35 @@ namespace CurveLib
             return;
         }
 
-        if (curveInstance->mMechanic.mLoopStartX == curveInstance->mMechanic.mLoopEndX == 0.f)
+        if (curveInstance->mMechanic.mLoopStartX == 0.f &&
+            curveInstance->mMechanic.mLoopEndX == 0.f)
         {
             // This curve has no loop points, so just stop it immediately
             StopVelocityCurve(ioContext, instanceId);
             return;
         }
 
+        // Prevent further looping
         curveInstance->mMechanic.mPlayCount = 1;
         
         // "Backdate" the curve so that the playhead is at the loop end position
-        curveInstance->mMechanic.mStartTime = Seconds(curveInstance->mMechanic.mLoopEndX * curveInstance->mMechanic.mStretchDuration / curveInstance->mMechanic.mRawAssetDuration);
+        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveInstance->mMechanic.mLoopEndX * curveInstance->mMechanic.mStretchDuration / curveInstance->mMechanic.mRawAssetDuration);
+    }
+
+    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    {
+        const auto* curveInstance = GetCurveInstance(context, instanceId);
+        if (!curveInstance)
+        {
+            return 0.f;
+        }
+        
+        return curveInstance->mOutput.mSpeed;
+    }
+
+    float GetTotalSpeed(const VelocityCurveContext& context)
+    {
+        return context.mOutput.mSpeed;
     }
 
     void ResetContext(VelocityCurveContext& ioContext)

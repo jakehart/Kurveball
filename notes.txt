@@ -1,3 +1,10 @@
+input: when the curve playhead is in the outro, and the input mag is >0, seek to whatever part of the INTRO of the curve matches our current speed
+
+
+some way to drive the x of velocity curves from variables other than time. like pass in a ref and let the value change and the curve will automatically follow and output speed. I mean, the XY sampler could be any function...
+
+
+
 optional "cancel on collision" functionality
 	if there was a collision, and the dot between the direction to the collision point and the direction the curve is going, cancel the curve
 BUT how will i handle restitution from the engine sim? OR do i want to just do restitution myself based on a curve from the user?
