@@ -1,8 +1,8 @@
 optional "cancel on collision" functionality
 	if there was a collision, and the dot between the direction to the collision point and the direction the curve is going, cancel the curve
 BUT how will i handle restitution from the engine sim? OR do i want to just do restitution myself based on a curve from the user?
-
 hub world in demo?
+
 abstract art style
 
 need to be able to check stick intent -- have a function that checks against a target to see if the world input vector is pointed toward that target or not (within some degree measure)
@@ -25,7 +25,7 @@ how to save a struct as data: right click content browser, "data asset," select 
 
 
 
-fix camera-relative controls
+check/fix camera-relative controls
 
 
 sensors in motion space??
@@ -36,12 +36,8 @@ or just always in direction of motion
 	bool IsRelativeToMotion = false;
 
 ======== QoL ideas ========
-simple action to start 2x basic movement curves
-	this fills the info gap in UpdateVelocityCurves
 inherit from unreal curve editor and make it 0-1 default and have tag/loop point support etc.
 
-whenever basic movement changes, need to "bake distance to position" (zeroing distance and remembering current position as mStartPosition).
-can use that handy unreal action input thing to do it.
 
 
 

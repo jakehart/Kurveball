@@ -64,14 +64,12 @@ int main(int, char**)
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
-	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
 
 	// Set up scaling
 	ImGuiStyle& style = ImGui::GetStyle();
-	style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
-	style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
+	style.ScaleAllSizes(main_scale);
+	style.FontScaleDpi = main_scale;
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
@@ -296,11 +294,16 @@ void DrawGUI()
 			ImPlot::DragPoint(pointID++, &point.X, &point.Y, pointColor);
 		}
 
-		// Tangent line
-		std::vector<double> tangentXs{ points.front().X, points.back().X };
-		std::vector<double> tangentYs{ points.front().Y, points.back().Y };
+		// Tangent lines
+		std::vector<double> tangentXs{ points[0].X, points[1].X };
+		std::vector<double> tangentYs{ points[0].Y, points[1].Y };
+		ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
 		
-		ImPlot::PlotLine("Tangents", tangentXs.data(), tangentYs.data(), 2);
+		const Double2& secondToLastPoint = points.at(points.size() - 2);
+		const Double2& lastPoint = points.at(points.size() - 1);
+		tangentXs = { secondToLastPoint.X, lastPoint.X };
+		tangentYs = { secondToLastPoint.Y, lastPoint.Y };
+		ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
 	}
 
 	ImPlot::EndPlot();
