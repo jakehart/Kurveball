@@ -55,7 +55,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // Here we're using Unreal units (cm) directly.
     const FVector newPosition = CurveLib::ToFVector(mCurveContext.mOutput.mPosition);
     // Rotation always uses degrees
-    const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.X, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.Y);
+    const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.Y, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.X);
     
     /*if (OutputVelocity)
     {

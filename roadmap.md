@@ -32,7 +32,6 @@ Integration - Show area under curve and distance travelled at each x on mouseove
 
 ## Housekeeping
 Naming consistency  
-clang compilation check  
 pretty printing
 
 ## Documentation
