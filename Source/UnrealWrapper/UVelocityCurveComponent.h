@@ -37,6 +37,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopAllVelocityCurves();
 
+    // Seeks the velocity curve playhead to a specific coordinate on the curve asset.
+    void SeekToX(const UCurveMechanic& mechanic, float curveXCoordinate);
+
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction);
     // Sends an input axis into two velocity curves, using camera-relative or character-relative ("tank") controls depending on isCameraRelative.

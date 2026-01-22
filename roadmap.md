@@ -32,6 +32,7 @@ Show area under curve and distance travelled at each x on mouseover
 ## Housekeeping
 Naming consistency  
 clang compilation check  
+pretty printing
 
 ## Documentation
 NAME the library  

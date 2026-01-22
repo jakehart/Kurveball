@@ -21,6 +21,8 @@ namespace CurveLib
 
         const auto& GetSegments() const;
         auto& AccessSegments();
+        void AddSegment(const CurveSegment& segment);
+        void AddSegment(CurveSegment&& segment);
 
 		void ToBinary(std::ostream& outStream) const;
 		[[nodiscard]] static BezierCurve FromBinary(std::istream& istream);

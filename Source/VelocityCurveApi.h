@@ -27,6 +27,8 @@ namespace CurveLib
     // allows it to end naturally.
     void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
 
+    void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate);
+
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId);
     float GetTotalSpeed(const VelocityCurveContext& context);
 

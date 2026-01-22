@@ -122,8 +122,21 @@ namespace CurveLib
         // Prevent further looping
         curveInstance->mMechanic.mPlayCount = 1;
         
-        // "Backdate" the curve so that the playhead is at the loop end position
-        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveInstance->mMechanic.mLoopEndX * curveInstance->mMechanic.mStretchDuration / curveInstance->mMechanic.mRawAssetDuration);
+        // Let the outro play
+        SeekToX(ioContext, instanceId, curveInstance->mMechanic.mLoopEndX);
+    }
+
+    void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate)
+    {
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
+        if (!curveInstance)
+        {
+            // TODO: Complain
+            return;
+        }
+
+        // "Backdate" the curve so that the playhead is at the desired X
+        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * curveInstance->mMechanic.mStretchDuration / curveInstance->mMechanic.mRawAssetDuration);
     }
 
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)

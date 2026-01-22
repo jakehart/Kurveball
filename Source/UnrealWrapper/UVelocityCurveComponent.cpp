@@ -150,6 +150,11 @@ void UVelocityCurveComponent::StopAllVelocityCurves()
     CurveLib::StopAllVelocityCurves(mCurveContext);
 }
 
+void UVelocityCurveComponent::SeekToX(const UCurveMechanic& mechanic, float curveXCoordinate)
+{
+    CurveLib::SeekToX(mCurveContext, mechanic.GetCurveId(), curveXCoordinate);
+}
+
 void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction)
 {
     if (!mechanic)
@@ -240,21 +245,30 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
         return;
     }
 
-    const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, mechanic->GetCurveId());
+    const CurveLib::CurveInstanceId curveID = mechanic->GetCurveId();
+
+    const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, curveID);
     if (CurveLib::IsZero(inputAxis) && playheadPosition < mechanic->LoopEndX)
     {
-        CurveLib::SoftStopVelocityCurve(mCurveContext, mechanic->GetCurveId());
+        // Player released the controls, so seek to the outro of the curve
+        CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
     }
+    /*else if (!CurveLib::IsZero(inputAxis) && playheadPosition > mechanic->LoopEndX + CurveLib::sFloatMinDenormal)
+    {
+        // Player started moving the controls again while the curve is winding down.
+        // Seek to the beginning
+        CurveLib::SeekToX(mCurveContext, curveID, 0.f);
+    }*/
     else
     {
-        if (!CurveLib::IsCurveRunning(mCurveContext, mechanic->GetCurveId()))
+        if (!CurveLib::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
             StartVelocityCurve(mechanic);
         }
 
         CurveLib::UpdateVelocityCurve(mCurveContext,
-            mechanic->GetCurveId(),
+            curveID,
             inputAxis * mechanic->SpeedMultiplier,
             CurveLib::Float3(1, 0, 0));
     }
@@ -265,7 +279,7 @@ float UVelocityCurveComponent::GetMechanicSpeed(const UCurveMechanic* mechanic) 
     if (!mechanic)
     {
         UE_LOG(CurveLibLog, Error, TEXT("GetMechanicSpeed: Must connect mechanic pin"));
-        return;
+        return 0.f;
     }
     
     return CurveLib::GetMechanicSpeed(mCurveContext, mechanic->GetCurveId());

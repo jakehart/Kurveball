@@ -27,6 +27,18 @@ namespace CurveLib
     }
 
 	template<typename PositionT>
+	void BezierCurve<PositionT>::AddSegment(const CurveSegment& segment)
+    {
+        mSegments.push_back(segment);
+    }
+
+	template<typename PositionT>
+    void BezierCurve<PositionT>::AddSegment(CurveSegment&& segment)
+    {
+		mSegments.push_back(segment);
+    }
+
+	template<typename PositionT>
 	void BezierCurve<PositionT>::ToBinary(std::ostream& outStream) const
 	{
 		const size_t numSegments = mSegments.size();
