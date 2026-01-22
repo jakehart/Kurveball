@@ -136,14 +136,14 @@ namespace CurveLib
         }
 
         // Convert from stretched playtime back to raw curve asset coordinates
-        float conversionFactor = 1.f;
+        float timeConversionFactor = 1.f;
         if (curveInstance->mMechanic.mStretchDuration.count() > CurveLib::sFloatEpsilon)
         {
-            conversionFactor = curveInstance->mMechanic.mRawAssetDuration / curveInstance->mMechanic.mStretchDuration;
+            timeConversionFactor = curveInstance->mMechanic.mRawAssetDuration / curveInstance->mMechanic.mStretchDuration;
         }
 
         // "Backdate" the curve so that the playhead is at the desired X
-        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * conversionFactor);
+        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * timeConversionFactor);
     }
 
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)

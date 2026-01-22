@@ -240,11 +240,14 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     const CurveLib::CurveInstanceId curveID = mechanic->GetCurveId();
 
     const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, curveID);
+    
     if (CurveLib::IsZero(inputAxis))
     {
-        if (playheadPosition < mechanic->LoopEndX)
+        // If there is no loop endpoint, or the playhead is past the loop point...
+        if (CurveLib::IsZero(mechanic->LoopEndX) ||
+            playheadPosition < mechanic->LoopEndX)
         {
-            // Player released the controls, so seek to the outro of the curve
+            // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
             CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
         }
     }
