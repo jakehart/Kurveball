@@ -3,14 +3,15 @@ This summarizes all the features and fixes that are needed in order to release C
 
 ## Unreal Demo
 Fix behavior on slopes  
-Climbing mechanic  
+Fix grapple  
+Stretch spline to height and destination  
 Networked play using UE networking  
 "Create movement mechanic" menu item  
 Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
-Movement line  
+Movement line/subway map  
 
 ## Playback
-Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, this would need to be in the wrapper layer  
+Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function
 Speed sync  
 
 ## BezierCurveSegment: Pack-in curve implementation

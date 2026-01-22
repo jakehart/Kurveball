@@ -245,7 +245,10 @@ void DrawGUI()
 
 	static const ImVec4 pointColor{ 1, 0, 0, 1 };
 
-	ImGui::Begin("Curve Editor");
+	if (!ImGui::Begin("Curve Editor"))
+	{
+		return;
+	}
 	
 	if (ImGui::Button("Save"))
 	{
