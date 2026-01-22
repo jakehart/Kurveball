@@ -7,11 +7,10 @@ Fix grapple
 Stretch spline to height and destination  
 Networked play using UE networking  
 "Create movement mechanic" menu item  
-Move demo to Examples folder (while somehow maintaining ability to see CurveLib -- .lib may be needed here?)  
 Movement line/subway map  
 
 ## Playback
-Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function
+Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function  
 Speed sync  
 
 ## BezierCurveSegment: Pack-in curve implementation

@@ -244,6 +244,9 @@ void DrawGUI()
 	using namespace CurveLib;
 
 	static const ImVec4 pointColor{ 1, 0, 0, 1 };
+	static const ImVec2 sMaxWindowSize{ CurveLib::sFloatMax, CurveLib::sFloatMax };
+
+	ImGui::SetNextWindowSizeConstraints(ImVec2(800, 600), sMaxWindowSize);
 
 	if (!ImGui::Begin("Curve Editor"))
 	{
@@ -261,59 +264,61 @@ void DrawGUI()
 		DrawOpenDialog();
 	}
 
-	ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect);
-
-	const float SAMPLE_T_STEP = 0.01f;
-
-	std::vector<double> sampleX{};
-	std::vector<double> sampleY{};
-
-	// Sample the curve to generate some lines for ImPlot to draw
-	for (double t = 0; t < 2; t += SAMPLE_T_STEP)
+	if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
 	{
-		const Double2 position = defaultCurve.CalculatePositionAtT(t);
-		sampleX.push_back(position.X);
-		sampleY.push_back(position.Y);
-	}
+		const float SAMPLE_T_STEP = 0.01f;
 
-	ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
+		std::vector<double> sampleX{};
+		std::vector<double> sampleY{};
 
-	// Render from lookup table
-	/*sampleX.clear(); sampleY.clear();
-	const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
-	for (size_t i = 0; i < numSamples; ++i)
-	{
-		const double xCoord = i * 0.01;
-		sampleX.push_back(xCoord);
-		sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
-	}
-	ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());*/
-
-	int pointID = 0;
-	auto& segments = defaultCurve.AccessSegments();
-	std::vector<double> tangentXs{};
-	std::vector<double> tangentYs{};
-
-	for (auto& segment : segments)
-	{
-		auto& points = segment.AccessPoints();
-		for (auto & point : points)
+		// Sample the curve to generate some lines for ImPlot to draw
+		for (double t = 0; t < 2; t += SAMPLE_T_STEP)
 		{
-			ImPlot::DragPoint(pointID++, &point.X, &point.Y, pointColor);
+			const Double2 position = defaultCurve.CalculatePositionAtT(t);
+			sampleX.push_back(position.X);
+			sampleY.push_back(position.Y);
 		}
 
-		// Tangent lines
-		tangentXs = { points[0].X, points[1].X };
-		tangentYs = { points[0].Y, points[1].Y };
-		ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
-		
-		const Double2& secondToLastPoint = points.at(points.size() - 2);
-		const Double2& lastPoint = points.at(points.size() - 1);
-		tangentXs = { secondToLastPoint.X, lastPoint.X };
-		tangentYs = { secondToLastPoint.Y, lastPoint.Y };
-		ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
+		ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
+
+		// Render from lookup table
+		/*sampleX.clear(); sampleY.clear();
+		const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
+		for (size_t i = 0; i < numSamples; ++i)
+		{
+			const double xCoord = i * 0.01;
+			sampleX.push_back(xCoord);
+			sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
+		}
+		ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());*/
+
+		int pointID = 0;
+		auto& segments = defaultCurve.AccessSegments();
+		std::vector<double> tangentXs{};
+		std::vector<double> tangentYs{};
+
+		for (auto& segment : segments)
+		{
+			auto& points = segment.AccessPoints();
+			for (auto& point : points)
+			{
+				ImPlot::DragPoint(pointID++, &point.X, &point.Y, pointColor);
+			}
+
+			// Tangent lines
+			tangentXs = { points[0].X, points[1].X };
+			tangentYs = { points[0].Y, points[1].Y };
+			ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
+
+			const Double2& secondToLastPoint = points.at(points.size() - 2);
+			const Double2& lastPoint = points.at(points.size() - 1);
+			tangentXs = { secondToLastPoint.X, lastPoint.X };
+			tangentYs = { secondToLastPoint.Y, lastPoint.Y };
+			ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
+		}
+
+		ImPlot::EndPlot();
 	}
 
-	ImPlot::EndPlot();
 	ImGui::End();
 }
