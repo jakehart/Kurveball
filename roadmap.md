@@ -24,9 +24,9 @@ Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)
 
 ## Curve Editor
 Bug: does not support Windows display scales other than 100% -- check the event to see if there's scale info in it  
-Load/save buttons  
+Load/save buttons broken?  
 Visualize playback (e.g. using a 1D or 2D point)  
-Show area under curve and distance travelled at each x on mouseover
+Integration - Show area under curve and distance travelled at each x on mouseover
 	Since the latter depends on the top speed of the mechanic, would it make sense for CurveEditor to be aware of MovementMechanic?
 
 ## Housekeeping
@@ -38,4 +38,3 @@ pretty printing
 NAME the library  
 Explainer video  
 README.md with example code and clip  
-Tooltips on everything in Unreal

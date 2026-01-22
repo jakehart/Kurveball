@@ -25,15 +25,19 @@ public:
     UVelocityCurveComponent();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    // Blueprint-exposed wrappers for VelocityCurveContext functions, using mCurveContext.
-    // Blueprint only supports int32 and uint8.
+    // Starts a curve-driven movement mechanic on this actor. The x axis is time, and the y axis
+    // is speed, with many customizable parameters to loop, stretch, and otherwise control the curve.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StartVelocityCurve(const UCurveMechanic* curve);
+    // Stops a specific curve mechanic that is running on this actor.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopVelocityCurve(const UCurveMechanic* mechanic);
-    // Seeks to the loop endpoint of the curve and lets it play to the end.
+    // Seeks to the loop endpoint of the curve (as defined by mLoopEnd in UCurveMechanic) and lets
+    // the curve play out to the end. In other words, it plays the "outro" of the curve, which is
+    // usually the deceleration portion.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void SoftStopVelocityCurve(const UCurveMechanic* mechanic);
+    // Stops all curve mechanics that this actor is running.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopAllVelocityCurves();
 
@@ -76,28 +80,33 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void SetLocation(FVector location);
 
+    // Returns the actor's current velocity, as given by the combined output of the velocity curves that are running.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FVector GetVelocity();
 
-    // Returns the angular velocity around each axis in degrees per second.
+    // Returns the angular velocity around each axis in degrees per second, which is output from the rotation curves.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FVector GetAngularVelocity();
 
+    // Shows a simple on-screen graph listing each curve and its speed over time for debugging purposes.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void ShowCurveDebugger(bool show = true);
+    // Returns an individual mechanic's output from this frame as a debug string for logging.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetCurveOutputAsDebugString(const UCurveMechanic* mechanic) const;
+    // Returns the total velocity curve output from this frame as a debug string for logging.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetFinalOutputAsDebugString() const;
+    // Returns a list of all of the velocity curves that are running on this actor for debugging.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FString GetRunningCurvesAsDebugString() const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     int32 CurveNameToInstanceId(const FString& curveName) const;
 
-    CurveLib::VelocityCurveContext& AccessCurveContext();
     const CurveLib::VelocityCurveContext& GetCurveContext() const;
 
+    // If true, collision stops this actor. If false, the actor can clip through collision.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool RespectCollision = true;
 
@@ -107,6 +116,8 @@ public:
     bool OutputVelocity = true;
 
 private:
+    CurveLib::VelocityCurveContext& AccessCurveContext();
+
     // Helper function to return the camera's rotation if isCameraRelative == true, or the character's
     // rotation otherwise.
     FRotator GetRotationToApply(bool isCameraRelative);

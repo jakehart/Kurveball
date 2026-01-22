@@ -257,8 +257,6 @@ namespace CurveLib
 
         ioCurveInstance.mOutput = {.mPosition = ioCurveInstance.mMechanic.mStartPosition};
         ioCurveInstance.mHistory.Clear();
-
-        // TODO: assert if no mSpeedSampler
     }
 
     void SetPosition(VelocityCurveContext& ioCurveContext, float x, float y, float z)
