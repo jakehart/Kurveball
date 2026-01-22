@@ -240,12 +240,15 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     const CurveLib::CurveInstanceId curveID = mechanic->GetCurveId();
 
     const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, curveID);
-    if (CurveLib::IsZero(inputAxis) && playheadPosition < mechanic->LoopEndX)
+    if (CurveLib::IsZero(inputAxis))
     {
-        // Player released the controls, so seek to the outro of the curve
-        CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
+        if (playheadPosition < mechanic->LoopEndX)
+        {
+            // Player released the controls, so seek to the outro of the curve
+            CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
+        }
     }
-    /*else if (!CurveLib::IsZero(inputAxis) && playheadPosition > mechanic->LoopEndX + CurveLib::sFloatMinDenormal)
+    /*else if (playheadPosition > mechanic->LoopEndX + CurveLib::sFloatMinDenormal)
     {
         // Player started moving the controls again while the curve is winding down.
         // Seek to the beginning
@@ -253,6 +256,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }*/
     else
     {
+        // Zero input
         if (!CurveLib::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler

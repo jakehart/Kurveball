@@ -111,19 +111,19 @@ namespace CurveLib
             return;
         }
 
-        if (curveInstance->mMechanic.mLoopStartX == 0.f &&
-            curveInstance->mMechanic.mLoopEndX == 0.f)
+        if (IsZero(curveInstance->mMechanic.mLoopStartX) &&
+            IsZero(curveInstance->mMechanic.mLoopEndX))
         {
-            // This curve has no loop points, so just stop it immediately
+            // This curve has no outro to play, so just stop it immediately
             StopVelocityCurve(ioContext, instanceId);
             return;
         }
 
         // Prevent further looping
         curveInstance->mMechanic.mPlayCount = 1;
-        
-        // Let the outro play
-        SeekToX(ioContext, instanceId, curveInstance->mMechanic.mLoopEndX);
+
+		// Let the outro play
+		SeekToX(ioContext, instanceId, curveInstance->mMechanic.mLoopEndX);
     }
 
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate)
@@ -135,8 +135,15 @@ namespace CurveLib
             return;
         }
 
+        // Convert from stretched playtime back to raw curve asset coordinates
+        float conversionFactor = 1.f;
+        if (curveInstance->mMechanic.mStretchDuration.count() > CurveLib::sFloatEpsilon)
+        {
+            conversionFactor = curveInstance->mMechanic.mRawAssetDuration / curveInstance->mMechanic.mStretchDuration;
+        }
+
         // "Backdate" the curve so that the playhead is at the desired X
-        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * curveInstance->mMechanic.mStretchDuration / curveInstance->mMechanic.mRawAssetDuration);
+        curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * conversionFactor);
     }
 
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)
