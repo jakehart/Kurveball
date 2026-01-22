@@ -1,6 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #pragma once
 #include <string>
+#include "UnitTypes.h"
 
 namespace CurveLib
 {

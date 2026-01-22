@@ -235,6 +235,10 @@ namespace CurveLib
                 singleOutput.mRotation.Y = accumulatedRotationDegrees;
                 singleOutput.mRotationDelta.Y = rotationDeltaDegrees;
                 break;
+            default:
+                // Applying a non-rotation curve as rotation!
+                assert(false);
+                break;
             }
         }
 
