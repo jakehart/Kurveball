@@ -179,20 +179,37 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
         return;
     }
 
+    if (!isCameraRelative)
+    {
+        // Character-relative "tank" controls. No need for anything fancy; just pass the
+        // input axes through
+        InputAxisToVelocityCurve(forwardMechanic, inputAxes.Y);
+        InputAxisToVelocityCurve(sideMechanic, inputAxes.X);
+        return;
+    }
+
+    const auto* owner = GetOwner();
+    if (!owner)
+    {
+        return;
+    }
+
     const CurveLib::CurveInstanceId forwardCurveId = forwardMechanic->GetCurveId();
     const CurveLib::CurveInstanceId sideCurveId = sideMechanic->GetCurveId();
+
+    const bool isVertical = forwardMechanic->AxisMode == EAxisMode::vertical;
 
     // Convert from 2D to 3D local-space (still in Unreal coordinate system, with Z up).
     // For vertical velocity curves, map the input to a vertically oriented plane. For
     // all other modes, map input to the horizontal plane
-    FVector localInputDir;
-    if (forwardMechanic->AxisMode == EAxisMode::vertical)
+    FVector localInputDir{};
+    if (isVertical)
     {
-        localInputDir.Set(0, inputAxes.X, -inputAxes.Y);
+        localInputDir.Set(0, inputAxes.Y, inputAxes.X);
     }
     else
     {
-        localInputDir.Set(inputAxes.X, inputAxes.Y, 0);
+        localInputDir.Set(-inputAxes.Y, inputAxes.X, 0);
     }
 
     // Unreal input axes are -1 to 1, which is already what we want
@@ -200,41 +217,16 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
     // Preserve vector lengths below 1 to allow for slow analog movement, but disallow length above 1
     localInputDir = localInputDir.GetClampedToMaxSize(1.0);
 
-    FRotator referenceRotation = GetRotationToApply(isCameraRelative);
-    
-    // Interpret the input vector as being local to the reference rotation, and transform it into
-    // worldspace.
-    const FVector worldInputDir = referenceRotation.GetInverse().RotateVector(localInputDir);
+    const FRotator cameraRotation = GetCameraRotation();
 
-    if (CurveLib::IsZero(localInputDir.Y))
-    {
-        CurveLib::SoftStopVelocityCurve(mCurveContext, forwardCurveId);
-    }
-    else if (!CurveLib::IsCurveRunning(mCurveContext, forwardCurveId))
-    {
-        // Make sure to call the Unreal-wrapped version of StartVelocityCurve so we get the FloatCurve sampler
-        StartVelocityCurve(forwardMechanic);
-    }
+    // Transform the input from camera-space to world-space as a middleman
+    const FVector worldInputDir = cameraRotation.GetInverse().RotateVector(localInputDir);
+        
+    // Transform into character-local space
+    localInputDir = owner->GetActorRotation().RotateVector(worldInputDir);
 
-    if (CurveLib::IsZero(localInputDir.X))
-    {
-        CurveLib::SoftStopVelocityCurve(mCurveContext, sideCurveId);
-    }
-    else if (!CurveLib::IsCurveRunning(mCurveContext, sideCurveId))
-    {
-        StartVelocityCurve(sideMechanic);
-    }
-
-    // Update the speedMultipliers of both the velocity curves according to input
-    CurveLib::UpdateVelocityCurve(mCurveContext,
-                                    forwardCurveId,
-                                    localInputDir.Y * forwardMechanic->SpeedMultiplier,
-                                    CurveLib::Float3(1, 0, 0));
-
-    CurveLib::UpdateVelocityCurve(mCurveContext,
-                                    sideCurveId,
-                                    localInputDir.X * sideMechanic->SpeedMultiplier,
-                                    std::nullopt);
+    InputAxisToVelocityCurve(forwardMechanic, isVertical ? localInputDir.Z : -localInputDir.X);
+    InputAxisToVelocityCurve(sideMechanic, localInputDir.Y);
 }
 
 void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mechanic, float inputAxis)
@@ -457,30 +449,19 @@ const CurveLib::VelocityCurveContext& UVelocityCurveComponent::GetCurveContext()
     return mCurveContext;
 }
 
-FRotator UVelocityCurveComponent::GetRotationToApply(bool isCameraRelative)
+FRotator UVelocityCurveComponent::GetCameraRotation()
 {
-    if (isCameraRelative)
+    if (APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
     {
-        if (APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+        // Get the rotation from the Player Camera Manager (most accurate for the viewport view)
+        if (APlayerCameraManager* cameraManager = playerController->PlayerCameraManager)
         {
-            // Get the rotation from the Player Camera Manager (most accurate for the viewport view)
-            if (APlayerCameraManager* cameraManager = playerController->PlayerCameraManager)
-            {
-                return cameraManager->GetCameraRotation();
-            }
-            else
-            {
-                // Fall back to the control rotation
-                return playerController->GetControlRotation();
-            }
+            return cameraManager->GetCameraRotation();
         }
-    }
-    else
-    {
-        // Character-relative controls (sometimes called "tank controls" by players)
-        if (const auto* owner = GetOwner())
+        else
         {
-            return owner->GetActorRotation();
+            // Fall back to the control rotation
+            return playerController->GetControlRotation();
         }
     }
 

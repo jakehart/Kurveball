@@ -120,7 +120,7 @@ private:
 
     // Helper function to return the camera's rotation if isCameraRelative == true, or the character's
     // rotation otherwise.
-    FRotator GetRotationToApply(bool isCameraRelative);
+    FRotator GetCameraRotation();
 
     void SendVelocityToUnreal(const CurveLib::Float3& velocity, const CurveLib::Float3& angularVelocity);
 

@@ -2,7 +2,7 @@
 This summarizes all the features and fixes that are needed in order to release CurveLib.
 
 ## Unreal Demo
-Fix behavior on slopes  
+Some solution for slope traversability. Samnple x of a "slope curve" based on slope angle? and then multiply with the horizontal curves 
 Fix grapple  
 Stretch spline to height and destination  
 Networked play using UE networking  
