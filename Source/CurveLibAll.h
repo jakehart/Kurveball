@@ -2,6 +2,7 @@
 #pragma once
 
 #include "AreaAccumulator.h"
+#include "BezierCurve.h"
 #include "CircularBuffer.h"
 #include "CurveInstanceId.h"
 #include "CurveLibAll.h"

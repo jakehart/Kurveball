@@ -8,9 +8,7 @@
 #include <windows.h>
 #include <GL/gl.h>
 
-// CurveLib includes
-#include "BezierCurve.h"
-#include "Vector2.h"
+#include "CurveLibAll.h"
 
 // Data stored per platform window
 struct WGL_WindowData { HDC hDC; };
@@ -26,9 +24,10 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 void DrawGUI();
 
 // TODO: Encapsulate these globals properly in application state
-static CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-static CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
-static CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
+CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
+CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
+CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
+bool showIntegration = true;
 
 int main(int, char**)
 {
@@ -75,7 +74,7 @@ int main(int, char**)
 	ImGui_ImplWin32_InitForOpenGL(hwnd);
 	ImGui_ImplOpenGL3_Init();
 
-	ImVec4 clear_color = ImVec4(0.1f, 0.f, 0.1f, 1.00f);
+	ImVec4 clearColor = ImVec4(0.1f, 0.f, 0.1f, 1.00f);
 
 	while (true)
 	{
@@ -88,7 +87,7 @@ int main(int, char**)
 			::DispatchMessage(&msg);
 			if (msg.message == WM_QUIT)
 			{
-				break;
+				return 0;
 			}
 		}
 
@@ -107,7 +106,7 @@ int main(int, char**)
 		// Rendering
 		ImGui::Render();
 		glViewport(0, 0, gWidth, gHeight);
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		::SwapBuffers(gMainWindow.hDC);
@@ -264,10 +263,14 @@ void DrawGUI()
 		DrawOpenDialog();
 	}
 
+	ImGui::SameLine();
+	ImGui::Checkbox("Show integration", &showIntegration);
+
 	if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
 	{
 		const float SAMPLE_T_STEP = 0.01f;
 
+		// ImPlot expects doubles
 		std::vector<double> sampleX{};
 		std::vector<double> sampleY{};
 
@@ -292,7 +295,7 @@ void DrawGUI()
 		}
 		ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());*/
 
-		int pointID = 0;
+		int plotPointID = 0;
 		auto& segments = defaultCurve.AccessSegments();
 		std::vector<double> tangentXs{};
 		std::vector<double> tangentYs{};
@@ -302,7 +305,7 @@ void DrawGUI()
 			auto& points = segment.AccessPoints();
 			for (auto& point : points)
 			{
-				ImPlot::DragPoint(pointID++, &point.X, &point.Y, pointColor);
+				ImPlot::DragPoint(plotPointID++, &point.X, &point.Y, pointColor);
 			}
 
 			// Tangent lines
