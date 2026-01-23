@@ -38,13 +38,13 @@ namespace CurveLib
         return mPoints.front().X;
     }
 
-	template<typename PositionT>
+    template<typename PositionT>
     BezierCurveSegment<PositionT>::ScalarType BezierCurveSegment<PositionT>::GetEndX() const
     {
-		CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
+        CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
 
         return mPoints.back().X;
-	}
+    }
 
     template<typename PositionT>
     PositionT BezierCurveSegment<PositionT>::CalculatePositionAtT(ScalarType t) const
@@ -67,8 +67,8 @@ namespace CurveLib
         return {};
     }
 
-	template<typename PositionT>
-	PositionT BezierCurveSegment<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
+    template<typename PositionT>
+    PositionT BezierCurveSegment<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
     {
         if (!mLookupTable)
         {
@@ -114,14 +114,14 @@ namespace CurveLib
         return BezierCurveSegment(points);
     }
 
-	template<typename PositionT>
-	bool BezierCurveSegment<PositionT>::HasXTLookupTable() const
+    template<typename PositionT>
+    bool BezierCurveSegment<PositionT>::HasXTLookupTable() const
     {
         return mLookupTable.has_value();
     }
 
-	template<typename PositionT>
-	void BezierCurveSegment<PositionT>::GenerateXTLookupTable() const
+    template<typename PositionT>
+    void BezierCurveSegment<PositionT>::GenerateXTLookupTable() const
     {
         mLookupTable = LookupTable<ScalarType>(LOOKUP_TABLE_SAMPLE_RATE);
 
@@ -136,8 +136,8 @@ namespace CurveLib
         }
     }
 
-	template<typename PositionT>
-	size_t BezierCurveSegment<PositionT>::GetLookupSampleRate() const
+    template<typename PositionT>
+    size_t BezierCurveSegment<PositionT>::GetLookupSampleRate() const
     {
         if (!mLookupTable)
         {
@@ -147,7 +147,7 @@ namespace CurveLib
         return mLookupTable->GetSampleRate();
     }
 
-	template<typename PositionT>
+    template<typename PositionT>
     bool BezierCurveSegment<PositionT>::IncludesXCoordinate(ScalarType x) const
     {
         if (!HasXTLookupTable())
@@ -155,7 +155,7 @@ namespace CurveLib
             GenerateXTLookupTable();
         }
 
-		CURVELIB_VERIFY_RETURN(mLookupTable, {});
+        CURVELIB_VERIFY_RETURN(mLookupTable, {});
 
         return x >= mLookupTable->GetMinX() && x <= mLookupTable->GetMaxX();
     }

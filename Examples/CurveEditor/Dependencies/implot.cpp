@@ -4309,7 +4309,7 @@ bool BeginDragDropTargetLegend() {
 
 void EndDragDropTarget() {
     SetupLock();
-	ImGui::EndDragDropTarget();
+    ImGui::EndDragDropTarget();
 }
 
 bool BeginDragDropSourcePlot(ImGuiDragDropFlags flags) {

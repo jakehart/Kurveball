@@ -13,10 +13,10 @@
 UCLASS()
 class ACurveDemoCameraManager : public APlayerCameraManager
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 public:
 
-	/** Constructor */
-	ACurveDemoCameraManager();
+    /** Constructor */
+    ACurveDemoCameraManager();
 };

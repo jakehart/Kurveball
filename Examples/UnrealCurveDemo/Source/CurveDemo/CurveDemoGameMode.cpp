@@ -4,5 +4,5 @@
 
 ACurveDemoGameMode::ACurveDemoGameMode()
 {
-	// stub
+    // stub
 }

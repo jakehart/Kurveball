@@ -39,8 +39,8 @@ namespace CurveLib
         void ToBinary(std::ostream& outStream) const;
         [[nodiscard]] static BezierCurveSegment FromBinary(std::istream& istream);
 
-		bool HasXTLookupTable() const;
-		// Generates a lookup table of x coordinate to t value so that we can index the curve by x (mostly only useful for 2D graphs).
+        bool HasXTLookupTable() const;
+        // Generates a lookup table of x coordinate to t value so that we can index the curve by x (mostly only useful for 2D graphs).
         void GenerateXTLookupTable() const;
         // Returns the number of lookup table samples that this segment has.
         size_t GetLookupSampleRate() const;
@@ -50,8 +50,8 @@ namespace CurveLib
     private:
         using PointInfluenceVector = std::vector<ScalarType>;
 
-		// The number of t samples that mLookupTable will have when it's generated. This resolution is per segment.
-		static const uint32_t LOOKUP_TABLE_SAMPLE_RATE = 64;
+        // The number of t samples that mLookupTable will have when it's generated. This resolution is per segment.
+        static const uint32_t LOOKUP_TABLE_SAMPLE_RATE = 64;
 
         // Uses Bernstein basis polynomials to calculate the "influence" coefficients of each point in this segment.
         PointInfluenceVector CalculatePointInfluences(ScalarType t) const;

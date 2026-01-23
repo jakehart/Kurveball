@@ -9,11 +9,11 @@ namespace CurveLib
     // Restricts a degree measure to [0, 360).
     float RestrictDegreeRange(float degrees);
 
-	template <typename T>
-	T Clamp(const T& v, const T& lo, const T& hi)
-	{
-		return std::max(lo, std::min(v, hi));
-	}
+    template <typename T>
+    T Clamp(const T& v, const T& lo, const T& hi)
+    {
+        return std::max(lo, std::min(v, hi));
+    }
 
     template<typename ScalarT>
     ScalarT Lerp(ScalarT first, ScalarT second, ScalarT lerpT)

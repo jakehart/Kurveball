@@ -12,12 +12,12 @@
 UCLASS(abstract)
 class ACurveDemoGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	
-	/** Constructor */
-	ACurveDemoGameMode();
+    
+    /** Constructor */
+    ACurveDemoGameMode();
 };
 
 

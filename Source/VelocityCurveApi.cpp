@@ -121,9 +121,9 @@ namespace CurveLib
         // If the playhead is currently before the outro...
         //if (CalculateCurveX(ioContext, instanceId) < curveInstance->mMechanic.mLoopEndX)
         {
-	        // Prevent further looping
-	        curveInstance->mMechanic.mPlayCount = 1;
-		
+            // Prevent further looping
+            curveInstance->mMechanic.mPlayCount = 1;
+        
             // Seek to the outro and let it play
             SeekToX(ioContext, instanceId, curveInstance->mMechanic.mLoopEndX + sFloatEpsilon);
         }

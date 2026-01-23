@@ -24,13 +24,13 @@ namespace CurveLib
         void AddSegment(const CurveSegment& segment);
         void AddSegment(CurveSegment&& segment);
 
-		void ToBinary(std::ostream& outStream) const;
-		[[nodiscard]] static BezierCurve FromBinary(std::istream& istream);
+        void ToBinary(std::ostream& outStream) const;
+        [[nodiscard]] static BezierCurve FromBinary(std::istream& istream);
 
         [[nodiscard]] PositionT CalculatePositionAtT(ScalarType t) const;
         [[nodiscard]] PositionT CalculatePositionAtXCoordinate(ScalarType x) const;
 
-		// Regenerates the lookup table of x coordinate to t value for every curve segment in this curve.
+        // Regenerates the lookup table of x coordinate to t value for every curve segment in this curve.
         void GenerateXTLookupTables() const;
 
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;

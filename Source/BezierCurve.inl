@@ -7,69 +7,69 @@
 
 namespace CurveLib
 {
-	template<typename PositionT>
-	BezierCurve<PositionT>::BezierCurve(std::vector<CurveSegment> segments)
+    template<typename PositionT>
+    BezierCurve<PositionT>::BezierCurve(std::vector<CurveSegment> segments)
         : mSegments(segments)
-	{
-	}
+    {
+    }
 
 
-	template<typename PositionT>
-	const auto& BezierCurve<PositionT>::GetSegments() const
-	{
-        return mSegments;
-	}
-
-	template<typename PositionT>
-	auto& BezierCurve<PositionT>::AccessSegments()
+    template<typename PositionT>
+    const auto& BezierCurve<PositionT>::GetSegments() const
     {
         return mSegments;
     }
 
-	template<typename PositionT>
-	void BezierCurve<PositionT>::AddSegment(const CurveSegment& segment)
+    template<typename PositionT>
+    auto& BezierCurve<PositionT>::AccessSegments()
+    {
+        return mSegments;
+    }
+
+    template<typename PositionT>
+    void BezierCurve<PositionT>::AddSegment(const CurveSegment& segment)
     {
         mSegments.push_back(segment);
     }
 
-	template<typename PositionT>
+    template<typename PositionT>
     void BezierCurve<PositionT>::AddSegment(CurveSegment&& segment)
     {
-		mSegments.push_back(segment);
+        mSegments.push_back(segment);
     }
 
-	template<typename PositionT>
-	void BezierCurve<PositionT>::ToBinary(std::ostream& outStream) const
-	{
-		const size_t numSegments = mSegments.size();
-		outStream.write((const char*)&numSegments, sizeof(size_t));
+    template<typename PositionT>
+    void BezierCurve<PositionT>::ToBinary(std::ostream& outStream) const
+    {
+        const size_t numSegments = mSegments.size();
+        outStream.write((const char*)&numSegments, sizeof(size_t));
 
-		for (const auto segment : mSegments)
-		{
-			segment.ToBinary(outStream);
-		}
+        for (const auto segment : mSegments)
+        {
+            segment.ToBinary(outStream);
+        }
 
-		outStream.flush();
-	}
+        outStream.flush();
+    }
 
-	template<typename PositionT>
+    template<typename PositionT>
     BezierCurve<PositionT> BezierCurve<PositionT>::FromBinary(std::istream& inStream)
-	{
-		size_t numSegments = 0U;
+    {
+        size_t numSegments = 0U;
         inStream.read((char*)&numSegments, sizeof(size_t));
 
-		CURVELIB_VERIFY_RETURN(numSegments > 0, {});
+        CURVELIB_VERIFY_RETURN(numSegments > 0, {});
 
         std::vector<BezierCurveSegment<PositionT>> segments{};
         segments.reserve(numSegments);
 
-		for (size_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)
-		{
-			segments.push_back(BezierCurveSegment<PositionT>::FromBinary(inStream));
-		}
+        for (size_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)
+        {
+            segments.push_back(BezierCurveSegment<PositionT>::FromBinary(inStream));
+        }
 
         return BezierCurve(segments);
-	}
+    }
 
     template<typename PositionT>
     PositionT BezierCurve<PositionT>::CalculatePositionAtT(ScalarType t) const
@@ -106,7 +106,7 @@ namespace CurveLib
         return segmentIter->CalculatePositionAtXCoordinate(x);
     }
 
-	template<typename PositionT>
+    template<typename PositionT>
     void BezierCurve<PositionT>::GenerateXTLookupTables() const
     {
         // TODO: Only generate segments that are dirty.
