@@ -25,12 +25,13 @@ void DrawGUI();
 
 // TODO: Encapsulate these globals properly in application state
 CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
+CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
 CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
 bool isIntegrationEnabled = true;
+bool isLookupTableDrawn = true;
 CurveLib::AreaAccumulator integrationAccumulator;
 // Signed to match the IMGUI input function
-int32_t numSamplesPerSegment = 64;
+int32_t numSamplesPerSegment = 32;
 
 int main(int, char**)
 {
@@ -245,6 +246,7 @@ void DrawIntegration()
 {
 	std::vector<double> xCoords{};
 	std::vector<double> yCoords{};
+	std::vector<double> sampleAreas{};
 
 	// TODO: Only recalculate when curve is dirty
 	integrationAccumulator.Reset();
@@ -261,9 +263,18 @@ void DrawIntegration()
 
 		xCoords.push_back(x);
 		yCoords.push_back(curveY);
+		sampleAreas.push_back(integrationAccumulator.GetLatestStepArea());
 	}
 
 	ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), xCoords.size(), 0.01);
+	
+	if (ImPlot::IsPlotHovered())
+	{
+		// In plot coordinates
+		ImPlotPoint hoverPoint = ImPlot::GetPlotMousePos();
+
+		ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Area:");
+	}
 }
 
 void DrawGUI()
@@ -294,10 +305,15 @@ void DrawGUI()
 	ImGui::SameLine();
 	ImGui::Checkbox("Integrate", &isIntegrationEnabled);
 
+	ImGui::SameLine();
+	ImGui::Checkbox("Lookup", &isLookupTableDrawn);
+
 	if (isIntegrationEnabled)
 	{
 		ImGui::SameLine();
+		ImGui::PushItemWidth(100.f);
 		ImGui::InputInt("Samples per segment", &numSamplesPerSegment);
+		ImGui::PopItemWidth();
 		numSamplesPerSegment = std::abs(numSamplesPerSegment);
 	}
 
@@ -329,15 +345,20 @@ void DrawGUI()
 		ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
 		// Render from lookup table
-		/*sampleX.clear(); sampleY.clear();
-		const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
-		for (size_t i = 0; i < numSamples; ++i)
+		if (isLookupTableDrawn)
 		{
-			const double xCoord = i * 0.01;
-			sampleX.push_back(xCoord);
-			sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
+			sampleX.clear();
+			sampleY.clear();
+
+			const size_t numSamples = (size_t)std::floor(2.f / SAMPLE_T_STEP);
+			for (size_t i = 0; i < numSamples; ++i)
+			{
+				const double xCoord = i * 0.01;
+				sampleX.push_back(xCoord);
+				sampleY.push_back((double)defaultCurve.CalculatePositionAtXCoordinate(xCoord).Y);
+			}
+			ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());
 		}
-		ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());*/
 
 		int plotPointID = 0;
 		auto& segments = defaultCurve.AccessSegments();
