@@ -119,7 +119,7 @@ namespace CurveLib
         }
 
         // If the playhead is currently before the outro...
-        //if (CalculateCurveX(ioContext, instanceId) < curveInstance->mMechanic.mLoopEndX)
+        if (CalculateCurveX(ioContext, instanceId) < curveInstance->mMechanic.mLoopEndX)
         {
             // Prevent further looping
             curveInstance->mMechanic.mPlayCount = 1;
