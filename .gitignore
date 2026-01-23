@@ -6,3 +6,5 @@ CurveLib.dir/
 *.vcxproj.filters
 CMakeFiles/
 *.sln.lnk
+.vs
+.vsconfig
