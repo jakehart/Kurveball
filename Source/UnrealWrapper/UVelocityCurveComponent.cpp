@@ -243,13 +243,8 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     
     if (CurveLib::IsZero(inputAxis))
     {
-        // If there is no loop endpoint, or the playhead is past the loop point...
-        if (CurveLib::IsZero(mechanic->LoopEndX) ||
-            playheadPosition < mechanic->LoopEndX)
-        {
-            // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
-            CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
-        }
+        // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
+        CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
     }
     /*else if (playheadPosition > mechanic->LoopEndX + CurveLib::sFloatMinDenormal)
     {
@@ -259,7 +254,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }*/
     else
     {
-        // Zero input
+        // Nonzero input
         if (!CurveLib::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
