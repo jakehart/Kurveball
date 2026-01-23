@@ -18,8 +18,10 @@ namespace CurveLib
 		ScalarT GetMinX() const;
 		ScalarT GetMaxX() const;
 
+		size_t GetSampleRate() const;
+
 	private:
-		uint8_t mSampleRate{ 64 };
+		size_t mSampleRate{ 64 };
 
 		// (x, y)
 		using Sample = std::pair<ScalarType, ScalarType>;

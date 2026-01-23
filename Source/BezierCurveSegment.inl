@@ -131,10 +131,20 @@ namespace CurveLib
             const PositionT position = CalculatePositionAtT(t);
             
             assert(t >= 0 && t <= 1);
-            assert(position.X >= mPoints.front().X && position.X <= mPoints.back().X);
 
             mLookupTable->AddSample(FloorToZero(position.X), FloorToZero(t));
         }
+    }
+
+	template<typename PositionT>
+	size_t BezierCurveSegment<PositionT>::GetLookupSampleRate() const
+    {
+        if (!mLookupTable)
+        {
+            return 0;
+        }
+
+        return mLookupTable->GetSampleRate();
     }
 
 	template<typename PositionT>
@@ -167,11 +177,11 @@ namespace CurveLib
         case 2: // Same as lerp
             return { 1 - t,
                      t };
-        case 3:
+        case 3: // quadratic (3 points)
             return { 1 - (2 * t) + (t * t),
                     (2 * t) - (2 * t * t),
                     (t * t) };
-        case 4:
+        case 4: // cubic (4 points)
             return { 1 - (3 * t) + (3 * t * t) - (t * t * t),
                     (3 * t) - (6 * t * t) + (3 * t * t * t),
                     (3 * t * t) - (3 * t * t * t),

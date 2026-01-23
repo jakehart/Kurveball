@@ -20,13 +20,18 @@ namespace CurveLib
 	template<typename PositionT>
 	LookupTable<PositionT>::ScalarType LookupTable<PositionT>::CalculateValue(ScalarType x)
 	{
+		if (x < 0)
+		{
+			return 0;
+		}
+
 		const size_t lowerIndex = (size_t)(x * mSampleRate);
 		const size_t higherIndex = lowerIndex + 1;
 		
 		// Ensure that the table covers the points that we need
 		if (higherIndex >= mSamples.size())
 		{
-			return 0.f;
+			return 0;
 		}
 
 		const ScalarType lowerSample = mSamples[lowerIndex].second;
@@ -49,5 +54,11 @@ namespace CurveLib
 	LookupTable<PositionT>::ScalarType LookupTable<PositionT>::GetMaxX() const
 	{
 		return mSamples.back().first;
+	}
+
+	template<typename PositionT>
+	size_t LookupTable<PositionT>::GetSampleRate() const
+	{
+		return mSampleRate;
 	}
 }

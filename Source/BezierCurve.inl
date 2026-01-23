@@ -89,6 +89,9 @@ namespace CurveLib
     template<typename PositionT>
     PositionT CurveLib::BezierCurve<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
     {
+        // Make sure all the tables are generated before we try to query them.
+        GenerateXTLookupTables();
+
         const auto segmentIter = std::lower_bound(mSegments.begin(), mSegments.end(), x,
                                                   [](const BezierCurveSegment<PositionT>& segment, ScalarType findX)
                                                   {
@@ -103,8 +106,18 @@ namespace CurveLib
         return segmentIter->CalculatePositionAtXCoordinate(x);
     }
 
+	template<typename PositionT>
+    void BezierCurve<PositionT>::GenerateXTLookupTables() const
+    {
+        // TODO: Only generate segments that are dirty.
+        for (const auto& segment : mSegments)
+        {
+            segment.GenerateXTLookupTable();
+        }
+    }
+
     template<typename PositionT>
-    CurveSamplerXY CurveLib::BezierCurve<PositionT>::CreateCurveSamplerXY() const
+    CurveSamplerXY BezierCurve<PositionT>::CreateCurveSamplerXY() const
     {
         return [this](ScalarType x) -> ScalarType
             {

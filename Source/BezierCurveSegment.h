@@ -42,6 +42,8 @@ namespace CurveLib
 		bool HasXTLookupTable() const;
 		// Generates a lookup table of x coordinate to t value so that we can index the curve by x (mostly only useful for 2D graphs).
         void GenerateXTLookupTable() const;
+        // Returns the number of lookup table samples that this segment has.
+        size_t GetLookupSampleRate() const;
 
         bool IncludesXCoordinate(ScalarType x) const;
 

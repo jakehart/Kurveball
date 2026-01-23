@@ -30,6 +30,9 @@ namespace CurveLib
         [[nodiscard]] PositionT CalculatePositionAtT(ScalarType t) const;
         [[nodiscard]] PositionT CalculatePositionAtXCoordinate(ScalarType x) const;
 
+		// Regenerates the lookup table of x coordinate to t value for every curve segment in this curve.
+        void GenerateXTLookupTables() const;
+
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
         [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
 

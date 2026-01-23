@@ -9,6 +9,7 @@
 #include "CurveSampler.h"
 #include "IntegratorFunctions.h"
 #include "IntegratorFunctionType.h"
+#include "MathUtils.h"
 #include "UnitTypes.h"
 #include "Vector2.h"
 #include "Vector3.h"
