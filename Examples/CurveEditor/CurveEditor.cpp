@@ -27,7 +27,10 @@ void DrawGUI();
 CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
 CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, 1 }, { 1.75, 1 }, { 2, 0 } });
 CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
-bool showIntegration = true;
+bool isIntegrationEnabled = true;
+CurveLib::AreaAccumulator integrationAccumulator;
+// Signed to match the IMGUI input function
+int32_t numSamplesPerSegment = 64;
 
 int main(int, char**)
 {
@@ -238,6 +241,31 @@ void DrawOpenDialog()
 	}
 }
 
+void DrawIntegration()
+{
+	std::vector<double> xCoords{};
+	std::vector<double> yCoords{};
+
+	// TODO: Only recalculate when curve is dirty
+	integrationAccumulator.Reset();
+	
+	const auto& segments = defaultCurve.GetSegments();
+	const size_t numTotalSamples = numSamplesPerSegment * segments.size();
+
+	for (int i = 0; i < numTotalSamples; ++i)
+	{
+		const double x = (double)i / numTotalSamples;
+		const double curveY = defaultCurve.CalculatePositionAtXCoordinate(x).Y;
+
+		integrationAccumulator.AccumulateArea(x, curveY);
+
+		xCoords.push_back(x);
+		yCoords.push_back(curveY);
+	}
+
+	ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), xCoords.size(), 0.01);
+}
+
 void DrawGUI()
 {
 	using namespace CurveLib;
@@ -264,11 +292,27 @@ void DrawGUI()
 	}
 
 	ImGui::SameLine();
-	ImGui::Checkbox("Show integration", &showIntegration);
+	ImGui::Checkbox("Integrate", &isIntegrationEnabled);
+
+	if (isIntegrationEnabled)
+	{
+		ImGui::SameLine();
+		ImGui::InputInt("Samples per segment", &numSamplesPerSegment);
+		numSamplesPerSegment = std::abs(numSamplesPerSegment);
+	}
+
+	// Default to the useful range for velocity curves, but let the user move and zoom the plot
+	ImPlot::SetNextAxesLimits(0, 1, -1, 1, ImPlotCond_Once);
 
 	if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
 	{
 		const float SAMPLE_T_STEP = 0.01f;
+
+		// Draw the integration bars under everything else
+		if (isIntegrationEnabled)
+		{
+			DrawIntegration();
+		}
 
 		// ImPlot expects doubles
 		std::vector<double> sampleX{};
