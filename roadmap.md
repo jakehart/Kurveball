@@ -3,7 +3,6 @@ This summarizes all the features and fixes that are needed in order to release C
 
 ## Unreal Demo
 Some solution for slope traversability. Sample x of a "slope curve" based on slope angle? and then multiply with the horizontal curves  
-Fix grapple  
 Stretch spline to height and destination  
 Networked play using UE networking  
 "Create movement mechanic" menu item  
@@ -11,7 +10,7 @@ Movement line/subway map
 
 ## Playback
 Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function  
-Speed sync  
+Speed sync, including syncing to loopEndX  
 
 ## BezierCurveSegment: Pack-in curve implementation
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments  
