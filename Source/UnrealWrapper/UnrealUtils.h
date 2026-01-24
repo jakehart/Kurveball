@@ -16,5 +16,5 @@ namespace CurveLib
     FVector ToFVector(const Float3& curveLibVector);
     
     CurveSamplerXY CreateSamplerXY(const UCurveFloat* curveAsset);
-    CurveSampler3D CreateSplineSampler(const USplineComponent* splineComponent);
+    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent, float desiredHeight = 0.f);
 }

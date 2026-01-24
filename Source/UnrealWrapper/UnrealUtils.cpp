@@ -40,27 +40,47 @@ namespace CurveLib
             };
     }
 
-    CurveSampler3D CreateSplineSampler(const USplineComponent* splineComponent)
+    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent, float desiredHeight)
     {
         static const CurveSampler3D NULL_SAMPLER = [](float) {return CurveLib::Float3(0, 0, 0); };
 
-        if (!splineComponent)
+        if (!splineComponent || splineComponent->GetSplineLength() < sFloatEpsilon)
         {
-            UE_LOG(CurveLibLog, Error, TEXT("CreateSplineSampler received null spline"));
+            UE_LOG(CurveLibLog, Error, TEXT("CreateUnrealSplineSampler received null or empty spline"));
             return NULL_SAMPLER;
         }
 
-        return [splineComponent](float distance)
+        // Scale to desired desiredHeight
+        float heightScale = 1.f;
+        if (desiredHeight > sFloatEpsilon)
+        {
+            const auto localBounds = splineComponent->CalcLocalBounds();
+            const float nativeSplineHeight = localBounds.GetBox().Max.Z;
+            if (nativeSplineHeight > 0)
+            {
+                heightScale = desiredHeight / nativeSplineHeight;
+            }
+        }
+
+        // Yaw, pitch, and horizontally the spline so that its starting and ending points match the requested start and destination
+        /*FRotator reorient = FRotator::ZeroRotator; // identity rotation
+        if (destination)
+        {
+            const auto splineStart = splineComponent->GetSplinePointAt(0, ESplineCoordinateSpace::Local);
+            const auto splineEnd = splineComponent->GetSplinePointAt(splineComponent->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::Local);
+        }*/
+
+        return [splineComponent, heightScale](float distance)
             {
                 // Make sure the spline is still valid at the time of sampling
-                if (splineComponent)
+                if (splineComponent && splineComponent->IsValidLowLevelFast(false))
                 {
                     // Return the position at this arc distance
-                    const FVector rawPosition = splineComponent->GetWorldLocationAtDistanceAlongSpline(distance);
-                    return CurveLib::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z);
+                    const FVector rawPosition = splineComponent->GetLocationAtDistanceAlongSpline(distance, ESplineCoordinateSpace::Local);
+                    return CurveLib::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z * heightScale);
                 }
 
-                UE_LOG(CurveLibLog, Warning, TEXT("CreateSplineSampler sampling from spline that became null"));
+                UE_LOG(CurveLibLog, Warning, TEXT("CreateUnrealSplineSampler sampling from spline that became null"));
                 return CurveLib::Float3(0, 0, 0);
             };
     }

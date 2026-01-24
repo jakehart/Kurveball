@@ -70,7 +70,7 @@ public:
     bool IsAnyCurveRunning(bool includeLinear = true, bool includeRotational = true) const;
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
-    void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent);
+    void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight = 0.f);
 
     // Stretches a spline in place so that its start and end are at the desired points, with the top of the spline
     // at the given height in cm. The input coordinates are in terms of whatever coordinate space you specify.

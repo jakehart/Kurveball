@@ -22,8 +22,7 @@ Point reordering
 Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)  
 
 ## Curve Editor
-Integration - Show area under curve and distance travelled at each x on mouseover
-	Since the latter depends on the top speed of the mechanic, would it make sense for CurveEditor to be aware of MovementMechanic?
+Integration - Show area under curve and distance travelled at each x on mouseover - use mechanic data
 Bug: does not support Windows display scales other than 100% -- bug confirmed present in other imgui applications, investigate imgui fix
 Visualize playback (e.g. using a 1D or 2D point)  
 

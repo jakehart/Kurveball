@@ -5,6 +5,7 @@
 
 #include <Blueprint/UserWidget.h>
 #include <Engine/Engine.h>
+#include <Components/SplineComponent.h>
 #include <GameFramework/PlayerController.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -301,11 +302,17 @@ bool UVelocityCurveComponent::IsAnyCurveRunning(bool includeLinear, bool include
     return CurveLib::IsAnyCurveRunning(mCurveContext, includeLinear, includeRotational);
 }
 
-void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent)
+void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight)
 {
-    if (!splineComponent)
+    if (!splineComponent || splineComponent->GetSplineLength() < CurveLib::sFloatEpsilon)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("AttachSpline: SplineComponent pin must be connected"));
+        UE_LOG(CurveLibLog, Error, TEXT("UVelocityCurveComponent received null or empty spline"));
+        return;
+    }
+
+    const auto* owner = GetOwner();
+    if (!owner)
+    {
         return;
     }
 
@@ -318,7 +325,8 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
         return;
     }
 
-    curveInstance->mPositionSampler = CurveLib::CreateSplineSampler(splineComponent);
+    //const FVector startPosition = owner->GetActorLocation();
+    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent, desiredHeight);
 }
 
 /*const void UVelocityCurveComponent::StretchSpline(USplineComponent* splineComponent, FVector startPosition, FVector endPosition, float height, ECoordinateSpace coordinateSpace)
