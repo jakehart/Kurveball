@@ -45,7 +45,7 @@ public:
     // and it decides which axes the mechanic should act upon. Axes can be in local or world
     // space, depending on the CoordinateSpace option below.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    EAxisMode AxisMode;
+    EAxisMode AxisMode = EAxisMode::allMovementAxes;
     // If true, teleport the actor to CustomStartPosition before beginning the mechanic.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool UseCustomStartPosition;
@@ -55,18 +55,18 @@ public:
     // If nonzero, VelocityCurveAsset will be stretched to this time in seconds. If zero,
     // the curve will be unstretched, its x axis interpreted directly in seconds.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float StretchDuration;
+    float StretchDuration = 0;
     // The number of times to play the looped portion of the curve. If zero, loop forever.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int64 PlayCount;
+    int64 PlayCount = 0;
     // The beginning of the part of VelocityCurveAsset you want to loop. If both LoopStartX and
     // LoopEndX are zero, the entire curve will be looped.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LoopStartX;
+    float LoopStartX = 0;
     // The end of the part of VelocityCurveAsset you want to loop. If both LoopStartX and
     // LoopEndX are zero, the entire curve will be looped.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LoopEndX;
+    float LoopEndX = 0;
     // The mechanic can run in either local or world space, which affects the Direction, AxisMode, and
     // CustomStartPosition options.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
