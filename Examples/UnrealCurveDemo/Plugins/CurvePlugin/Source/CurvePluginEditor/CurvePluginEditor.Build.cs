@@ -24,7 +24,10 @@ public class CurvePluginEditor : ModuleRules
 			{
                 "Engine",
 				"CoreUObject",
-                "UnrealEd"
+                "UnrealEd",
+				"Slate",
+				"SlateCore",
+				"ToolMenus"
 			}
 		);
 	}
