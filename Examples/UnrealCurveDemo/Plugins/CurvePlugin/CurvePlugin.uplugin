@@ -1,0 +1,25 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0",
+	"FriendlyName": "Curve Plugin",
+	"Description": "Curve Plugin",
+	"Category": "Others",
+	"CreatedBy": "Jake Hart",
+	"CreatedByURL": "https://jake-hart.com",
+	"DocsURL": "https://github.com/jakehart/CurveLib",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": 
+    [
+		{
+			"Name": "CurvePluginEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault"
+		}
+	]
+}
