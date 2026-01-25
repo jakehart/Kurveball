@@ -1,3 +1,5 @@
+//#include "CurveEditor.h"
+
 #include "imgui.h"
 #include "implot.h"
 #include "imgui_impl_opengl3.h"
@@ -266,18 +268,18 @@ void DrawIntegration()
         const double x = (double)i / numTotalSamples;
         const double curveY = defaultCurve.CalculatePositionAtXCoordinate(x).Y;
 
-        integrationAccumulator.AccumulateArea(x, curveY);
+        integrationAccumulator.AccumulateArea((float)x, (float)curveY);
 
         xCoords.push_back(x);
         yCoords.push_back(curveY);
         sampleAreas.push_back(integrationAccumulator.GetTotalArea());
     }
 
-    ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), xCoords.size(), 0.01);
+    ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), (int)xCoords.size(), 0.01);
     
     if(hoverPoint.x > 0 && hoverPoint.y > 0)
     {
-        size_t xIndex = std::floor(hoverPoint.x * numTotalSamples / segments.size());
+        size_t xIndex = (size_t) std::floor(hoverPoint.x * numTotalSamples / segments.size());
         xIndex = CurveLib::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
 
         ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Sample: %u\nArea: %2.f", xIndex, sampleAreas[xIndex]);
@@ -374,7 +376,7 @@ void DrawGUI()
                     sampleX.push_back(xCoord + segmentNum);
                     sampleY.push_back((double)segment.CalculatePositionAtXCoordinate(xCoord).Y);
                 }
-                ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), sampleX.size());
+                ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), (int)sampleX.size());
             }
         }
 
