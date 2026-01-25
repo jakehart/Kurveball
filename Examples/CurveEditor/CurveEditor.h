@@ -24,6 +24,9 @@ namespace CurveLib
 
 		void DrawGUI();
 		void DrawIntegration();
+		void DrawLookupTable();
+		void DrawTangents();
+
 		// Blocking function to open a Windows save dialog and save a curve as a .cvb binary file.
 		void DrawSaveDialog();
 		// Blocking function to open a Windows open dialog
@@ -36,6 +39,7 @@ namespace CurveLib
 
         bool mIsIntegrationEnabled = true;
         bool mIsLookupTableDrawn = true;
+		bool mIsBrokenTangentsMode = true;
         // Signed to match the IMGUI input box function
         int32_t mNumSamplesPerSegment = 32;
 	};

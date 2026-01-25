@@ -55,4 +55,11 @@ namespace CurveLib
 
         return scalar;
     }
+
+    template<typename VectorT>
+    [[nodiscard]] VectorT MirrorPointAcrossCenter(const VectorT& pointToMirror, const VectorT& center)
+    {
+        constexpr VectorT::ScalarType multiplier = 2;
+        return center * multiplier - pointToMirror;
+    }
 }

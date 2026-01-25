@@ -2,8 +2,9 @@
 #pragma once
 #include <algorithm>
 
-#include "BezierCurve.h"
 #include "Asserts.h"
+#include "BezierCurve.h"
+#include "MathUtils.h"
 
 namespace CurveLib
 {
@@ -133,5 +134,60 @@ namespace CurveLib
                 // TODO: need to be able to sample by arc distance
                 return {};
             };
+    }
+
+    template<typename PositionT>
+    void BezierCurve<PositionT>::MirrorTangents(size_t sourceSegmentNum)
+    {
+        CURVELIB_VERIFY_RETURN(mSegments.size() > sourceSegmentNum);
+
+        const auto& sourcePoints = mSegments[sourceSegmentNum].GetPoints();
+
+        if (sourcePoints.size() < 3)
+        {
+            // Can't mirror tangents from a segment that is too simple to have them.
+            return;
+        }
+
+        
+
+        if (sourceSegmentNum > 0)
+        {
+            // Mirror this segment's tangent onto the PREVIOUS segment
+            BezierCurveSegment<PositionT>& previousSegment = mSegments.at(sourceSegmentNum - 1);
+            auto& previousSegmentPoints = previousSegment.AccessPoints();
+            
+            // Check that the previous segment is at least quadratic. If it's linear or constant, it has no meaningful
+            // tangents to write to and can be ignored.
+            if (previousSegmentPoints.size() >= 3)
+            {
+                size_t tangentIndexToWrite = previousSegmentPoints.size() - 2;
+                CURVELIB_VERIFY_RETURN(tangentIndexToWrite > 0);
+
+                // The tangent is the second point in the source segment
+                const PositionT& sourceTangent = sourcePoints.at(1);
+                // Mirror around the first point
+                const PositionT& center = sourcePoints.at(0);
+
+                previousSegmentPoints[tangentIndexToWrite] = MirrorPointAcrossCenter(sourceTangent, center);
+            }
+        }
+
+        if (sourceSegmentNum < mSegments.size() - 1)
+        {
+            // Mirror onto the NEXT segment
+            BezierCurveSegment<PositionT>& nextSegment = mSegments.at(sourceSegmentNum + 1);
+            auto& nextSegmentPoints = nextSegment.AccessPoints();
+
+            if (nextSegmentPoints.size() > 1)
+            {
+                // The tangent is the second-to-last point of the source segment
+                const PositionT& sourceTangent = sourcePoints.at(sourcePoints.size() - 2);
+                // Mirror around the last point
+                const PositionT& center = sourcePoints.at(sourcePoints.size() - 1);
+
+                nextSegmentPoints[1] = MirrorPointAcrossCenter(sourceTangent, center);
+            }
+        }
     }
 }

@@ -65,4 +65,10 @@ namespace CurveLib
     {
         return Vector2(lhs.X + rhs.X, lhs.Y + rhs.Y);
     }
+
+    template<typename ScalarT>
+    Vector2<ScalarT> operator-(const Vector2<ScalarT>& lhs, const Vector2<ScalarT>& rhs)
+    {
+        return Vector2(lhs.X - rhs.X, lhs.Y - rhs.Y);
+    }
 }

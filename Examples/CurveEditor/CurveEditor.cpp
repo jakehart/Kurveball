@@ -32,8 +32,8 @@ namespace CurveLib
     CurveEditor::CurveEditor()
     {
         // Test data
-        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
+        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.2, 1 }, { 0.4, 1 }, { 0.5, 0 } });
+        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 0.5, 0 }, { 0.7, -1 }, { 0.9, -1 }, { 1, 0 } });
         mDefaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
 
         assert(Init());
@@ -133,7 +133,6 @@ namespace CurveLib
     {
         using namespace CurveLib;
 
-        static const ImVec4 pointColor{ 1, 0, 0, 1 };
         // Min and max size of the ImGui internal "window" -- NOT hwnd dimensions
         static const ImVec2 sMinWindowSize{ 800, 600 };
         static const ImVec2 sMaxWindowSize{ CurveLib::sFloatMax, CurveLib::sFloatMax };
@@ -157,10 +156,13 @@ namespace CurveLib
         }
 
         ImGui::SameLine();
-        ImGui::Checkbox("Integrate", &mIsIntegrationEnabled);
+        ImGui::Checkbox("Break tangents", &mIsBrokenTangentsMode);
 
         ImGui::SameLine();
         ImGui::Checkbox("Lookup", &mIsLookupTableDrawn);
+
+        ImGui::SameLine();
+        ImGui::Checkbox("Integrate", &mIsIntegrationEnabled);
 
         if (mIsIntegrationEnabled)
         {
@@ -186,7 +188,7 @@ namespace CurveLib
             std::vector<double> sampleX{};
             std::vector<double> sampleY{};
 
-            // Sample the curve to generate some lines for ImPlot to draw
+            // Sample the curve by t to generate some lines for ImPlot to draw
             constexpr float SAMPLE_T_STEP = 0.01f;
             for (double t = 0; t < 2; t += SAMPLE_T_STEP)
             {
@@ -200,54 +202,10 @@ namespace CurveLib
             // Render from lookup table
             if (mIsLookupTableDrawn)
             {
-                sampleX.clear();
-                sampleY.clear();
-
-                const auto& segments = mDefaultCurve.GetSegments();
-                for (size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
-                {
-                    const BezierCurveSegment<Double2>& segment = segments[segmentNum];
-                    const size_t lookupTableSize = segment.GetLookupSampleRate();
-                    if (lookupTableSize == 0)
-                    {
-                        continue;
-                    }
-
-                    for (size_t i = 0; i < lookupTableSize; ++i)
-                    {
-                        const double xCoord = (double)i / lookupTableSize;
-
-                        sampleX.push_back(xCoord + segmentNum);
-                        sampleY.push_back((double)segment.CalculatePositionAtXCoordinate(xCoord).Y);
-                    }
-                    ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), (int)sampleX.size());
-                }
+                DrawLookupTable();
             }
 
-            int plotPointID = 0;
-            auto& segments = mDefaultCurve.AccessSegments();
-            std::vector<double> tangentXs{};
-            std::vector<double> tangentYs{};
-
-            for (auto& segment : segments)
-            {
-                auto& points = segment.AccessPoints();
-                for (auto& point : points)
-                {
-                    ImPlot::DragPoint(plotPointID++, &point.X, &point.Y, pointColor);
-                }
-
-                // Tangent lines
-                tangentXs = { points[0].X, points[1].X };
-                tangentYs = { points[0].Y, points[1].Y };
-                ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
-
-                const Double2& secondToLastPoint = points.at(points.size() - 2);
-                const Double2& lastPoint = points.at(points.size() - 1);
-                tangentXs = { secondToLastPoint.X, lastPoint.X };
-                tangentYs = { secondToLastPoint.Y, lastPoint.Y };
-                ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
-            }
+            DrawTangents();
 
             ImPlot::EndPlot();
         }
@@ -294,6 +252,68 @@ namespace CurveLib
             xIndex = CurveLib::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
 
             ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Sample: %u\nArea: %2.f", xIndex, sampleAreas[xIndex]);
+        }
+    }
+
+    void CurveEditor::DrawLookupTable()
+    {
+        std::vector<double> sampleX{};
+        std::vector<double> sampleY{};
+
+        const auto& segments = mDefaultCurve.GetSegments();
+        for (size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
+        {
+            const BezierCurveSegment<Double2>& segment = segments[segmentNum];
+            const size_t lookupTableSize = segment.GetLookupSampleRate();
+            if (lookupTableSize == 0)
+            {
+                continue;
+            }
+
+            for (size_t i = 0; i < lookupTableSize; ++i)
+            {
+                const double xCoord = (double)i / lookupTableSize;
+
+                sampleX.push_back(xCoord + segmentNum);
+                sampleY.push_back((double)segment.CalculatePositionAtXCoordinate(xCoord).Y);
+            }
+            ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), (int)sampleX.size());
+        }
+    }
+
+    void CurveEditor::DrawTangents()
+    {
+        static const ImVec4 pointColor{ 1, 0, 0, 1 };
+        int plotPointID = 0;
+        auto& segments = mDefaultCurve.AccessSegments();
+        std::vector<double> tangentXs{};
+        std::vector<double> tangentYs{};
+
+        for (size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
+        {
+            auto& segment = segments.at(segmentNum);
+            auto& points = segment.AccessPoints();
+            bool pointMoved = false;
+            for (auto& point : points)
+            {
+                pointMoved |= ImPlot::DragPoint(plotPointID++, &point.X, &point.Y, pointColor);
+            }
+
+            // Tangent lines
+            tangentXs = { points[0].X, points[1].X };
+            tangentYs = { points[0].Y, points[1].Y };
+            ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
+
+            const Double2& secondToLastPoint = points.at(points.size() - 2);
+            const Double2& lastPoint = points.at(points.size() - 1);
+            tangentXs = { secondToLastPoint.X, lastPoint.X };
+            tangentYs = { secondToLastPoint.Y, lastPoint.Y };
+            ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
+
+            if (pointMoved && !mIsBrokenTangentsMode)
+            {
+                mDefaultCurve.MirrorTangents(segmentNum);
+            }
         }
     }
 

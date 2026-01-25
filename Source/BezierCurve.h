@@ -36,6 +36,9 @@ namespace CurveLib
         [[nodiscard]] CurveSamplerXY CreateCurveSamplerXY() const;
         [[nodiscard]] CurveSampler3D CreateCurveSampler3D() const;
 
+        // Mirrors the tangents of one specific BezierCurveSegment to its neighbors.
+        void MirrorTangents(size_t sourceSegmentNum);
+
     private:
         // TODO: Knot points should not use redundant memory. Can use std::view for this
         std::vector<CurveSegment> mSegments{};
