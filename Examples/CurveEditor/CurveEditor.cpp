@@ -1,4 +1,4 @@
-//#include "CurveEditor.h"
+#include "CurveEditor.h"
 
 #include "imgui.h"
 #include "implot.h"
@@ -23,20 +23,266 @@ static int              gHeight;
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-void DrawGUI();
 
-// TODO: Encapsulate these globals properly in application state
-CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
-CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
-CurveLib::BezierCurve<CurveLib::Double2> defaultCurve({ defaultSegment1, defaultSegment2 });
 bool isIntegrationEnabled = true;
 bool isLookupTableDrawn = true;
 CurveLib::AreaAccumulator integrationAccumulator;
 // Signed to match the IMGUI input function
 int32_t numSamplesPerSegment = 32;
 
+namespace CurveLib
+{
+    CurveEditor::CurveEditor()
+    {
+        // Test data
+        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
+        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
+        defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
+    }
+
+    CurveEditor::~CurveEditor()
+    {
+    }
+
+    bool CurveEditor::Tick()
+    {
+        DrawGUI();
+
+        // Rendering
+        ImGui::Render();
+        glViewport(0, 0, gWidth, gHeight);
+        static const ImVec4 sClearColor = ImVec4(0.1f, 0.f, 0.1f, 1.00f);
+        glClearColor(sClearColor.x, sClearColor.y, sClearColor.z, sClearColor.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ::SwapBuffers(gMainWindow.hDC);
+
+        return true;
+    }
+
+    void CurveEditor::DrawGUI()
+    {
+        using namespace CurveLib;
+
+        static const ImVec4 pointColor{ 1, 0, 0, 1 };
+        static const ImVec2 sMinWindowSize{ 800, 600 };
+        static const ImVec2 sMaxWindowSize{ CurveLib::sFloatMax, CurveLib::sFloatMax };
+
+        ImGui::SetNextWindowSizeConstraints(sMinWindowSize, sMaxWindowSize);
+
+        if (!ImGui::Begin("Curve Editor"))
+        {
+            return;
+        }
+
+        if (ImGui::Button("Save"))
+        {
+            DrawSaveDialog();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Open"))
+        {
+            DrawOpenDialog();
+        }
+
+        ImGui::SameLine();
+        ImGui::Checkbox("Integrate", &isIntegrationEnabled);
+
+        ImGui::SameLine();
+        ImGui::Checkbox("Lookup", &isLookupTableDrawn);
+
+        if (isIntegrationEnabled)
+        {
+            ImGui::SameLine();
+            ImGui::PushItemWidth(100.f);
+            ImGui::InputInt("Samples per segment", &numSamplesPerSegment);
+            ImGui::PopItemWidth();
+            numSamplesPerSegment = std::abs(numSamplesPerSegment);
+        }
+
+        // Default to the useful range for velocity curves, but let the user move and zoom the plot
+        ImPlot::SetNextAxesLimits(0, 1, -1, 1, ImPlotCond_Once);
+
+        if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
+        {
+            // Draw the integration bars under everything else
+            if (isIntegrationEnabled)
+            {
+                DrawIntegration();
+            }
+
+            // ImPlot expects doubles
+            std::vector<double> sampleX{};
+            std::vector<double> sampleY{};
+
+            // Sample the curve to generate some lines for ImPlot to draw
+            constexpr float SAMPLE_T_STEP = 0.01f;
+            for (double t = 0; t < 2; t += SAMPLE_T_STEP)
+            {
+                const Double2 position = defaultCurve.CalculatePositionAtT(t);
+                sampleX.push_back(position.X);
+                sampleY.push_back(position.Y);
+            }
+
+            ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
+
+            // Render from lookup table
+            if (isLookupTableDrawn)
+            {
+                sampleX.clear();
+                sampleY.clear();
+
+                const auto& segments = defaultCurve.GetSegments();
+                for (size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
+                {
+                    const BezierCurveSegment<Double2>& segment = segments[segmentNum];
+                    const size_t lookupTableSize = segment.GetLookupSampleRate();
+                    if (lookupTableSize == 0)
+                    {
+                        continue;
+                    }
+
+                    for (size_t i = 0; i < lookupTableSize; ++i)
+                    {
+                        const double xCoord = (double)i / lookupTableSize;
+
+                        sampleX.push_back(xCoord + segmentNum);
+                        sampleY.push_back((double)segment.CalculatePositionAtXCoordinate(xCoord).Y);
+                    }
+                    ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), (int)sampleX.size());
+                }
+            }
+
+            int plotPointID = 0;
+            auto& segments = defaultCurve.AccessSegments();
+            std::vector<double> tangentXs{};
+            std::vector<double> tangentYs{};
+
+            for (auto& segment : segments)
+            {
+                auto& points = segment.AccessPoints();
+                for (auto& point : points)
+                {
+                    ImPlot::DragPoint(plotPointID++, &point.X, &point.Y, pointColor);
+                }
+
+                // Tangent lines
+                tangentXs = { points[0].X, points[1].X };
+                tangentYs = { points[0].Y, points[1].Y };
+                ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
+
+                const Double2& secondToLastPoint = points.at(points.size() - 2);
+                const Double2& lastPoint = points.at(points.size() - 1);
+                tangentXs = { secondToLastPoint.X, lastPoint.X };
+                tangentYs = { secondToLastPoint.Y, lastPoint.Y };
+                ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
+            }
+
+            ImPlot::EndPlot();
+        }
+
+        ImGui::End();
+    }
+
+    void CurveEditor::DrawIntegration()
+    {
+        std::vector<double> xCoords{};
+        std::vector<double> yCoords{};
+        std::vector<double> sampleAreas{};
+
+        // TODO: Only recalculate when curve is dirty
+        integrationAccumulator.Reset();
+
+        const auto& segments = defaultCurve.GetSegments();
+        const size_t numTotalSamples = numSamplesPerSegment * segments.size();
+
+        for (int i = 0; i < numTotalSamples; ++i)
+        {
+            const double x = (double)i / numTotalSamples;
+            const double curveY = defaultCurve.CalculatePositionAtXCoordinate(x).Y;
+
+            integrationAccumulator.AccumulateArea((float)x, (float)curveY);
+
+            xCoords.push_back(x);
+            yCoords.push_back(curveY);
+            sampleAreas.push_back(integrationAccumulator.GetTotalArea());
+        }
+
+        ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), (int)xCoords.size(), 0.01);
+
+        ImPlotPoint hoverPoint(-1, -1);
+        if (ImPlot::IsPlotHovered())
+        {
+            // In plot coordinates
+            hoverPoint = ImPlot::GetPlotMousePos();
+        }
+
+        if (hoverPoint.x > 0 && hoverPoint.y > 0 && segments.size() > 0)
+        {
+            size_t xIndex = (size_t)std::floor(hoverPoint.x * numTotalSamples / segments.size());
+            xIndex = CurveLib::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
+
+            ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Sample: %u\nArea: %2.f", xIndex, sampleAreas[xIndex]);
+        }
+    }
+
+    // Blocking function to open a Windows save dialog and save a curve as a .cvb binary file.
+    void CurveEditor::DrawSaveDialog()
+    {
+        OPENFILENAME ofn;
+
+        char szFileName[MAX_PATH] = "";
+
+        ZeroMemory(&ofn, sizeof(ofn));
+
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+        ofn.lpstrFile = (LPSTR)szFileName;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+        ofn.lpstrDefExt = (LPCSTR)"cvb";
+
+        BOOL isOK = GetSaveFileName(&ofn);
+        if (isOK)
+        {
+            std::ofstream fileOut(ofn.lpstrFile);
+            defaultCurve.ToBinary(fileOut);
+            fileOut.close();
+        }
+    }
+
+    void CurveEditor::DrawOpenDialog()
+    {
+        OPENFILENAME ofn;
+
+        char szFileName[MAX_PATH] = "";
+
+        ZeroMemory(&ofn, sizeof(ofn));
+
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+        ofn.lpstrFile = (LPSTR)szFileName;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+        ofn.lpstrDefExt = (LPCSTR)"cvb";
+
+        BOOL isOK = GetOpenFileName(&ofn);
+        if (isOK)
+        {
+            std::ifstream fileIn(ofn.lpstrFile);
+            defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
+            fileIn.close();
+        }
+    }
+}
+
 int main(int, char**)
 {
+    CurveLib::CurveEditor curveEditor;
+
     // Make process DPI aware and obtain main monitor scale
     ImGui_ImplWin32_EnableDpiAwareness();
     float main_scale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
@@ -80,7 +326,7 @@ int main(int, char**)
     ImGui_ImplWin32_InitForOpenGL(hwnd);
     ImGui_ImplOpenGL3_Init();
 
-    ImVec4 clearColor = ImVec4(0.1f, 0.f, 0.1f, 1.00f);
+    
 
     while (true)
     {
@@ -107,15 +353,10 @@ int main(int, char**)
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        DrawGUI();
-
-        // Rendering
-        ImGui::Render();
-        glViewport(0, 0, gWidth, gHeight);
-        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        ::SwapBuffers(gMainWindow.hDC);
+        if (!curveEditor.Tick())
+        {
+            break;
+        }
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -193,220 +434,3 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 }
 
-// Blocking function to open a Windows save dialog and save a curve as a .cvb binary file.
-void DrawSaveDialog()
-{
-    OPENFILENAME ofn;
-
-    char szFileName[MAX_PATH] = "";
-
-    ZeroMemory(&ofn, sizeof(ofn));
-
-    ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
-    ofn.lpstrFile = (LPSTR)szFileName;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-    ofn.lpstrDefExt = (LPCSTR)"cvb";
-
-    BOOL isOK = GetSaveFileName(&ofn);
-    if (isOK)
-    {
-        std::ofstream fileOut(ofn.lpstrFile);
-        defaultCurve.ToBinary(fileOut);
-        fileOut.close();
-    }
-}
-
-void DrawOpenDialog()
-{
-    OPENFILENAME ofn;
-
-    char szFileName[MAX_PATH] = "";
-
-    ZeroMemory(&ofn, sizeof(ofn));
-
-    ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
-    ofn.lpstrFile = (LPSTR)szFileName;
-    ofn.nMaxFile = MAX_PATH;
-    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-    ofn.lpstrDefExt = (LPCSTR)"cvb";
-
-    BOOL isOK = GetOpenFileName(&ofn);
-    if (isOK)
-    {
-        std::ifstream fileIn(ofn.lpstrFile);
-        defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
-        fileIn.close();
-    }
-}
-
-void DrawIntegration()
-{
-    std::vector<double> xCoords{};
-    std::vector<double> yCoords{};
-    std::vector<double> sampleAreas{};
-
-    // TODO: Only recalculate when curve is dirty
-    integrationAccumulator.Reset();
-    
-    const auto& segments = defaultCurve.GetSegments();
-    const size_t numTotalSamples = numSamplesPerSegment * segments.size();
-
-    ImPlotPoint hoverPoint(-1, -1);
-    if (ImPlot::IsPlotHovered())
-    {
-        // In plot coordinates
-        hoverPoint = ImPlot::GetPlotMousePos();
-    }
-
-    for (int i = 0; i < numTotalSamples; ++i)
-    {
-        const double x = (double)i / numTotalSamples;
-        const double curveY = defaultCurve.CalculatePositionAtXCoordinate(x).Y;
-
-        integrationAccumulator.AccumulateArea((float)x, (float)curveY);
-
-        xCoords.push_back(x);
-        yCoords.push_back(curveY);
-        sampleAreas.push_back(integrationAccumulator.GetTotalArea());
-    }
-
-    ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), (int)xCoords.size(), 0.01);
-    
-    if(hoverPoint.x > 0 && hoverPoint.y > 0)
-    {
-        size_t xIndex = (size_t) std::floor(hoverPoint.x * numTotalSamples / segments.size());
-        xIndex = CurveLib::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
-
-        ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Sample: %u\nArea: %2.f", xIndex, sampleAreas[xIndex]);
-    }
-}
-
-void DrawGUI()
-{
-    using namespace CurveLib;
-
-    static const ImVec4 pointColor{ 1, 0, 0, 1 };
-    static const ImVec2 sMinWindowSize{ 800, 600 };
-    static const ImVec2 sMaxWindowSize{ CurveLib::sFloatMax, CurveLib::sFloatMax };
-
-    ImGui::SetNextWindowSizeConstraints(sMinWindowSize, sMaxWindowSize);
-
-    if (!ImGui::Begin("Curve Editor"))
-    {
-        return;
-    }
-    
-    if (ImGui::Button("Save"))
-    {
-        DrawSaveDialog();
-    }
-
-    ImGui::SameLine();
-    if (ImGui::Button("Open"))
-    {
-        DrawOpenDialog();
-    }
-
-    ImGui::SameLine();
-    ImGui::Checkbox("Integrate", &isIntegrationEnabled);
-
-    ImGui::SameLine();
-    ImGui::Checkbox("Lookup", &isLookupTableDrawn);
-
-    if (isIntegrationEnabled)
-    {
-        ImGui::SameLine();
-        ImGui::PushItemWidth(100.f);
-        ImGui::InputInt("Samples per segment", &numSamplesPerSegment);
-        ImGui::PopItemWidth();
-        numSamplesPerSegment = std::abs(numSamplesPerSegment);
-    }
-
-    // Default to the useful range for velocity curves, but let the user move and zoom the plot
-    ImPlot::SetNextAxesLimits(0, 1, -1, 1, ImPlotCond_Once);
-
-    if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
-    {
-        // Draw the integration bars under everything else
-        if (isIntegrationEnabled)
-        {
-            DrawIntegration();
-        }
-
-        // ImPlot expects doubles
-        std::vector<double> sampleX{};
-        std::vector<double> sampleY{};
-
-        // Sample the curve to generate some lines for ImPlot to draw
-        constexpr float SAMPLE_T_STEP = 0.01f;
-        for (double t = 0; t < 2; t += SAMPLE_T_STEP)
-        {
-            const Double2 position = defaultCurve.CalculatePositionAtT(t);
-            sampleX.push_back(position.X);
-            sampleY.push_back(position.Y);
-        }
-
-        ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
-
-        // Render from lookup table
-        if (isLookupTableDrawn)
-        {
-            sampleX.clear();
-            sampleY.clear();
-
-            const auto& segments = defaultCurve.GetSegments();
-            for(size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
-            {
-                const BezierCurveSegment<Double2>& segment = segments[segmentNum];
-                const size_t lookupTableSize = segment.GetLookupSampleRate();
-                if (lookupTableSize == 0)
-                {
-                    continue;
-                }
-
-                for (size_t i = 0; i < lookupTableSize; ++i)
-                {
-                    const double xCoord = (double)i / lookupTableSize;
-
-                    sampleX.push_back(xCoord + segmentNum);
-                    sampleY.push_back((double)segment.CalculatePositionAtXCoordinate(xCoord).Y);
-                }
-                ImPlot::PlotLine("LookupTable", sampleX.data(), sampleY.data(), (int)sampleX.size());
-            }
-        }
-
-        int plotPointID = 0;
-        auto& segments = defaultCurve.AccessSegments();
-        std::vector<double> tangentXs{};
-        std::vector<double> tangentYs{};
-
-        for (auto& segment : segments)
-        {
-            auto& points = segment.AccessPoints();
-            for (auto& point : points)
-            {
-                ImPlot::DragPoint(plotPointID++, &point.X, &point.Y, pointColor);
-            }
-
-            // Tangent lines
-            tangentXs = { points[0].X, points[1].X };
-            tangentYs = { points[0].Y, points[1].Y };
-            ImPlot::PlotLine("Tangents1", tangentXs.data(), tangentYs.data(), 2);
-
-            const Double2& secondToLastPoint = points.at(points.size() - 2);
-            const Double2& lastPoint = points.at(points.size() - 1);
-            tangentXs = { secondToLastPoint.X, lastPoint.X };
-            tangentYs = { secondToLastPoint.Y, lastPoint.Y };
-            ImPlot::PlotLine("Tangents2", tangentXs.data(), tangentYs.data(), 2);
-        }
-
-        ImPlot::EndPlot();
-    }
-
-    ImGui::End();
-}
