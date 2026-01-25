@@ -1,5 +1,5 @@
 #pragma once
-//#include "WindowState.h"
+#include "AreaAccumulator.h"
 #include "BezierCurve.h"
 #include "Vector2.h"
 
@@ -35,6 +35,11 @@ namespace CurveLib
 
 		// TODO: Encapsulate these globals properly in application state
 		BezierCurve<Double2> defaultCurve;
-		bool gDrawIntegration = true;
+
+        bool isIntegrationEnabled = true;
+        bool isLookupTableDrawn = true;
+        AreaAccumulator integrationAccumulator;
+        // Signed to match the IMGUI input function
+        int32_t numSamplesPerSegment = 32;
 	};
 }
