@@ -19,6 +19,9 @@ static WGL_WindowData   gMainWindow;
 static int              gWidth;
 static int              gHeight;
 
+WNDCLASSEXW wc;
+HWND hwnd;
+
 // Forward declarations of helper functions
 bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
@@ -38,14 +41,87 @@ namespace CurveLib
         CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
         CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
         defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
+
+        assert(Init());
     }
 
     CurveEditor::~CurveEditor()
     {
     }
 
+    bool CurveEditor::Init()
+    {
+        // Make process DPI aware and obtain main monitor scale
+        ImGui_ImplWin32_EnableDpiAwareness();
+        float mainScale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
+
+        // Create application window
+        wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"Curve Editor", nullptr };
+        ::RegisterClassExW(&wc);
+        hwnd = ::CreateWindowW(wc.lpszClassName, L"Curve Editor", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+
+        // Initialize OpenGL
+        if (!CreateDeviceWGL(hwnd, &gMainWindow))
+        {
+            CleanupDeviceWGL(hwnd, &gMainWindow);
+            ::DestroyWindow(hwnd);
+            ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+            return false;
+        }
+        wglMakeCurrent(gMainWindow.hDC, ghRC);
+
+        // Show the window
+        ::ShowWindow(hwnd, SW_SHOWDEFAULT);
+        ::UpdateWindow(hwnd);
+
+        // Setup Dear ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImPlot::CreateContext();
+
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
+
+        ImGui::StyleColorsDark();
+
+        // Set up scaling
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.ScaleAllSizes(mainScale);
+        style.FontScaleDpi = mainScale;
+
+        // Setup Platform/Renderer backends
+        ImGui_ImplWin32_InitForOpenGL(hwnd);
+        ImGui_ImplOpenGL3_Init();
+
+        return true;
+    }
+
     bool CurveEditor::Tick()
     {
+        // Poll and handle messages (inputs, window resize, etc.)
+        // See the WndProc() function below for our to dispatch events to the Win32 backend.
+        MSG msg;
+        while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+        {
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+            if (msg.message == WM_QUIT)
+            {
+                return false;
+            }
+        }
+
+        if (::IsIconic(hwnd))
+        {
+            ::Sleep(10);
+            return true;
+        }
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
         DrawGUI();
 
         // Rendering
@@ -283,76 +359,8 @@ int main(int, char**)
 {
     CurveLib::CurveEditor curveEditor;
 
-    // Make process DPI aware and obtain main monitor scale
-    ImGui_ImplWin32_EnableDpiAwareness();
-    float main_scale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
-
-    // Create application window
-    WNDCLASSEXW wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"Curve Editor", nullptr };
-    ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Curve Editor", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
-
-    // Initialize OpenGL
-    if (!CreateDeviceWGL(hwnd, &gMainWindow))
-    {
-        CleanupDeviceWGL(hwnd, &gMainWindow);
-        ::DestroyWindow(hwnd);
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-        return 1;
-    }
-    wglMakeCurrent(gMainWindow.hDC, ghRC);
-
-    // Show the window
-    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
-    ::UpdateWindow(hwnd);
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImPlot::CreateContext();
-    
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
-
-    ImGui::StyleColorsDark();
-
-    // Set up scaling
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.ScaleAllSizes(main_scale);
-    style.FontScaleDpi = main_scale;
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplWin32_InitForOpenGL(hwnd);
-    ImGui_ImplOpenGL3_Init();
-
-    
-
     while (true)
     {
-        // Poll and handle messages (inputs, window resize, etc.)
-        // See the WndProc() function below for our to dispatch events to the Win32 backend.
-        MSG msg;
-        while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
-        {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-            if (msg.message == WM_QUIT)
-            {
-                return 0;
-            }
-        }
-
-        if (::IsIconic(hwnd))
-        {
-            ::Sleep(10);
-            continue;
-        }
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-
         if (!curveEditor.Tick())
         {
             break;

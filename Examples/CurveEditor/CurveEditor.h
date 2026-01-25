@@ -19,6 +19,9 @@ namespace CurveLib
 		bool Tick();
 
 	private:
+		// Returns true on success
+		bool Init();
+
 		void DrawGUI();
 		void DrawIntegration();
 		// Blocking function to open a Windows save dialog and save a curve as a .cvb binary file.
