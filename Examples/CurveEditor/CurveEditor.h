@@ -29,17 +29,14 @@ namespace CurveLib
 		// Blocking function to open a Windows open dialog
 		void DrawOpenDialog();
 
-
 		static const ImVec4 sClearColor;
-		//WindowState mWindowState;
+		
+		BezierCurve<Double2> mDefaultCurve;
+		AreaAccumulator mIntegrationAccumulator;
 
-		// TODO: Encapsulate these globals properly in application state
-		BezierCurve<Double2> defaultCurve;
-
-        bool isIntegrationEnabled = true;
-        bool isLookupTableDrawn = true;
-        AreaAccumulator integrationAccumulator;
-        // Signed to match the IMGUI input function
-        int32_t numSamplesPerSegment = 32;
+        bool mIsIntegrationEnabled = true;
+        bool mIsLookupTableDrawn = true;
+        // Signed to match the IMGUI input box function
+        int32_t mNumSamplesPerSegment = 32;
 	};
 }

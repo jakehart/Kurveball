@@ -34,7 +34,7 @@ namespace CurveLib
         // Test data
         CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.33, 1 }, { 0.67, 1 }, { 1, 0 } });
         CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 1, 0 }, { 1.5, -1 }, { 1.75, -1 }, { 2, 0 } });
-        defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
+        mDefaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
 
         assert(Init());
     }
@@ -74,8 +74,8 @@ namespace CurveLib
         ImPlot::CreateContext();
 
         ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // Enable Keyboard Controls
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
         ImGui::StyleColorsDark();
 
@@ -157,18 +157,18 @@ namespace CurveLib
         }
 
         ImGui::SameLine();
-        ImGui::Checkbox("Integrate", &isIntegrationEnabled);
+        ImGui::Checkbox("Integrate", &mIsIntegrationEnabled);
 
         ImGui::SameLine();
-        ImGui::Checkbox("Lookup", &isLookupTableDrawn);
+        ImGui::Checkbox("Lookup", &mIsLookupTableDrawn);
 
-        if (isIntegrationEnabled)
+        if (mIsIntegrationEnabled)
         {
             ImGui::SameLine();
             ImGui::PushItemWidth(100.f);
-            ImGui::InputInt("Samples per segment", &numSamplesPerSegment);
+            ImGui::InputInt("Samples per segment", &mNumSamplesPerSegment);
             ImGui::PopItemWidth();
-            numSamplesPerSegment = std::abs(numSamplesPerSegment);
+            mNumSamplesPerSegment = std::abs(mNumSamplesPerSegment);
         }
 
         // Default to the useful range for velocity curves, but let the user move and zoom the plot
@@ -177,7 +177,7 @@ namespace CurveLib
         if (ImPlot::BeginPlot("Curve", ImVec2(-1, -1), ImPlotFlags_NoBoxSelect))
         {
             // Draw the integration bars under everything else
-            if (isIntegrationEnabled)
+            if (mIsIntegrationEnabled)
             {
                 DrawIntegration();
             }
@@ -190,7 +190,7 @@ namespace CurveLib
             constexpr float SAMPLE_T_STEP = 0.01f;
             for (double t = 0; t < 2; t += SAMPLE_T_STEP)
             {
-                const Double2 position = defaultCurve.CalculatePositionAtT(t);
+                const Double2 position = mDefaultCurve.CalculatePositionAtT(t);
                 sampleX.push_back(position.X);
                 sampleY.push_back(position.Y);
             }
@@ -198,12 +198,12 @@ namespace CurveLib
             ImPlot::PlotLine("CurveLines", sampleX.data(), sampleY.data(), (int)sampleX.size());
 
             // Render from lookup table
-            if (isLookupTableDrawn)
+            if (mIsLookupTableDrawn)
             {
                 sampleX.clear();
                 sampleY.clear();
 
-                const auto& segments = defaultCurve.GetSegments();
+                const auto& segments = mDefaultCurve.GetSegments();
                 for (size_t segmentNum = 0; segmentNum < segments.size(); ++segmentNum)
                 {
                     const BezierCurveSegment<Double2>& segment = segments[segmentNum];
@@ -225,7 +225,7 @@ namespace CurveLib
             }
 
             int plotPointID = 0;
-            auto& segments = defaultCurve.AccessSegments();
+            auto& segments = mDefaultCurve.AccessSegments();
             std::vector<double> tangentXs{};
             std::vector<double> tangentYs{};
 
@@ -262,21 +262,21 @@ namespace CurveLib
         std::vector<double> sampleAreas{};
 
         // TODO: Only recalculate when curve is dirty
-        integrationAccumulator.Reset();
+        mIntegrationAccumulator.Reset();
 
-        const auto& segments = defaultCurve.GetSegments();
-        const size_t numTotalSamples = numSamplesPerSegment * segments.size();
+        const auto& segments = mDefaultCurve.GetSegments();
+        const size_t numTotalSamples = mNumSamplesPerSegment * segments.size();
 
         for (int i = 0; i < numTotalSamples; ++i)
         {
             const double x = (double)i / numTotalSamples;
-            const double curveY = defaultCurve.CalculatePositionAtXCoordinate(x).Y;
+            const double curveY = mDefaultCurve.CalculatePositionAtXCoordinate(x).Y;
 
-            integrationAccumulator.AccumulateArea((float)x, (float)curveY);
+            mIntegrationAccumulator.AccumulateArea((float)x, (float)curveY);
 
             xCoords.push_back(x);
             yCoords.push_back(curveY);
-            sampleAreas.push_back(integrationAccumulator.GetTotalArea());
+            sampleAreas.push_back(mIntegrationAccumulator.GetTotalArea());
         }
 
         ImPlot::PlotBars("Integration", xCoords.data(), yCoords.data(), (int)xCoords.size(), 0.01);
@@ -318,7 +318,7 @@ namespace CurveLib
         if (isOK)
         {
             std::ofstream fileOut(ofn.lpstrFile);
-            defaultCurve.ToBinary(fileOut);
+            mDefaultCurve.ToBinary(fileOut);
             fileOut.close();
         }
     }
@@ -343,7 +343,7 @@ namespace CurveLib
         if (isOK)
         {
             std::ifstream fileIn(ofn.lpstrFile);
-            defaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
+            mDefaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
             fileIn.close();
         }
     }
