@@ -262,10 +262,16 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
             StartVelocityCurve(mechanic);
         }
 
+        CurveLib::Float3 direction{1, 0, 0}; // forward
+        if (mechanic->CoordinateSpace == ECoordinateSpace::world)
+        {
+            direction = direction.LocalToWorldDirection(mCurveContext.mOutput.mRotation);
+        }
+
         CurveLib::UpdateVelocityCurve(mCurveContext,
             curveID,
             inputAxis * mechanic->SpeedMultiplier,
-            CurveLib::Float3(1, 0, 0));
+            direction);
     }
 }
 
@@ -351,6 +357,11 @@ void UVelocityCurveComponent::SetLocation(FVector location)
 FVector UVelocityCurveComponent::GetVelocity()
 {
     return ToFVector(mCurveContext.mOutput.mVelocity);
+}
+
+FVector UVelocityCurveComponent::GetLocalVelocity()
+{
+    return ToFVector(mCurveContext.mOutput.mVelocity.WorldToLocalDirection(mCurveContext.mOutput.mRotation));
 }
 
 FVector UVelocityCurveComponent::GetAngularVelocity()

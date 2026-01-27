@@ -27,7 +27,7 @@ Bug: does not support Windows display scales other than 100% -- bug confirmed pr
 Visualize playback (e.g. using a 1D or 2D point)  
 
 ## Housekeeping
-Naming consistency: StartVelocityCurve etc. all take mechanics and should be named StartMechanic etc., ...  
+Naming consistency: StartVelocityCurve etc. all take mechanics and should be named StartCurveMechanic etc., ...  
 pretty printing - find a satisfactory tool for this
 
 ## Documentation

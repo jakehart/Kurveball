@@ -72,7 +72,9 @@ namespace CurveLib
         // Transforms this direction vector from local to world space, using an entity's rotation.
         // TODO: make this respect the engine's axis handedness. It's just a wrapper for ZYX rotation for now,
         // which maps to yaw->pitch->roll in Unreal.
-        inline Position LocalToWorldDirection(EulerAngles anglesDegrees) { return RotateEulerZYX(anglesDegrees); }
+        [[nodiscard]] inline Position LocalToWorldDirection(EulerAngles anglesDegrees) { return RotateEulerZYX(anglesDegrees); }
+        
+        [[nodiscard]] inline Position WorldToLocalDirection(EulerAngles anglesDegrees) { return RotateEulerZYX(anglesDegrees * -1.f); }
 
         [[nodiscard]] static Vector3 Lerp(const Vector3& first, const Vector3& second, ScalarT lerpT);
 

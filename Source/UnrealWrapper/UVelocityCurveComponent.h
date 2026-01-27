@@ -84,6 +84,10 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FVector GetVelocity();
 
+    // Returns the actor's velocity in local space.
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
+    FVector GetLocalVelocity();
+
     // Returns the angular velocity around each axis in degrees per second, which is output from the rotation curves.
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     FVector GetAngularVelocity();
