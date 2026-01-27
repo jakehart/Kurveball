@@ -153,6 +153,17 @@ namespace CurveLib
         curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * timeConversionFactor);
     }
 
+    Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    {
+        const auto* curveInstance = GetCurveInstance(context, instanceId);
+        if (!curveInstance)
+        {
+            return {};
+        }
+
+        return curveInstance->mMechanic.mDirection;
+    }
+
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)
     {
         const auto* curveInstance = GetCurveInstance(context, instanceId);

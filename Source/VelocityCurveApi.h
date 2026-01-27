@@ -29,6 +29,7 @@ namespace CurveLib
 
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate);
 
+    Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceId instanceId);
     float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId);
     float GetTotalSpeed(const VelocityCurveContext& context);
 
