@@ -460,6 +460,23 @@ int32_t UVelocityCurveComponent::CurveNameToInstanceId(const FString& curveName)
     return GetTypeHash(curveName);
 }
 
+void UVelocityCurveComponent::DefineCurveXFunction(const UCurveMechanic* mechanic, const FCurveXSampler& xSampler)
+{
+    if (!mechanic)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("DefineCurveXFunction: Mechanic port must be connected"));
+        return;
+    }
+
+    if (auto* curveInstance = CurveLib::AccessCurveInstance(mCurveContext, mechanic->GetCurveId()))
+    {
+        curveInstance->mXSampler.emplace([&]() -> float
+            {
+                return xSampler.Execute();
+            });
+    }
+}
+
 CurveLib::VelocityCurveContext& UVelocityCurveComponent::AccessCurveContext()
 {
     return mCurveContext;

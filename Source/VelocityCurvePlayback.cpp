@@ -67,6 +67,11 @@ namespace CurveLib
         const VelocityCurveInstance* curveInstance = GetCurveInstance(context, curveInstanceId);
         CURVELIB_VERIFY_RETURN(curveInstance, 0.f);
 
+        if (curveInstance->mXSampler.has_value())
+        {
+            return (*curveInstance->mXSampler)();
+        }
+
         return Internal::CalculateCurveX(*curveInstance, context.mAbsoluteTime);
     }
 

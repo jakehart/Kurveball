@@ -7,6 +7,7 @@ Stretch spline to height and destination
 Networked play using UE networking  
 "Create movement mechanic" menu item  
 Movement line/subway map  
+bugfix: falling through the floor at low framerates
 
 ## Playback
 Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function  
@@ -27,7 +28,7 @@ Bug: does not support Windows display scales other than 100% -- bug confirmed pr
 Visualize playback (e.g. using a 1D or 2D point)  
 
 ## Housekeeping
-Naming consistency: StartVelocityCurve etc. all take mechanics and should be named StartCurveMechanic etc., ...  
+Naming consistency: StartVelocityCurve etc. all take mechanics and should be named StartCurveMechanic etc., preface Unreal assets with the commonly accepted two-letter prefixes, replace all Id with ID
 pretty printing - find a satisfactory tool for this
 
 ## Documentation

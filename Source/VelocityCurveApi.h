@@ -3,6 +3,7 @@
 
 #include <optional>
 #include "CurveInstanceId.h"
+#include "CurveSampler.h"
 #include "Axis.h"
 #include "UnitTypes.h"
 #include "Vector3.h"
@@ -12,8 +13,7 @@ namespace CurveLib
     struct VelocityCurveContext;
     struct VelocityCurveInstance;
 
-
-    // Determines which axis counts as vertical. The other two will be considered horizontal.
+    // Determines which axis is treated as vertical. The other two will be considered horizontal.
     // You should call this at startup to tell CurveLib which axis your engine considers to be vertical.
     // The default is Y.
     void SetVerticalAxis(VelocityCurveContext& ioContext, Axis verticalAxis);
@@ -55,4 +55,6 @@ namespace CurveLib
     uint32_t CalculateCurveDebugColor(CurveInstanceId curveId);
 
     bool IsRotationCurve(const VelocityCurveInstance& curveInstance);
+
+    void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceId curveID, CurveXFunction func);
 }

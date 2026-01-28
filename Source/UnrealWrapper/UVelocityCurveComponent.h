@@ -108,6 +108,10 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     int32 CurveNameToInstanceId(const FString& curveName) const;
 
+    DECLARE_DYNAMIC_DELEGATE_RetVal(float, FCurveXSampler);
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void DefineCurveXFunction(const UCurveMechanic* mechanic, const FCurveXSampler& xSampler);
+
     const CurveLib::VelocityCurveContext& GetCurveContext() const;
 
     // If true, collision stops this actor. If false, the actor can clip through collision.

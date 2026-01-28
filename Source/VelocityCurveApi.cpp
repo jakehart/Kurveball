@@ -1,6 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #include "VelocityCurveApi.h"
 
+#include "Asserts.h"
 #include "VelocityCurveContext.h"
 #include "VelocityCurveInstance.h"
 #include "VelocityCurvePlayback.h"
@@ -313,5 +314,13 @@ namespace CurveLib
         return curveInstance.mMechanic.mAxisMode == AxisMode::yaw ||
                 curveInstance.mMechanic.mAxisMode == AxisMode::pitch ||
                 curveInstance.mMechanic.mAxisMode == AxisMode::roll;
+    }
+
+    void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceId curveID, CurveXFunction func)
+    {
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, curveID);
+        CURVELIB_VERIFY_RETURN(curveInstance);
+
+        curveInstance->mXSampler = func;
     }
 }

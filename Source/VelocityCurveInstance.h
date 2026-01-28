@@ -26,12 +26,19 @@ namespace CurveLib
         // total distance travelled and is used to calculate the current position).
         AreaAccumulator mDistanceAccumulator {};
         
-        // Given an x coordinate, returns a speed value (y).
+        // Given an x coordinate, returns a speed value (y). This is the function used to sample the velocity curve asset.
         CurveSamplerXY mSpeedSampler;
         
         // Given some distance travelled, returns a position. This exists so that we can use a velocity curve
         // to move along a 3D world-space spline.
         std::optional<CurveSampler3D> mPositionSampler = std::nullopt;
+
+        // By default, velocity curves play out over time, looping and stretching as defined by the parameters in CurveMechanic.
+        // But in advanced use cases, you might want to use some other means to decide the x coordinate that is sampled from the
+        // curve. For example, perhaps you want the X to depend upon distance above a certain plane, or upon speed, or even upon user
+        // input. If you define this optional function, you can bind whatever data you need into your lambda and return a float
+        // that determines the x coordinate to sample.
+        std::optional<CurveXFunction> mXSampler = std::nullopt;
         
         // The output (position, rotation, speed, etc.) of this individual curve from the most recent tick.
         // This is combined with any other running curves to give the final result.

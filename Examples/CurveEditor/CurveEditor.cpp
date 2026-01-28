@@ -322,7 +322,7 @@ namespace CurveLib
     {
         OPENFILENAME ofn;
 
-        char szFileName[MAX_PATH] = "";
+        const char szFileName[MAX_PATH] = "";
 
         ZeroMemory(&ofn, sizeof(ofn));
 
