@@ -151,9 +151,15 @@ void UVelocityCurveComponent::StopAllVelocityCurves()
     CurveLib::StopAllVelocityCurves(mCurveContext);
 }
 
-void UVelocityCurveComponent::SeekToX(const UCurveMechanic& mechanic, float curveXCoordinate)
+void UVelocityCurveComponent::SeekToX(const UCurveMechanic* mechanic, float curveXCoordinate)
 {
-    CurveLib::SeekToX(mCurveContext, mechanic.GetCurveId(), curveXCoordinate);
+    if (!mechanic)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("SeekToX: Mechanic pin must be connected"));
+        return;
+    }
+
+    CurveLib::SeekToX(mCurveContext, mechanic->GetCurveId(), curveXCoordinate);
 }
 
 void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction)
