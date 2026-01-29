@@ -16,7 +16,6 @@ namespace CurveLib
         mSamples.emplace_back(x, y);
     }
 
-
     template<typename PositionT>
     LookupTable<PositionT>::ScalarType LookupTable<PositionT>::CalculateValue(ScalarType x)
     {
@@ -34,14 +33,14 @@ namespace CurveLib
             return 0;
         }
 
-        const ScalarType lowerSample = mSamples[lowerIndex].second;
-        const ScalarType higherSample = mSamples[higherIndex].second;
-        const ScalarType sampleWidth = higherSample - lowerSample;
+        const ScalarType lowerSampleY = mSamples[lowerIndex].second;
+        const ScalarType higherSampleY = mSamples[higherIndex].second;
+        const ScalarType sampleWidth = mSamples[higherIndex].first - mSamples[lowerIndex].first;
 
         const ScalarType distanceBetweenSamples = 1.f / mSampleRate;
-        const ScalarType progressBetweenSamples = (x - lowerSample) / sampleWidth;
+        const ScalarType progressBetweenSamples = (x - mSamples[lowerIndex].first) / sampleWidth;
 
-        return Lerp(lowerSample, higherSample, progressBetweenSamples);
+        return Lerp(lowerSampleY, higherSampleY, progressBetweenSamples);
     }
 
     template<typename PositionT>
