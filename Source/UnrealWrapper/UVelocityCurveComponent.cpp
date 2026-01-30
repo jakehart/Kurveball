@@ -322,7 +322,21 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
         return;
     }
 
-    const auto* owner = GetOwner();
+    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    CurveLib::VelocityCurveInstance* curveInstance = CurveLib::AccessCurveInstance(mCurveContext, curveInstanceId);
+
+    if (!curveInstance)
+    {
+        UE_LOG(CurveLibLog, Error, TEXT("Velocity curve not found"));
+        return;
+    }
+
+    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent, desiredHeight);
+}
+
+void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mechanic, float heightCm, FVector destination)
+{
+    auto* owner = GetOwner();
     if (!owner)
     {
         return;
@@ -337,23 +351,33 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
         return;
     }
 
-    //const FVector startPosition = owner->GetActorLocation();
-    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent, desiredHeight);
-}
+    USplineComponent* splineComponent = CreateDefaultSubobject<USplineComponent>("MySpline", true);
 
-/*const void UVelocityCurveComponent::StretchSpline(USplineComponent* splineComponent, FVector startPosition, FVector endPosition, float height, ECoordinateSpace coordinateSpace)
-{
-    if (!splineComponent)
-    {
-        UE_LOG(CurveLibLog, Error, TEXT("StretchSpline: SplineComponent pin must be connected"));
-        return;
-    }
-    //splineComponent->ApplyComponentInstanceData(FSplineComponentInstanceData
-    //const FBoxSphereBounds bounds = splineComponent->CalcBounds()
-    FSpline alteredSpline = splineComponent->SplineCurves.
-    
-        splineComponent->SetSpline(alteredSpline);
-}*/
+    static const FVector sOneScale(1.f, 1.f, 1.f);
+
+    FSplinePoint beginning;
+    beginning.Position = owner->GetActorLocation();
+    beginning.Rotation = owner->GetActorRotation();
+    beginning.Scale = sOneScale;
+
+    FSplinePoint peak;
+    peak.Position = (beginning.Position + destination) / 2.f;
+    peak.Position.Z += heightCm;
+    peak.Rotation = beginning.Rotation;
+    peak.Scale = sOneScale;
+
+    FSplinePoint end;
+    end.Position = destination;
+    end.Rotation = beginning.Rotation;
+    end.Scale = sOneScale;
+
+    splineComponent->AddPoint(beginning, false);
+    splineComponent->AddPoint(peak, false);
+    splineComponent->AddPoint(end, false);
+    splineComponent->UpdateSpline();
+
+    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent);
+}
 
 void UVelocityCurveComponent::SetLocation(FVector location)
 {

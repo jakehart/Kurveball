@@ -73,10 +73,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight = 0.f);
 
-    // Stretches a spline in place so that its start and end are at the desired points, with the top of the spline
-    // at the given height in cm. The input coordinates are in terms of whatever coordinate space you specify.
-    /*UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
-    const void StretchSpline(USplineComponent* splineComponent, FVector startPosition, FVector endPosition, float height, ECoordinateSpace coordinateSpace = ECoordinateSpace::world);*/
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void GenerateParabolicSpline(const UCurveMechanic* mechanic, float heightCm, FVector destination);
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void SetLocation(FVector location);

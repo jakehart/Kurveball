@@ -49,25 +49,17 @@ namespace CurveLib
             return NULL_SAMPLER;
         }
 
-        // Scale to desired desiredHeight
+        // Scale to desiredHeight
         float heightScale = 1.f;
         if (desiredHeight > sFloatEpsilon)
         {
             const auto localBounds = splineComponent->CalcLocalBounds();
-            const float nativeSplineHeight = localBounds.GetBox().Max.Z;
-            if (nativeSplineHeight > 0)
+            const float nativeSplineHeight = localBounds.GetBox().Max.Z - localBounds.GetBox().Min.Z;
+            if (nativeSplineHeight > sFloatEpsilon)
             {
                 heightScale = desiredHeight / nativeSplineHeight;
             }
         }
-
-        // Yaw, pitch, and horizontally the spline so that its starting and ending points match the requested start and destination
-        /*FRotator reorient = FRotator::ZeroRotator; // identity rotation
-        if (destination)
-        {
-            const auto splineStart = splineComponent->GetSplinePointAt(0, ESplineCoordinateSpace::Local);
-            const auto splineEnd = splineComponent->GetSplinePointAt(splineComponent->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::Local);
-        }*/
 
         return [splineComponent, heightScale](float distance)
             {
