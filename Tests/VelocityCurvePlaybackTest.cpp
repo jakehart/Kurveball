@@ -199,7 +199,7 @@ TEST_CASE("TickPlayback rotation")
 
         if (i > 0)
         {
-            REQUIRE(context.mOutput.mHasEverUpdated);
+            REQUIRE(context.mOutput.mHasUpdated);
             // Rotations are hardcoded to Unreal axes for now, so yaw is around the Z axis.
             REQUIRE_THAT(context.mOutput.mRotation.X, Catch::Matchers::WithinRel(0.f));
             REQUIRE_THAT(context.mOutput.mRotation.Y, Catch::Matchers::WithinRel(0.f));
@@ -254,7 +254,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
         context.mAbsoluteTime = i * TICK_DURATION;
         CurveLib::Internal::TickSingleCurve(curveInstance, context);
         REQUIRE(curveInstance.mDistanceAccumulator.HasEverUpdated());
-        REQUIRE(curveInstance.mOutput.mHasEverUpdated);
+        REQUIRE(curveInstance.mOutput.mHasUpdated);
 
         const float totalArea = curveInstance.mDistanceAccumulator.GetTotalArea();
         if (i > 0)
@@ -347,7 +347,7 @@ TEST_CASE("TickPlayback linear movement")
         context.mAbsoluteTime = Seconds(i * TICK_DURATION.count());
         CurveLib::TickPlayback(context, context.mAbsoluteTime);
 
-        REQUIRE(context.mOutput.mHasEverUpdated);
+        REQUIRE(context.mOutput.mHasUpdated);
         
         // Need two data points for distance (area) to be calculated
         if (i > 0)
@@ -365,7 +365,7 @@ TEST_CASE("TickPlayback linear movement")
         }
     }
     
-    REQUIRE(context.mHasEverUpdated);
+    REQUIRE(context.mHasUpdated);
     
     // Ensure that conditions stay stable on curve stop
     CurveLib::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceId);

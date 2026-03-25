@@ -19,7 +19,7 @@ namespace CurveLib
         Position mPositionDelta;
         EulerAngles mRotation;
         EulerAngles mRotationDelta;
-        bool mHasEverUpdated = false;
+        bool mHasUpdated = false;
 
         std::string ToString() const
         {

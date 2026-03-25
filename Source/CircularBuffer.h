@@ -33,7 +33,7 @@ namespace CurveLib
 
         ConstIteratorT Begin() const
         {
-            if (!mHasEverUpdated)
+            if (!mHasUpdated)
             {
                 return mRing.cbegin();
             }
@@ -64,7 +64,7 @@ namespace CurveLib
 
         ConstIteratorT End() const
         {
-            if (!mHasEverUpdated)
+            if (!mHasUpdated)
             {
                 return mRing.cbegin();
             }
@@ -92,7 +92,7 @@ namespace CurveLib
         std::array<ContainedT, Size> mRing;
         size_t mWriteCursor{ 0U };
         bool mHasWrapped{ false };
-        bool mHasEverUpdated{ false };
+        bool mHasUpdated{ false };
     };
 }
 

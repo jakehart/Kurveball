@@ -20,12 +20,12 @@ namespace CurveLib
         mTotalArea = 0.f;
         mLatestSample.X = 0.f;
         mLatestSample.Y = 0.f;
-        mHasEverUpdated = false;
+        mHasUpdated = false;
     }
 
     bool AreaAccumulator::HasEverUpdated() const
     {
-        return mHasEverUpdated;
+        return mHasUpdated;
     }
 
     void AreaAccumulator::AccumulateArea(float x, float y)
@@ -35,14 +35,14 @@ namespace CurveLib
     
     void AreaAccumulator::AccumulateArea(const Float2& sample)
     {
-        if (mHasEverUpdated)
+        if (mHasUpdated)
         {
             mLatestStepArea = mIntegrator(mLatestSample, sample);
             mTotalArea += mLatestStepArea;
         }
 
         mLatestSample = sample;
-        mHasEverUpdated = true;
+        mHasUpdated = true;
     }
 
     float AreaAccumulator::GetTotalArea() const

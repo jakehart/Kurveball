@@ -34,8 +34,8 @@ namespace CurveLib
         Internal::TickCurvePhase(ioContext, ioContext.mRotationCurves);
         Internal::TickCurvePhase(ioContext, ioContext.mLinearCurves);
 
-        ioContext.mHasEverUpdated = true;
-        ioContext.mOutput.mHasEverUpdated = true;
+        ioContext.mHasUpdated = true;
+        ioContext.mOutput.mHasUpdated = true;
     }
 
     Seconds CalculateCurveRuntime(const VelocityCurveInstance& curveInstance)
@@ -164,7 +164,7 @@ namespace CurveLib
             ioCurveInstance.mOutput.mPosition.FloorToZero();
             ioCurveInstance.mOutput.mVelocity.FloorToZero();
 
-            ioCurveInstance.mOutput.mHasEverUpdated = true;
+            ioCurveInstance.mOutput.mHasUpdated = true;
         }
 
         void ApplyAccumulatorToPosition(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context)

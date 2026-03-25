@@ -25,7 +25,7 @@ namespace CurveLib
 
         // The most recent output from TickPlayback().
         VelocityCurveOutput mOutput;
-        bool mHasEverUpdated{ false };
+        bool mHasUpdated{ false };
 
         Float3 mPreviousPosition{};
 

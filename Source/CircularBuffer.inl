@@ -32,7 +32,7 @@ namespace CurveLib
 
         // mWriteCursor always points to the next element we will write
         mWriteCursor = WrapCursor(mWriteCursor + 1);
-        mHasEverUpdated = true;
+        mHasUpdated = true;
 
         return true; // Success
     }
@@ -40,7 +40,7 @@ namespace CurveLib
     template<typename ContainedT, size_t Size>
     size_t CircularBuffer<ContainedT, Size>::GetNumContained() const
     {
-        if(!mHasEverUpdated)
+        if(!mHasUpdated)
         {
             return 0;
         }

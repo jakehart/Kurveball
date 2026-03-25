@@ -28,7 +28,7 @@ namespace CurveLib
         float mTotalArea{ 0.f };
         // The area from ONLY the most recent integration step.
         float mLatestStepArea{ 0.f };
-        bool mHasEverUpdated{ false };
+        bool mHasUpdated{ false };
         IntegratorFunction mIntegrator;
         Float2 mLatestSample{};
     };
