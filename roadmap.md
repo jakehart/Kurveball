@@ -8,6 +8,7 @@ Networked play using UE networking
 "Create movement mechanic" menu item  
 Movement line/subway map  
 bugfix: falling through the floor at low framerates
+	this is due to the sensor check for gravity, which is hacky
 
 ## Playback
 Cancel on collision setting/action -- since the curve sim doesn't know directly about collisions, would need to add a ReportCollision API function  
