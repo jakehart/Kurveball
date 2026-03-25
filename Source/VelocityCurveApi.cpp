@@ -137,11 +137,10 @@ namespace CurveLib
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
-        if (!curveInstance)
-        {
-            // TODO: Complain
-            return;
-        }
+        CURVELIB_VERIFY_RETURN(curveInstance);
+
+        // Zero or negative asset durations are invalid
+        CURVELIB_VERIFY_RETURN(curveInstance->mMechanic.mRawAssetDuration.count() > sFloatEpsilon);
 
         // Convert from stretched playtime back to raw curve asset coordinates
         float timeConversionFactor = 1.f;

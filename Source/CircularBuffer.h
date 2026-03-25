@@ -33,65 +33,56 @@ namespace CurveLib
 
         ConstIteratorT Begin() const
         {
-            // Start with the array's absolute begin iterator
-            ConstIteratorT startIter;
-
-            // For const iterators, use cbegin()
-            startIter = mRing.cbegin();
-
-            // Brief comment: Determine the index of the oldest element
-            size_t oldestIndex = 0;
-
             if (!mHasEverUpdated)
             {
-                // Brief comment: If never updated, the buffer is empty, begin is end
-                return startIter;
+                return mRing.cbegin();
             }
 
-            if (mHasWrapped)
+            size_t count = GetNumContained();
+            if (count == 0)
             {
-                // Brief comment: If wrapped, the oldest element is right after the current write cursor
-                oldestIndex = mWriteCursor;
-            }
-            else
-            {
-                // Brief comment: If not wrapped, the oldest element is always at index 0
-                oldestIndex = 0;
+                return mRing.cbegin();
             }
 
-            // Brief comment: Advance the iterator to the calculated index
-            std::advance(startIter, oldestIndex);
-            return startIter;
+            // The oldest element is at (mWriteCursor - count) wrapped around
+            // Example: Size=5, Write=2, Count=3. Oldest is at (2-3)%5 = -1 -> 4.
+            // Wait, let's re-verify the "oldest" definition.
+            // In AddToEnd: mWriteCursor points to the NEXT slot to write.
+            // So the LAST written item is at (mWriteCursor - 1).
+            // The FIRST written item (oldest) is at (mWriteCursor - count).
+
+            // Since we are dealing with unsigned size_t, we need to handle the wrap carefully.
+            // (a - b) % N is tricky with unsigned if a < b.
+            // Better: (mWriteCursor + Size - count) % Size
+
+            size_t oldestIndex = (mWriteCursor + Size - count) % Size;
+
+            ConstIteratorT iter = mRing.cbegin();
+            std::advance(iter, oldestIndex);
+            return iter;
         }
 
         ConstIteratorT End() const
         {
-            ConstIteratorT endIter;
-
-            // Start with the array's absolute begin iterator
-            endIter = mRing.cbegin();
-
             if (!mHasEverUpdated)
             {
-                // If never updated, the buffer is empty, end is begin
-                return endIter;
+                return mRing.cbegin();
             }
 
-            if (mHasWrapped)
+            size_t count = GetNumContained();
+            if (count == 0)
             {
-                // If wrapped, the newest element is just before the write cursor
-                // The cursor points to the NEXT available slot, which is also the 'end' marker
-                // The size of the active data is 'Size'
-                std::advance(endIter, Size);
-                return endIter;
+                return mRing.cbegin();
             }
-            else
-            {
-                // If not wrapped, the end marker is the current write cursor
-                // The cursor points to the next available slot, which is the end marker
-                std::advance(endIter, mWriteCursor);
-                return endIter;
-            }
+
+            // The end iterator is the slot AFTER the newest element.
+            // The newest element is at (mWriteCursor - 1).
+            // So the end is at mWriteCursor.
+            // We just need to wrap it if necessary, though mWriteCursor is already wrapped.
+
+            ConstIteratorT iter = mRing.cbegin();
+            std::advance(iter, mWriteCursor);
+            return iter;
         }
 
     private:
