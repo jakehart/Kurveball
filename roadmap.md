@@ -1,5 +1,5 @@
 # Release Roadmap
-This summarizes all the features and fixes that are needed in order to release CurveLib.
+This summarizes all the features and fixes that are needed in order to release Kurveball.
 
 ## Unreal Demo
 Some solution for slope traversability. Sample x of a "slope curve" based on slope angle? and then multiply with the horizontal curves  
