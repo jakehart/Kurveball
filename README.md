@@ -1,13 +1,48 @@
-# CurveLib
-CurveLib is a designer-driven root motion library, used primarily for the development of character movement and parkour mechanics. It is currently under development, with all basic features already implemented. I am now focusing on details and engine wrappers.
+# ╭╰ CurveLib ╭╰
 
-# How to Use in Unreal Engine
-Just put CurveLib under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation to your actor, making your life easier. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint.
+CurveLib is a curve-driven movement and animation library designed to replace complex imperative movement code with intuitive visual graphs. 
+
+Instead of writing code to create movement, you define a velocity curve: a simple graph where the X-axis is Time and the Y-axis is Speed. CurveLib reads this graph, performs the necessary calculus integration, and drives your character's position and rotation automatically.
+
+## 📜🪶 Philosophy
+
+Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or tweaking numbers by trial and error.
+
+## 📐 How to Use in Unreal Engine
+
+Just put CurveLib under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation to your actor, making your life easier. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint. CurveLib is compatible with Unreal's CurveFloat type, so you can use its native editor to draw your velocity curves.
 
 Wrappers for other engines are on the roadmap! Godot is next in line after Unreal.
 
-# Philosophy
-Each movement mechanic is represented as a graph of speed over time: x is time (from left to right), and y is speed. Each curve can be looped, time-stretched, speed-stretched, 
+## 🔩 Other Platforms and Engines
 
-# Platforms and Engines
-CurveLib is completely platform-agnostic. It doesn't care which axis is up, what the world units are, or how your engine works. Just be consistent with your units and axes, and you'll be off to the races.
+CurveLib is not dependent on any specific platform or engine. It doesn't care which axis is up, what the world units are, or how your engine works. Just be consistent with your units and axes, start your mechanic with StartVelocityCurve, and call CurveLib::TickPlayback(). The library handles the rest, storing the result in `VelocityCurveContext`.
+
+## 📦 Architecture & Extensibility
+
+CurveLib is split into two layers:
+1.  **Core (`CurveLib` namespace):** Pure C++ templates. **No dependencies on any specific engine.** Handles math, Bezier curves, integration, and data structures.
+2.  **Wrappers:** Engine-specific adapters. Translate engine types (`FVector`, `UCurveFloat`) into Core types.
+
+**Adding a New Engine:**
+To port to a custom engine:
+1.  Include the `CurveLib` header files.
+2.  Implement a wrapper for `VelocityCurveContext`.
+3.  Map your engine's vector types to `Float3`.
+4.  Implement a sampler for your engine's curve asset type.
+
+## 📄 License
+MIT Non-AI License. Copyright (c) 2025 Jake Hart.
+*See `LICENSE.md` for details.*
+
+---
+
+## 🤝 Contributing
+If you find bugs, have ideas for new features, or want to help build a wrapper for Godot or Unity, please open an issue or submit a PR!
+
+---
+
+### 💡 Why use CurveLib?
+*   **For Designers:** You'll be able to create movement and camera mechanics autonomously, without intervention from engineers. Iterate on movement feel in seconds, not hours.
+*   **For Programmers:** You'll be freed from having to implement individual movement or camera mechanics in your code.
+*   **For Artists:** Create precise, reproducible animations that sync perfectly with gameplay.
