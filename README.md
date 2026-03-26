@@ -16,7 +16,7 @@ Wrappers for other engines are on the roadmap! Godot is next in line after Unrea
 
 ## 🔩 Other Platforms and Engines
 
-Kurveball is not dependent on any specific platform or engine. It doesn't care which axis is up, what the world units are, or how your engine works. Just be consistent with your units and axes, start your mechanic with StartVelocityCurve, and call Kurveball::TickPlayback(). The library handles the rest, storing the result in `VelocityCurveContext`.
+Kurveball is not dependent on any specific platform or engine. It doesn't care which axis is up, what the world units are, or how your engine works. Just be consistent with your units and axes, start your mechanic with StartVelocityCurve, and call `Kurveball::TickPlayback()`. The library handles the rest, storing the result in `VelocityCurveContext`.
 
 ## 📦 Architecture & Extensibility
 
@@ -26,10 +26,10 @@ Kurveball is split into two layers:
 
 **Adding a New Engine:**
 To port to a custom engine:
-1.  Include the `Kurveball` header files.
+1.  `#include Kurveball/Source/KurveballAll.h`
 2.  Implement a wrapper for `VelocityCurveContext`.
-3.  Map your engine's vector types to `Float3`.
-4.  Implement a sampler for your engine's curve asset type.
+3.  Map your engine's vector types to `Kurveball::Float3`.
+4.  Implement a `CurveSampler` for your engine's curve asset type.
 
 ## 📄 License
 MIT Non-AI License. Copyright (c) 2025 Jake Hart.
@@ -43,6 +43,6 @@ If you find bugs, have ideas for new features, or want to help build a wrapper f
 ---
 
 ### 💡 Why use Kurveball?
-*   **For Designers:** You'll be able to create movement and camera mechanics autonomously, without intervention from engineers. Iterate on movement feel in seconds, not hours.
-*   **For Programmers:** You'll be freed from having to implement individual movement or camera mechanics in your code.
+*   **For Designers:** You'll be able to create movement and camera mechanics independently and without intervention from engineers. Iterate on movement feel in seconds by shaping a curve.
+*   **For Programmers:** You'll be freed from having to implement code for individual character movement mechanics or cameras.
 *   **For Artists:** Create precise, reproducible animations that sync perfectly with gameplay.
