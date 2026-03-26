@@ -4,7 +4,7 @@
 #include <functional>
 #include "Vector3.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Takes a distance value and returns the position there. Generally
     // a lambda that captures the curve data itself.

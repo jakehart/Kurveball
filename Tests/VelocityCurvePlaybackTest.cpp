@@ -11,10 +11,10 @@
 
 #include "TestUtils.h"
 
-const CurveLib::Seconds TICK_DURATION(0.1);
-const CurveLib::Seconds TIME_TOLERANCE = TICK_DURATION * 2.f;
-const CurveLib::Seconds TICK_DURATION_SHORT(0.05);
-const CurveLib::Seconds TIME_TOLERANCE_SHORT = TICK_DURATION_SHORT * 2.f;
+const Kurveball::Seconds TICK_DURATION(0.1);
+const Kurveball::Seconds TIME_TOLERANCE = TICK_DURATION * 2.f;
+const Kurveball::Seconds TICK_DURATION_SHORT(0.05);
+const Kurveball::Seconds TIME_TOLERANCE_SHORT = TICK_DURATION_SHORT * 2.f;
 
 const float DEGREE_TOLERANCE = 1.f;
 const float DISTANCE_TOLERANCE = 0.5f;
@@ -22,18 +22,18 @@ const float DISTANCE_TOLERANCE = 0.5f;
 TEST_CASE("TickPlayback with local direction")
 {
     constexpr size_t NUM_TICKS = 10;
-    using namespace CurveLib;
+    using namespace Kurveball;
     VelocityCurveContext context;
 
     // Give the entity a 90 degree yaw
-    CurveLib::SetVerticalAxis(context, Axis::Z);
-    CurveLib::SetRotation(context, 0, 0, 90);
+    Kurveball::SetVerticalAxis(context, Axis::Z);
+    Kurveball::SetRotation(context, 0, 0, 90);
 
     auto curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mDirection.Set(1, 0, 0);
     curveInstance.mMechanic.mCoordinateSpace = CoordinateSpace::local;
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
 
     TickCurveContext(context, TICK_DURATION, NUM_TICKS);
 
@@ -46,7 +46,7 @@ TEST_CASE("TickPlayback with local direction")
 TEST_CASE("TickPlayback with negative curve output")
 {
     constexpr size_t NUM_TICKS = 100;
-    using namespace CurveLib;
+    using namespace Kurveball;
     VelocityCurveContext context;
 
     auto curveInstance = GenerateTestCurveInstance();
@@ -59,7 +59,7 @@ TEST_CASE("TickPlayback with negative curve output")
             return -1.f;
         };
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
     TickCurveContext(context, TICK_DURATION, NUM_TICKS);
 
     const float expectedX = -1 * curveInstance.mMechanic.mSpeedMultiplier * TICK_DURATION.count() * (NUM_TICKS-1);
@@ -69,14 +69,14 @@ TEST_CASE("TickPlayback with negative curve output")
 TEST_CASE("TickPlayback with rotation - wide ticks")
 {
     constexpr size_t NUM_TICKS = 10;
-    using namespace CurveLib;
+    using namespace Kurveball;
     VelocityCurveContext context;
 
     auto curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mAxisMode = AxisMode::yaw;
     curveInstance.mMechanic.mSpeedMultiplier = 10.f; // Degrees per second
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
     TickCurveContext(context, TICK_DURATION, NUM_TICKS);
     float expectedYawDegrees = curveInstance.mMechanic.mSpeedMultiplier * (NUM_TICKS - 1) * TICK_DURATION.count();
 
@@ -88,14 +88,14 @@ TEST_CASE("TickPlayback with rotation - wide ticks")
 TEST_CASE("TickPlayback with rotation - short ticks")
 {
     constexpr size_t NUM_TICKS = 100;
-    using namespace CurveLib;
+    using namespace Kurveball;
     VelocityCurveContext context;
 
     auto curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mAxisMode = AxisMode::yaw;
     curveInstance.mMechanic.mSpeedMultiplier = 10.f; // Degrees per second
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
     TickCurveContext(context, TICK_DURATION_SHORT, NUM_TICKS);
     float expectedYawDegrees = fmodf(curveInstance.mMechanic.mSpeedMultiplier * (NUM_TICKS - 1) * TICK_DURATION_SHORT.count(), 360.f);
 
@@ -106,7 +106,7 @@ TEST_CASE("TickPlayback with rotation - short ticks")
 
 TEST_CASE("TickPlayback with stretch duration")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
 
@@ -143,7 +143,7 @@ TEST_CASE("TickPlayback with stretch duration")
 
 TEST_CASE("TickPlayback with stretch duration and loop points")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
 
@@ -177,14 +177,14 @@ TEST_CASE("TickPlayback with stretch duration and loop points")
 
 TEST_CASE("TickPlayback rotation")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
 
     auto curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mSpeedMultiplier = 1.f; // degrees per second
     curveInstance.mMechanic.mAxisMode = AxisMode::yaw;
-    curveInstance.mMechanic.mPlayCount = CurveLib::PLAY_COUNT_INFINITE;
+    curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
     REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
@@ -195,7 +195,7 @@ TEST_CASE("TickPlayback rotation")
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = Seconds(i * 1.f);
-        CurveLib::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::TickPlayback(context, context.mAbsoluteTime);
 
         if (i > 0)
         {
@@ -216,30 +216,30 @@ TEST_CASE("TickPlayback rotation")
 
 TEST_CASE("TickPlayback with starting position (position drift check)")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
-    CurveLib::SetPosition(context, 10, 10, 10);
+    Kurveball::SetPosition(context, 10, 10, 10);
 
     VelocityCurveInstance curveInstance = GenerateTestCurveInstance();
-    curveInstance.mMechanic.mPlayCount = CurveLib::PLAY_COUNT_INFINITE;
+    curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
     curveInstance.mMechanic.mRawAssetDuration = Seconds(0.5);
     curveInstance.mMechanic.mStretchDuration = Seconds(0.0); // No stretch (use asset duration)
     curveInstance.mMechanic.mSpeedMultiplier = 0.f; // Go nowhere so that any position error is isolated
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
     TickPlayback(context, context.mAbsoluteTime);
     TickPlayback(context, context.mAbsoluteTime);
     TickPlayback(context, context.mAbsoluteTime);
 
-    REQUIRE_THAT(context.mOutput.mPosition.X, Catch::Matchers::WithinAbs(10, CurveLib::sFloatEpsilon));
-    REQUIRE_THAT(context.mOutput.mPosition.Y, Catch::Matchers::WithinAbs(10, CurveLib::sFloatEpsilon));
-    REQUIRE_THAT(context.mOutput.mPosition.Z, Catch::Matchers::WithinAbs(10, CurveLib::sFloatEpsilon));
+    REQUIRE_THAT(context.mOutput.mPosition.X, Catch::Matchers::WithinAbs(10, Kurveball::sFloatEpsilon));
+    REQUIRE_THAT(context.mOutput.mPosition.Y, Catch::Matchers::WithinAbs(10, Kurveball::sFloatEpsilon));
+    REQUIRE_THAT(context.mOutput.mPosition.Z, Catch::Matchers::WithinAbs(10, Kurveball::sFloatEpsilon));
 }
 
 TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during TickSingleCurve")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
     VelocityCurveInstance curveInstance = GenerateTestCurveInstance();
@@ -252,14 +252,14 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = i * TICK_DURATION;
-        CurveLib::Internal::TickSingleCurve(curveInstance, context);
+        Kurveball::Internal::TickSingleCurve(curveInstance, context);
         REQUIRE(curveInstance.mDistanceAccumulator.HasEverUpdated());
         REQUIRE(curveInstance.mOutput.mHasUpdated);
 
         const float totalArea = curveInstance.mDistanceAccumulator.GetTotalArea();
         if (i > 0)
         {
-            REQUIRE(totalArea > CurveLib::sFloatEpsilon);
+            REQUIRE(totalArea > Kurveball::sFloatEpsilon);
             REQUIRE(totalArea > previousArea);
         }
         previousArea = totalArea;
@@ -268,21 +268,21 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
 
 TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during TickPlayback")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
     VelocityCurveInstance curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mSpeedMultiplier = 5.f;
-    curveInstance.mMechanic.mPlayCount = CurveLib::PLAY_COUNT_INFINITE;
+    curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
-    REQUIRE(CurveLib::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
 
     float previousArea = 0.f;
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = i * TICK_DURATION;
-        CurveLib::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::TickPlayback(context, context.mAbsoluteTime);
 
         const auto& accumulator = context.mLinearCurves.find(curveInstance.mMechanic.mInstanceId)->second.mDistanceAccumulator;
         REQUIRE(accumulator.HasEverUpdated());
@@ -290,7 +290,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
         const float currentArea = accumulator.GetTotalArea();
         if (i > 0)
         {
-            REQUIRE(currentArea > CurveLib::sFloatEpsilon);
+            REQUIRE(currentArea > Kurveball::sFloatEpsilon);
             REQUIRE(currentArea > previousArea);
         }
         previousArea = currentArea;
@@ -299,7 +299,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
 
 TEST_CASE("CombineCurveOutput")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
     VelocityCurveInstance instance1 = GenerateTestCurveInstance();
@@ -307,7 +307,7 @@ TEST_CASE("CombineCurveOutput")
     instance2.mMechanic.mDirection = { 0, 0, 1 };
 
     VelocityCurveOutput combinedOutput;
-    CurveLib::Internal::CombineCurveOutput(combinedOutput, instance1);
+    Kurveball::Internal::CombineCurveOutput(combinedOutput, instance1);
     const auto& output1{ instance1.mOutput };
     const auto& output2{ instance2.mOutput };
 
@@ -318,7 +318,7 @@ TEST_CASE("CombineCurveOutput")
     REQUIRE(combinedOutput.mPositionDelta == output1.mPositionDelta);
     REQUIRE(combinedOutput.mRotation == output1.mRotation);
 
-    CurveLib::Internal::CombineCurveOutput(combinedOutput, instance2);
+    Kurveball::Internal::CombineCurveOutput(combinedOutput, instance2);
     REQUIRE(combinedOutput.mDirection == (output1.mDirection + output2.mDirection).GetNormalized());
     REQUIRE(combinedOutput.mVelocity == (output1.mVelocity + output2.mVelocity).GetNormalized());
     REQUIRE(combinedOutput.mSpeed == (output1.mVelocity + output2.mVelocity).GetNormalized().GetLength());
@@ -326,7 +326,7 @@ TEST_CASE("CombineCurveOutput")
 
 TEST_CASE("TickPlayback linear movement")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     constexpr float DISTANCE_TOLERANCE = 0.1f;
 
@@ -334,7 +334,7 @@ TEST_CASE("TickPlayback linear movement")
 
     auto curveInstance = GenerateTestCurveInstance();
     curveInstance.mMechanic.mSpeedMultiplier = 5.f;
-    curveInstance.mMechanic.mPlayCount = CurveLib::PLAY_COUNT_INFINITE;
+    curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
     REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
@@ -345,7 +345,7 @@ TEST_CASE("TickPlayback linear movement")
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = Seconds(i * TICK_DURATION.count());
-        CurveLib::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::TickPlayback(context, context.mAbsoluteTime);
 
         REQUIRE(context.mOutput.mHasUpdated);
         
@@ -368,9 +368,9 @@ TEST_CASE("TickPlayback linear movement")
     REQUIRE(context.mHasUpdated);
     
     // Ensure that conditions stay stable on curve stop
-    CurveLib::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceId);
+    Kurveball::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceId);
     context.mAbsoluteTime += TICK_DURATION;
-    CurveLib::TickPlayback(context, context.mAbsoluteTime);
+    Kurveball::TickPlayback(context, context.mAbsoluteTime);
     REQUIRE(context.mLinearCurves.empty());
     REQUIRE(context.mRotationCurves.empty());
     REQUIRE(context.mOutput.mVelocity.IsZero());
@@ -381,23 +381,23 @@ TEST_CASE("TickPlayback linear movement")
 
 TEST_CASE("Infinite playback")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     VelocityCurveContext context;
 
     VelocityCurveInstance curveInstance = GenerateTestCurveInstance();
-    curveInstance.mMechanic.mPlayCount = CurveLib::PLAY_COUNT_INFINITE;
+    curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
     curveInstance.mMechanic.mRawAssetDuration = Seconds(0.5);
     curveInstance.mMechanic.mStretchDuration = Seconds(0.0); // No stretch (use asset duration)
 
-    CurveLib::StartVelocityCurve(context, curveInstance);
+    Kurveball::StartVelocityCurve(context, curveInstance);
 
     Seconds absoluteTime(0);
     for (int i = 0; i < 1000; ++i)
     {
         absoluteTime = Seconds(i * TICK_DURATION.count());
-        CurveLib::TickPlayback(context, absoluteTime);
+        Kurveball::TickPlayback(context, absoluteTime);
     }
 
-    REQUIRE(CurveLib::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
 }

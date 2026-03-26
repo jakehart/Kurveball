@@ -1,6 +1,6 @@
 #include "IntegratorFunctions.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarType, typename VectorType>
     ScalarType IntegratorFunctions<ScalarType, VectorType>::LeftRiemann(const VectorType& previousSample, const VectorType& currentSample)

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace CurveLib
+namespace Kurveball
 {
     constexpr float sFloatMinDenormal{ std::numeric_limits<float>::denorm_min() };
     constexpr float sFloatEpsilon{ std::numeric_limits<float>::epsilon() };

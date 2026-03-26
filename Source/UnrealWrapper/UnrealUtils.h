@@ -1,12 +1,12 @@
 #pragma once
 
-#include "CurveLib/CurveSampler.h"
-#include "CurveLib/CurveSampler3D.h"
+#include "Kurveball/CurveSampler.h"
+#include "Kurveball/CurveSampler3D.h"
 
 class UCurveFloat;
 class USplineComponent;
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarType>
     class Vector3;

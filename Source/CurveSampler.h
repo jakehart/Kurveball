@@ -3,7 +3,7 @@
 
 #include <functional>
 
-namespace CurveLib
+namespace Kurveball
 {
     struct VelocityCurveInstance;
 

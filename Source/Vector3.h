@@ -3,7 +3,7 @@
 #include <string>
 #include "UnitTypes.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarT>
     class Vector3;

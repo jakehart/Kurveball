@@ -2,7 +2,7 @@
 #pragma once
 #include <cstdint>
 
-namespace CurveLib
+namespace Kurveball
 {
     using CurveInstanceId = std::uint32_t;
 }

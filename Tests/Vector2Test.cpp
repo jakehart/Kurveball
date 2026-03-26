@@ -6,7 +6,7 @@
 
 TEST_CASE("De/serialize Vector2")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
     const std::string TEST_FILE_NAME = "Vector2TestFile.bin";
     const Float2 originalVector {123.456f, -999.999f};
     

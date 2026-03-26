@@ -4,9 +4,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 
-#include "CurveLib/VelocityCurveContext.h"
-#include "CurveLib/VelocityCurveInstance.h"
-#include "CurveLib/UnrealWrapper/UCurveMechanic.h"
+#include "Kurveball/VelocityCurveContext.h"
+#include "Kurveball/VelocityCurveInstance.h"
+#include "Kurveball/UnrealWrapper/UCurveMechanic.h"
 
 #include "UVelocityCurveComponent.generated.h"
 
@@ -111,7 +111,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void DefineCurveXFunction(const UCurveMechanic* mechanic, const FCurveXSampler& xSampler);
 
-    const CurveLib::VelocityCurveContext& GetCurveContext() const;
+    const Kurveball::VelocityCurveContext& GetCurveContext() const;
 
     // If true, collision stops this actor. If false, the actor can clip through collision.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -123,14 +123,14 @@ public:
     bool OutputVelocity = true;
 
 private:
-    CurveLib::VelocityCurveContext& AccessCurveContext();
+    Kurveball::VelocityCurveContext& AccessCurveContext();
 
     // Helper function to return the camera's rotation if isCameraRelative == true, or the character's
     // rotation otherwise.
     FRotator GetCameraRotation();
 
-    void SendVelocityToUnreal(const CurveLib::Float3& velocity, const CurveLib::Float3& angularVelocity);
+    void SendVelocityToUnreal(const Kurveball::Float3& velocity, const Kurveball::Float3& angularVelocity);
 
-    CurveLib::VelocityCurveContext mCurveContext;
+    Kurveball::VelocityCurveContext mCurveContext;
     UVelocityCurveDebugger* mCurveDebugger = nullptr;
 };

@@ -5,8 +5,8 @@
 #include <Layout/Geometry.h>
 #include <Rendering/DrawElements.h>
 
-#include "CurveLib/ContainerUtils.h"
-#include "CurveLib/VelocityCurveApi.h"
+#include "Kurveball/ContainerUtils.h"
+#include "Kurveball/VelocityCurveApi.h"
 
 int32 UVelocityCurveDebugger::NativePaint(
     const FPaintArgs& Args,
@@ -87,7 +87,7 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
 
     uint8_t curveNum{ 0U };
     const auto& context = curveComponent->GetCurveContext();
-    auto joinedRefs = CurveLib::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
+    auto joinedRefs = Kurveball::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
     auto allCurveInstances = joinedRefs | std::views::join;
 
     for (const auto& [curveId, curveInstance] : allCurveInstances)
@@ -120,12 +120,12 @@ void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElem
     const auto graphSize = AllottedGeometry.GetAbsoluteSize();
 
     const auto& context = curveComponent->GetCurveContext();
-    auto joinedRefs = CurveLib::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
+    auto joinedRefs = Kurveball::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
     auto allCurveInstances = joinedRefs | std::views::join;
 
     for (const auto& [curveId, curveInstance] : allCurveInstances)
     {
-        const uint32_t graphColorRaw = CurveLib::CalculateCurveDebugColor(curveId);
+        const uint32_t graphColorRaw = Kurveball::CalculateCurveDebugColor(curveId);
         FLinearColor graphColor = FLinearColor::FromSRGBColor(FColor(graphColorRaw));
         const auto historyPointsUnreal = ToUnrealPoints(curveInstance.mHistory.Begin(),
                                                         curveInstance.mHistory.End(),

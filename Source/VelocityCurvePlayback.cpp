@@ -11,7 +11,7 @@
 #include "VelocityCurveInstance.h"
 #include "VelocityCurveOutput.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     void TickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
     {
@@ -40,7 +40,7 @@ namespace CurveLib
 
     Seconds CalculateCurveRuntime(const VelocityCurveInstance& curveInstance)
     {
-        if (curveInstance.mMechanic.mPlayCount == CurveLib::PLAY_COUNT_INFINITE)
+        if (curveInstance.mMechanic.mPlayCount == Kurveball::PLAY_COUNT_INFINITE)
         {
             // Infinite
             return Seconds(0);
@@ -193,7 +193,7 @@ namespace CurveLib
 
             if (ioCurveInstance.mPositionSampler)
             {
-                const CurveLib::Float3 splinePosition = (*ioCurveInstance.mPositionSampler)(totalDistance);
+                const Kurveball::Float3 splinePosition = (*ioCurveInstance.mPositionSampler)(totalDistance);
                 singleOutput.mPositionDelta = splinePosition - singleOutput.mPosition;
                 singleOutput.mPosition = splinePosition;
             }

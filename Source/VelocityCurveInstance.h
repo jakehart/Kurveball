@@ -11,7 +11,7 @@
 #include "CurveMechanic.h"
 #include "VelocityCurveOutput.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     constexpr size_t NUM_HISTORY_ENTRIES = 256U;
 
@@ -42,7 +42,7 @@ namespace CurveLib
         
         // The output (position, rotation, speed, etc.) of this individual curve from the most recent tick.
         // This is combined with any other running curves to give the final result.
-        CurveLib::VelocityCurveOutput mOutput {};
+        Kurveball::VelocityCurveOutput mOutput {};
         
         // Saves a history of this curve's most recent output velocities (with speedMultiplier multiplied in)
         // for debug purposes.

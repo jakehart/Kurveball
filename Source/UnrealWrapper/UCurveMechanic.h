@@ -6,15 +6,15 @@
 #include "Engine/DataAsset.h"
 #include "Engine/DataTable.h"
 
-#include "CurveLib/Vector3.h"
-#include "CurveLib/CurveMechanic.h"
-#include "CurveLib/UnrealWrapper/ECoordinateSpace.h"
-#include "CurveLib/UnrealWrapper/EAxisMode.h"
-#include "CurveLib/UnrealWrapper/UnrealUtils.h"
+#include "Kurveball/Vector3.h"
+#include "Kurveball/CurveMechanic.h"
+#include "Kurveball/UnrealWrapper/ECoordinateSpace.h"
+#include "Kurveball/UnrealWrapper/EAxisMode.h"
+#include "Kurveball/UnrealWrapper/UnrealUtils.h"
 
 #include "UCurveMechanic.generated.h"
 
-// Wraps CurveLib::CurveMechanic in a way that Unreal can understand, adding
+// Wraps Kurveball::CurveMechanic in a way that Unreal can understand, adding
 // the ability for users to create them as Unreal DataAssets or in DataTables right there
 // in their Content pane. This makes it easier to modularly load and unload movement
 // mechanics.
@@ -72,25 +72,25 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ECoordinateSpace CoordinateSpace = ECoordinateSpace::world;
 
-    CurveLib::CurveInstanceId GetCurveId() const
+    Kurveball::CurveInstanceId GetCurveId() const
     {
         return GetTypeHash(CurveInstanceName);
     }
 
-    CurveLib::CurveMechanic ToNative() const
+    Kurveball::CurveMechanic ToNative() const
     {
         return
         {
             .mInstanceId = GetTypeHash(CurveInstanceName),
             .mDebugName = std::string(TCHAR_TO_UTF8(*CurveInstanceName.ToString())),
-            .mDirection = CurveLib::ToFloat3(Direction),
-            .mCoordinateSpace = static_cast<CurveLib::CoordinateSpace>(CoordinateSpace),
+            .mDirection = Kurveball::ToFloat3(Direction),
+            .mCoordinateSpace = static_cast<Kurveball::CoordinateSpace>(CoordinateSpace),
             .mSpeedMultiplier = SpeedMultiplier,
-            .mAxisMode = static_cast<CurveLib::AxisMode>(AxisMode),
-            .mStartTime = CurveLib::Seconds(0),
-            .mStartPosition = UseCustomStartPosition ? CurveLib::ToFloat3(CustomStartPosition) : CurveLib::Float3(),
-            .mStretchDuration = CurveLib::Seconds(StretchDuration),
-            .mRawAssetDuration = CurveLib::Seconds(VelocityCurveAsset ? VelocityCurveAsset->FloatCurve.GetLastKey().Time : 1.f),
+            .mAxisMode = static_cast<Kurveball::AxisMode>(AxisMode),
+            .mStartTime = Kurveball::Seconds(0),
+            .mStartPosition = UseCustomStartPosition ? Kurveball::ToFloat3(CustomStartPosition) : Kurveball::Float3(),
+            .mStretchDuration = Kurveball::Seconds(StretchDuration),
+            .mRawAssetDuration = Kurveball::Seconds(VelocityCurveAsset ? VelocityCurveAsset->FloatCurve.GetLastKey().Time : 1.f),
             .mPlayCount = (uint32)PlayCount,
             .mLoopStartX = LoopStartX,
             .mLoopEndX = LoopEndX

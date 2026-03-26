@@ -4,7 +4,7 @@
 
 #include <map>
 
-namespace CurveLib
+namespace Kurveball
 {
     using CurveMap = std::unordered_map<CurveInstanceId, VelocityCurveInstance>;
 }

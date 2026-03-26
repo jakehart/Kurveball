@@ -5,7 +5,7 @@
 
 #include "IntegratorFunctionType.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarT, typename VectorT>
     class IntegratorFunctions

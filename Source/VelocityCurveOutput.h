@@ -6,7 +6,7 @@
 #include "UnitTypes.h"
 #include "Vector3.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Used to store the output of a single velocity curve, or the output of multiple curves combined.
     struct VelocityCurveOutput

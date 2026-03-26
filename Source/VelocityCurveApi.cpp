@@ -6,7 +6,7 @@
 #include "VelocityCurveInstance.h"
 #include "VelocityCurvePlayback.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     void SetVerticalAxis(VelocityCurveContext& ioContext, Axis verticalAxis)
     {
@@ -144,7 +144,7 @@ namespace CurveLib
 
         // Convert from stretched playtime back to raw curve asset coordinates
         float timeConversionFactor = 1.f;
-        if (curveInstance->mMechanic.mStretchDuration.count() > CurveLib::sFloatEpsilon)
+        if (curveInstance->mMechanic.mStretchDuration.count() > Kurveball::sFloatEpsilon)
         {
             timeConversionFactor = curveInstance->mMechanic.mStretchDuration.count() / curveInstance->mMechanic.mRawAssetDuration.count();
         }

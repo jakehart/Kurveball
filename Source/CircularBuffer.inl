@@ -1,4 +1,4 @@
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ContainedT, size_t Size>
     CircularBuffer<ContainedT, Size>::CircularBuffer()

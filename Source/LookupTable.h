@@ -1,6 +1,6 @@
 #pragma once
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarT>
     class LookupTable

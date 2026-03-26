@@ -3,7 +3,7 @@
 #include "LookupTable.h"
 #include "MathUtils.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename PositionT>
     BezierCurveSegment<PositionT>::BezierCurveSegment(const BezierCurveSegment::PointVector& points)

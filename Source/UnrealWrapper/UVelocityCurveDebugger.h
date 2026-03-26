@@ -42,7 +42,7 @@ private:
 
     void DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const;
 
-    // Converts a buffer of CurveLib::Float3 to Unreal FVector2f for display on screen
+    // Converts a buffer of Kurveball::Float3 to Unreal FVector2f for display on screen
     template <typename InputIteratorT>
     TArray<FVector2f> ToUnrealPoints(InputIteratorT beginIter, InputIteratorT endIter, float xOffset, float yOffset, float xScale, float yScale) const
     {

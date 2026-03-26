@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <GL/gl.h>
 
-#include "CurveLibAll.h"
+#include "KurveballAll.h"
 
 // Data stored per platform window
 struct WGL_WindowData { HDC hDC; };
@@ -27,14 +27,14 @@ bool CreateDeviceWGL(HWND hWnd, WGL_WindowData* data);
 void CleanupDeviceWGL(HWND hWnd, WGL_WindowData* data);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace CurveLib
+namespace Kurveball
 {
     CurveEditor::CurveEditor()
     {
         // Test data
-        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment1(std::vector<CurveLib::Double2> { {0, 0}, { 0.2, 1 }, { 0.4, 1 }, { 0.5, 0 } });
-        CurveLib::BezierCurveSegment<CurveLib::Double2> defaultSegment2(std::vector<CurveLib::Double2> { { 0.5, 0 }, { 0.7, -1 }, { 0.9, -1 }, { 1, 0 } });
-        mDefaultCurve = CurveLib::BezierCurve<CurveLib::Double2>({defaultSegment1, defaultSegment2});
+        Kurveball::BezierCurveSegment<Kurveball::Double2> defaultSegment1(std::vector<Kurveball::Double2> { {0, 0}, { 0.2, 1 }, { 0.4, 1 }, { 0.5, 0 } });
+        Kurveball::BezierCurveSegment<Kurveball::Double2> defaultSegment2(std::vector<Kurveball::Double2> { { 0.5, 0 }, { 0.7, -1 }, { 0.9, -1 }, { 1, 0 } });
+        mDefaultCurve = Kurveball::BezierCurve<Kurveball::Double2>({defaultSegment1, defaultSegment2});
 
         assert(Init());
     }
@@ -131,11 +131,11 @@ namespace CurveLib
 
     void CurveEditor::DrawGUI()
     {
-        using namespace CurveLib;
+        using namespace Kurveball;
 
         // Min and max size of the ImGui internal "window" -- NOT hwnd dimensions
         static const ImVec2 sMinWindowSize{ 800, 600 };
-        static const ImVec2 sMaxWindowSize{ CurveLib::sFloatMax, CurveLib::sFloatMax };
+        static const ImVec2 sMaxWindowSize{ Kurveball::sFloatMax, Kurveball::sFloatMax };
 
         ImGui::SetNextWindowSizeConstraints(sMinWindowSize, sMaxWindowSize);
 
@@ -249,7 +249,7 @@ namespace CurveLib
         if (hoverPoint.x > 0 && hoverPoint.y > 0 && segments.size() > 0)
         {
             size_t xIndex = (size_t)std::floor(hoverPoint.x * numTotalSamples / segments.size());
-            xIndex = CurveLib::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
+            xIndex = Kurveball::Clamp(xIndex, 0ULL, sampleAreas.size() - 1);
 
             ImPlot::Annotation(hoverPoint.x, hoverPoint.y, ImVec4(0, 0, 0.5, 1), ImVec2(20, 20), false, "Sample: %u\nArea: %2.f", xIndex, sampleAreas[xIndex]);
         }
@@ -328,7 +328,7 @@ namespace CurveLib
 
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = NULL;
-        ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+        ofn.lpstrFilter = (LPCSTR)"Kurveball Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
         ofn.lpstrFile = (LPSTR)szFileName;
         ofn.nMaxFile = MAX_PATH;
         ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -353,7 +353,7 @@ namespace CurveLib
 
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = NULL;
-        ofn.lpstrFilter = (LPCSTR)"CurveLib Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
+        ofn.lpstrFilter = (LPCSTR)"Kurveball Files (*.cvb)\0*.cvb\0All Files (*.*)\0*.*\0";
         ofn.lpstrFile = (LPSTR)szFileName;
         ofn.nMaxFile = MAX_PATH;
         ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -363,7 +363,7 @@ namespace CurveLib
         if (isOK)
         {
             std::ifstream fileIn(ofn.lpstrFile);
-            mDefaultCurve = CurveLib::BezierCurve<CurveLib::Double2>::FromBinary(fileIn);
+            mDefaultCurve = Kurveball::BezierCurve<Kurveball::Double2>::FromBinary(fileIn);
             fileIn.close();
         }
     }
@@ -371,7 +371,7 @@ namespace CurveLib
 
 int main(int, char**)
 {
-    CurveLib::CurveEditor curveEditor;
+    Kurveball::CurveEditor curveEditor;
 
     while (true)
     {

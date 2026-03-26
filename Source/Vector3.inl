@@ -6,7 +6,7 @@
 #include "MathUtils.h"
 #include "UnitTypes.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ExternalVectorT>
     Float3 ConvertFloat3(const ExternalVectorT& otherVector)
@@ -105,9 +105,9 @@ namespace CurveLib
     void Vector3<ScalarT>::FloorToZero()
     {
         // From MathUtils.h
-        X = CurveLib::FloorToZero(X, sFloatMinDenormal);
-        Y = CurveLib::FloorToZero(Y, sFloatMinDenormal);
-        Z = CurveLib::FloorToZero(Z, sFloatMinDenormal);
+        X = Kurveball::FloorToZero(X, sFloatMinDenormal);
+        Y = Kurveball::FloorToZero(Y, sFloatMinDenormal);
+        Z = Kurveball::FloorToZero(Z, sFloatMinDenormal);
     }
 
     template<typename ScalarT>

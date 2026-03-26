@@ -6,7 +6,7 @@
 
 TEST_CASE("CalculatePositionAtT - straight line 3D cubic")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     const float POSITION_AXIS_TOLERANCE = sFloatEpsilon * 4;
 
@@ -41,7 +41,7 @@ TEST_CASE("CalculatePositionAtT - straight line 3D cubic")
 
 TEST_CASE("Binary de/serialize")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     const std::vector<Float3> originalPoints =
     {

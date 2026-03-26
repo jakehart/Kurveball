@@ -1,14 +1,14 @@
 #include "UnrealUtils.h"
-#include "CurveLib/Vector3.h"
-#include "CurveLibLog.h"
+#include "Kurveball/Vector3.h"
+#include "KurveballLog.h"
 
 #include <Components/SplineComponent.h>
 
-namespace CurveLib
+namespace Kurveball
 {
     Float3 ToFloat3(const FVector& unrealVector)
     {
-        return CurveLib::Float3(unrealVector.X, unrealVector.Y, unrealVector.Z);
+        return Kurveball::Float3(unrealVector.X, unrealVector.Y, unrealVector.Z);
     }
 
     FVector ToFVector(const Float3& curveLibVector)
@@ -22,7 +22,7 @@ namespace CurveLib
         
         if (!curveAsset)
         {
-            UE_LOG(CurveLibLog, Error, TEXT("CreateSamplerXY received null curveAsset"));
+            UE_LOG(KurveballLog, Error, TEXT("CreateSamplerXY received null curveAsset"));
             return NULL_SAMPLER;
         }
 
@@ -34,18 +34,18 @@ namespace CurveLib
                     return curveAsset->GetFloatValue(curveX);
                 }
 
-                UE_LOG(CurveLibLog, Warning, TEXT("CreateSamplerXY sampling from curve that became null"));
+                UE_LOG(KurveballLog, Warning, TEXT("CreateSamplerXY sampling from curve that became null"));
                 return 0.f;
             };
     }
 
     CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent, float desiredHeight)
     {
-        static const CurveSampler3D NULL_SAMPLER = [](float) {return CurveLib::Float3(0, 0, 0); };
+        static const CurveSampler3D NULL_SAMPLER = [](float) {return Kurveball::Float3(0, 0, 0); };
 
         if (!splineComponent || splineComponent->GetSplineLength() < sFloatEpsilon)
         {
-            UE_LOG(CurveLibLog, Error, TEXT("CreateUnrealSplineSampler received null or empty spline"));
+            UE_LOG(KurveballLog, Error, TEXT("CreateUnrealSplineSampler received null or empty spline"));
             return NULL_SAMPLER;
         }
 
@@ -68,11 +68,11 @@ namespace CurveLib
                 {
                     // Return the position at this arc distance
                     const FVector rawPosition = splineComponent->GetLocationAtDistanceAlongSpline(distance, ESplineCoordinateSpace::Local);
-                    return CurveLib::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z * heightScale);
+                    return Kurveball::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z * heightScale);
                 }
 
-                UE_LOG(CurveLibLog, Warning, TEXT("CreateUnrealSplineSampler sampling from spline that became null"));
-                return CurveLib::Float3(0, 0, 0);
+                UE_LOG(KurveballLog, Warning, TEXT("CreateUnrealSplineSampler sampling from spline that became null"));
+                return Kurveball::Float3(0, 0, 0);
             };
     }
 }

@@ -4,7 +4,7 @@
 #include <functional>
 #include "UnitTypes.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Restricts a degree measure to [0, 360).
     float RestrictDegreeRange(float degrees);

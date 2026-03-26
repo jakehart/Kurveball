@@ -6,7 +6,7 @@
 #include "BezierCurve.h"
 #include "MathUtils.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename PositionT>
     BezierCurve<PositionT>::BezierCurve(std::vector<CurveSegment> segments)
@@ -88,7 +88,7 @@ namespace CurveLib
     }
 
     template<typename PositionT>
-    PositionT CurveLib::BezierCurve<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
+    PositionT Kurveball::BezierCurve<PositionT>::CalculatePositionAtXCoordinate(ScalarType x) const
     {
         // Make sure all the tables are generated before we try to query them.
         GenerateXTLookupTables();
@@ -127,7 +127,7 @@ namespace CurveLib
     }
 
     template<typename PositionT>
-    CurveSampler3D CurveLib::BezierCurve<PositionT>::CreateCurveSampler3D() const
+    CurveSampler3D Kurveball::BezierCurve<PositionT>::CreateCurveSampler3D() const
     {
         return [this](float) -> float
             {

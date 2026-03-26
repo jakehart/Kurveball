@@ -7,7 +7,7 @@
 #include "CurveMap.h"
 #include "VelocityCurveOutput.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     static constexpr size_t sNumRecordedTicks{ 4U };
     static_assert(sNumRecordedTicks > 0U);
@@ -29,7 +29,7 @@ namespace CurveLib
 
         Float3 mPreviousPosition{};
 
-        // These are set by CurveLib::SetVerticalAxis, and they denote which axes "survive" when
+        // These are set by Kurveball::SetVerticalAxis, and they denote which axes "survive" when
         // applying AxisMode::horizontal or AxisMode::vertical.
         Vector3<bool> mVerticalAxisMask{ false, true, false };
         Vector3<bool> mHorizontalAxisMask{ true, false, true };

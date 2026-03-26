@@ -4,7 +4,7 @@
 #include "CurveMap.h"
 #include "UnitTypes.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     struct VelocityCurveContext;
     struct VelocityCurveInstance;

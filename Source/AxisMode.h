@@ -1,6 +1,6 @@
 #pragma once    
 
-namespace CurveLib
+namespace Kurveball
 {
     enum class AxisMode : std::uint8_t
     {

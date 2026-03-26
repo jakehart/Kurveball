@@ -3,7 +3,7 @@
 #include "IntegratorFunctions.h"
 #include "Vector2.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     AreaAccumulator::AreaAccumulator()
         : mIntegrator(IntegratorFunctions<float, Float2>::Trapezoidal)

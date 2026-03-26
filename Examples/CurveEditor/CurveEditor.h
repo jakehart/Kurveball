@@ -5,7 +5,7 @@
 
 struct ImVec4;
 
-namespace CurveLib
+namespace Kurveball
 {
 	class CurveEditor
 	{

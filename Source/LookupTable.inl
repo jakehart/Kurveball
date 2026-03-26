@@ -2,7 +2,7 @@
 
 #include "MathUtils.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename PositionT>
     LookupTable<PositionT>::LookupTable(uint32_t length)

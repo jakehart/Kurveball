@@ -1,7 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #if defined(__UNREAL__)
 
-#include "CurveLib/UnrealWrapper/UVelocityCurveComponent.h"
+#include "Kurveball/UnrealWrapper/UVelocityCurveComponent.h"
 
 #include <Blueprint/UserWidget.h>
 #include <Engine/Engine.h>
@@ -11,14 +11,14 @@
 
 #include <sstream>
 
-#include "CurveLibLog.h"
-#include "CurveLib/ContainerUtils.h"
-#include "CurveLib/MathUtils.h"
-#include "CurveLib/UnrealWrapper/USensorComponent.h"
-#include "CurveLib/UnitTypes.h"
-#include "CurveLib/VelocityCurveApi.h"
-#include "CurveLib/VelocityCurveInstance.h"
-#include "CurveLib/VelocityCurvePlayback.h"
+#include "KurveballLog.h"
+#include "Kurveball/ContainerUtils.h"
+#include "Kurveball/MathUtils.h"
+#include "Kurveball/UnrealWrapper/USensorComponent.h"
+#include "Kurveball/UnitTypes.h"
+#include "Kurveball/VelocityCurveApi.h"
+#include "Kurveball/VelocityCurveInstance.h"
+#include "Kurveball/VelocityCurvePlayback.h"
 
 #include "UVelocityCurveDebugger.h"
 
@@ -46,15 +46,15 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
     const auto absoluteTime = world->TimeSeconds;
 
-    // Tell CurveLib about any position change that happened due to collision or simulated physics
+    // Tell Kurveball about any position change that happened due to collision or simulated physics
     const FVector position = owner->GetActorLocation();
-    CurveLib::SetPosition(mCurveContext, position.X, position.Y, position.Z);
+    Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
     
-    CurveLib::TickPlayback(mCurveContext, CurveLib::Seconds(absoluteTime));
+    Kurveball::TickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));
 
     // The velocity curve context doesn't care which world units we use as long as we're consistent.
     // Here we're using Unreal units (cm) directly.
-    const FVector newPosition = CurveLib::ToFVector(mCurveContext.mOutput.mPosition);
+    const FVector newPosition = Kurveball::ToFVector(mCurveContext.mOutput.mPosition);
     // Rotation always uses degrees
     const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.Y, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.X);
     
@@ -78,13 +78,13 @@ void UVelocityCurveComponent::BeginPlay()
         return;
     }
 
-    // Unreal uses Z+ up. CurveLib needs to know this so that it can mask off the
+    // Unreal uses Z+ up. Kurveball needs to know this so that it can mask off the
     // correct axes when you use eAxisMode::vertical or eAxisMode::horizontal.
-    CurveLib::SetVerticalAxis(mCurveContext, Axis::Z);
+    Kurveball::SetVerticalAxis(mCurveContext, Axis::Z);
 
     const FRotator rotation = owner->GetActorRotation();
     const FVector euler = rotation.Euler();
-    CurveLib::SetRotation(mCurveContext, euler.X, euler.Y, euler.Z);
+    Kurveball::SetRotation(mCurveContext, euler.X, euler.Y, euler.Z);
 
     // Position is updated in TickComponent
 }
@@ -93,13 +93,13 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("ERROR: StartVelocityCurve (in Blueprint) needs to have a Movement Mechanic Asset specified!"));
+        UE_LOG(KurveballLog, Error, TEXT("ERROR: StartVelocityCurve (in Blueprint) needs to have a Movement Mechanic Asset specified!"));
         return;
     }
 
     if (!mechanic->VelocityCurveAsset)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("ERROR: Movement Mechanic (in Content Browser) needs to have a Velocity Curve Asset specified!"));
+        UE_LOG(KurveballLog, Error, TEXT("ERROR: Movement Mechanic (in Content Browser) needs to have a Velocity Curve Asset specified!"));
         return;
     }
 
@@ -110,79 +110,79 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
         return;
     }
 
-    CurveLib::VelocityCurveInstance curveInstance{.mMechanic = mechanic->ToNative()};
+    Kurveball::VelocityCurveInstance curveInstance{.mMechanic = mechanic->ToNative()};
     
     double minX = 0, maxX = 0;
     mechanic->VelocityCurveAsset->GetTimeRange(minX, maxX);
 
     // TODO: Properly support curves with negative x content
-    curveInstance.mMechanic.mRawAssetDuration = CurveLib::Seconds(maxX - minX);
+    curveInstance.mMechanic.mRawAssetDuration = Kurveball::Seconds(maxX - minX);
     
-    curveInstance.mSpeedSampler = CurveLib::CreateSamplerXY(mechanic->VelocityCurveAsset);
-    CurveLib::StartVelocityCurve(mCurveContext, curveInstance);
+    curveInstance.mSpeedSampler = Kurveball::CreateSamplerXY(mechanic->VelocityCurveAsset);
+    Kurveball::StartVelocityCurve(mCurveContext, curveInstance);
 }
 
 void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
         return;
     }
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::StopVelocityCurve(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    Kurveball::StopVelocityCurve(mCurveContext, curveInstanceId);
 }
 
 void UVelocityCurveComponent::SoftStopVelocityCurve(const UCurveMechanic* mechanic)
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("StopVelocityCurve: Mechanic pin must be connected"));
         return;
     }
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::SoftStopVelocityCurve(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    Kurveball::SoftStopVelocityCurve(mCurveContext, curveInstanceId);
 }
 
 void UVelocityCurveComponent::StopAllVelocityCurves()
 {
-    CurveLib::StopAllVelocityCurves(mCurveContext);
+    Kurveball::StopAllVelocityCurves(mCurveContext);
 }
 
 void UVelocityCurveComponent::SeekToX(const UCurveMechanic* mechanic, float curveXCoordinate)
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("SeekToX: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("SeekToX: Mechanic pin must be connected"));
         return;
     }
 
-    CurveLib::SeekToX(mCurveContext, mechanic->GetCurveId(), curveXCoordinate);
+    Kurveball::SeekToX(mCurveContext, mechanic->GetCurveId(), curveXCoordinate);
 }
 
 void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction)
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("UpdateVelocityCurve: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("UpdateVelocityCurve: Mechanic pin must be connected"));
         return;
     }
 
     // No direct support for std::optional in Unreal, so must use a separate flag (or a sentinel value, which would be inadvisable here)
     const auto optSpeed{ updateSpeed ? std::optional<float>(speedMultiplier) : std::nullopt };
-    const auto optDirection{ updateDirection ? std::optional<CurveLib::Float3>(CurveLib::ToFloat3(direction)) : std::nullopt };
+    const auto optDirection{ updateDirection ? std::optional<Kurveball::Float3>(Kurveball::ToFloat3(direction)) : std::nullopt };
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::UpdateVelocityCurve(mCurveContext, curveInstanceId, optSpeed, optDirection);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    Kurveball::UpdateVelocityCurve(mCurveContext, curveInstanceId, optSpeed, optDirection);
 }
 
 void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwardMechanic, const UCurveMechanic* sideMechanic, const FVector2D& inputAxes, bool isCameraRelative)
 {
     if (!forwardMechanic || !sideMechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("InputToVelocityCurves: Must connect forwardCurve and sideCurve pins"));
+        UE_LOG(KurveballLog, Error, TEXT("InputToVelocityCurves: Must connect forwardCurve and sideCurve pins"));
         return;
     }
 
@@ -201,8 +201,8 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
         return;
     }
 
-    const CurveLib::CurveInstanceId forwardCurveId = forwardMechanic->GetCurveId();
-    const CurveLib::CurveInstanceId sideCurveId = sideMechanic->GetCurveId();
+    const Kurveball::CurveInstanceId forwardCurveId = forwardMechanic->GetCurveId();
+    const Kurveball::CurveInstanceId sideCurveId = sideMechanic->GetCurveId();
 
     const bool isVertical = forwardMechanic->AxisMode == EAxisMode::vertical;
 
@@ -240,41 +240,41 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("InputAxisToVelocityCurve: Must connect mechanic pin"));
+        UE_LOG(KurveballLog, Error, TEXT("InputAxisToVelocityCurve: Must connect mechanic pin"));
         return;
     }
 
-    const CurveLib::CurveInstanceId curveID = mechanic->GetCurveId();
+    const Kurveball::CurveInstanceId curveID = mechanic->GetCurveId();
 
-    const float playheadPosition = CurveLib::CalculateCurveX(mCurveContext, curveID);
+    const float playheadPosition = Kurveball::CalculateCurveX(mCurveContext, curveID);
     
-    if (CurveLib::IsZero(inputAxis))
+    if (Kurveball::IsZero(inputAxis))
     {
         // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
-        CurveLib::SoftStopVelocityCurve(mCurveContext, curveID);
+        Kurveball::SoftStopVelocityCurve(mCurveContext, curveID);
     }
-    /*else if (playheadPosition > mechanic->LoopEndX + CurveLib::sFloatMinDenormal)
+    /*else if (playheadPosition > mechanic->LoopEndX + Kurveball::sFloatMinDenormal)
     {
         // Player started moving the controls again while the curve is winding down.
         // Seek to the beginning
-        CurveLib::SeekToX(mCurveContext, curveID, 0.f);
+        Kurveball::SeekToX(mCurveContext, curveID, 0.f);
     }*/
     else
     {
         // Nonzero input
-        if (!CurveLib::IsCurveRunning(mCurveContext, curveID))
+        if (!Kurveball::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
             StartVelocityCurve(mechanic);
         }
 
-        CurveLib::Float3 direction{1, 0, 0}; // forward
+        Kurveball::Float3 direction{1, 0, 0}; // forward
         if (mechanic->CoordinateSpace == ECoordinateSpace::world)
         {
             direction = direction.LocalToWorldDirection(mCurveContext.mOutput.mRotation);
         }
 
-        CurveLib::UpdateVelocityCurve(mCurveContext,
+        Kurveball::UpdateVelocityCurve(mCurveContext,
             curveID,
             inputAxis * mechanic->SpeedMultiplier,
             direction);
@@ -285,53 +285,53 @@ float UVelocityCurveComponent::GetMechanicSpeed(const UCurveMechanic* mechanic) 
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("GetMechanicSpeed: Must connect mechanic pin"));
+        UE_LOG(KurveballLog, Error, TEXT("GetMechanicSpeed: Must connect mechanic pin"));
         return 0.f;
     }
     
-    return CurveLib::GetMechanicSpeed(mCurveContext, mechanic->GetCurveId());
+    return Kurveball::GetMechanicSpeed(mCurveContext, mechanic->GetCurveId());
 }
 
 float UVelocityCurveComponent::GetTotalSpeed() const
 {
-    return CurveLib::GetTotalSpeed(mCurveContext);
+    return Kurveball::GetTotalSpeed(mCurveContext);
 }
 
 bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) const
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("IsCurveRunning: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("IsCurveRunning: Mechanic pin must be connected"));
         return false;
     }
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    return CurveLib::IsCurveRunning(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    return Kurveball::IsCurveRunning(mCurveContext, curveInstanceId);
 }
 
 bool UVelocityCurveComponent::IsAnyCurveRunning(bool includeLinear, bool includeRotational) const
 {
-    return CurveLib::IsAnyCurveRunning(mCurveContext, includeLinear, includeRotational);
+    return Kurveball::IsAnyCurveRunning(mCurveContext, includeLinear, includeRotational);
 }
 
 void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight)
 {
-    if (!splineComponent || splineComponent->GetSplineLength() < CurveLib::sFloatEpsilon)
+    if (!splineComponent || splineComponent->GetSplineLength() < Kurveball::sFloatEpsilon)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("UVelocityCurveComponent received null or empty spline"));
+        UE_LOG(KurveballLog, Error, TEXT("UVelocityCurveComponent received null or empty spline"));
         return;
     }
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::VelocityCurveInstance* curveInstance = CurveLib::AccessCurveInstance(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceId);
 
     if (!curveInstance)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("Velocity curve not found"));
+        UE_LOG(KurveballLog, Error, TEXT("Velocity curve not found"));
         return;
     }
 
-    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent, desiredHeight);
+    curveInstance->mPositionSampler = Kurveball::CreateUnrealSplineSampler(splineComponent, desiredHeight);
 }
 
 void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mechanic, float heightCm, FVector destination)
@@ -342,12 +342,12 @@ void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mech
         return;
     }
 
-    const CurveLib::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    CurveLib::VelocityCurveInstance* curveInstance = CurveLib::AccessCurveInstance(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
+    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceId);
 
     if (!curveInstance)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("Velocity curve not found"));
+        UE_LOG(KurveballLog, Error, TEXT("Velocity curve not found"));
         return;
     }
 
@@ -376,12 +376,12 @@ void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mech
     splineComponent->AddPoint(end, false);
     splineComponent->UpdateSpline();
 
-    curveInstance->mPositionSampler = CurveLib::CreateUnrealSplineSampler(splineComponent);
+    curveInstance->mPositionSampler = Kurveball::CreateUnrealSplineSampler(splineComponent);
 }
 
 void UVelocityCurveComponent::SetLocation(FVector location)
 {
-    CurveLib::SetPosition(mCurveContext, location.X, location.Y, location.Z);
+    Kurveball::SetPosition(mCurveContext, location.X, location.Y, location.Z);
 }
 
 FVector UVelocityCurveComponent::GetVelocity()
@@ -407,7 +407,7 @@ void UVelocityCurveComponent::ShowCurveDebugger(bool show)
         UWorld* world = GetWorld();
         if (!world)
         {
-            UE_LOG(CurveLibLog, Error, TEXT("Cannot create UVelocityCurveDebugger: World is null."));
+            UE_LOG(KurveballLog, Error, TEXT("Cannot create UVelocityCurveDebugger: World is null."));
             return;
         }
 
@@ -426,7 +426,7 @@ void UVelocityCurveComponent::ShowCurveDebugger(bool show)
         }
         else
         {
-            UE_LOG(CurveLibLog, Error, TEXT("UVelocityCurveDebugger could not be created."));
+            UE_LOG(KurveballLog, Error, TEXT("UVelocityCurveDebugger could not be created."));
         }
     }
     else
@@ -442,7 +442,7 @@ FString UVelocityCurveComponent::GetCurveOutputAsDebugString(const UCurveMechani
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("GetCurveOutputAsDebugString: Mechanic pin must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("GetCurveOutputAsDebugString: Mechanic pin must be connected"));
         return "GetCurveOutputAsDebugString: Mechanic pin must be connected";
     }
 
@@ -472,11 +472,11 @@ FString UVelocityCurveComponent::GetRunningCurvesAsDebugString() const
 {
     std::stringstream ss;
 
-    auto joinedRefs = CurveLib::GetJoinedContainerReferences(mCurveContext.mLinearCurves, mCurveContext.mRotationCurves);
+    auto joinedRefs = Kurveball::GetJoinedContainerReferences(mCurveContext.mLinearCurves, mCurveContext.mRotationCurves);
     auto allCurveInstances = joinedRefs | std::views::join;
     for (const auto& curvePair : allCurveInstances)
     {
-        const CurveLib::VelocityCurveInstance& instance = curvePair.second;
+        const Kurveball::VelocityCurveInstance& instance = curvePair.second;
 
         const std::string debugName = instance.mMechanic.mDebugName ? *instance.mMechanic.mDebugName : "Unnamed";
         ss << instance.ToString();
@@ -494,11 +494,11 @@ void UVelocityCurveComponent::DefineCurveXFunction(const UCurveMechanic* mechani
 {
     if (!mechanic)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("DefineCurveXFunction: Mechanic port must be connected"));
+        UE_LOG(KurveballLog, Error, TEXT("DefineCurveXFunction: Mechanic port must be connected"));
         return;
     }
 
-    if (auto* curveInstance = CurveLib::AccessCurveInstance(mCurveContext, mechanic->GetCurveId()))
+    if (auto* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, mechanic->GetCurveId()))
     {
         curveInstance->mXSampler.emplace([&]() -> float
             {
@@ -507,12 +507,12 @@ void UVelocityCurveComponent::DefineCurveXFunction(const UCurveMechanic* mechani
     }
 }
 
-CurveLib::VelocityCurveContext& UVelocityCurveComponent::AccessCurveContext()
+Kurveball::VelocityCurveContext& UVelocityCurveComponent::AccessCurveContext()
 {
     return mCurveContext;
 }
 
-const CurveLib::VelocityCurveContext& UVelocityCurveComponent::GetCurveContext() const
+const Kurveball::VelocityCurveContext& UVelocityCurveComponent::GetCurveContext() const
 {
     return mCurveContext;
 }
@@ -536,7 +536,7 @@ FRotator UVelocityCurveComponent::GetCameraRotation()
     return {};
 }
 
-void UVelocityCurveComponent::SendVelocityToUnreal(const CurveLib::Float3& velocity, const CurveLib::Float3& angularVelocity)
+void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velocity, const Kurveball::Float3& angularVelocity)
 {
     const auto* owner = GetOwner();
     if (!owner)
@@ -547,12 +547,12 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const CurveLib::Float3& veloc
     auto* primitiveComponent = owner->GetComponentByClass<UPrimitiveComponent>();
     if (!primitiveComponent)
     {
-        UE_LOG(CurveLibLog, Error, TEXT("Primitive component not found. Either disable VelocityCurveComponent::OutputVelocity or enable SimulatePhysics on your actor's root component"));
+        UE_LOG(KurveballLog, Error, TEXT("Primitive component not found. Either disable VelocityCurveComponent::OutputVelocity or enable SimulatePhysics on your actor's root component"));
         return;
     }
 
-    primitiveComponent->SetAllPhysicsLinearVelocity(CurveLib::ToFVector(velocity));
-    primitiveComponent->SetAllPhysicsAngularVelocityInDegrees(CurveLib::ToFVector(angularVelocity));
+    primitiveComponent->SetAllPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
+    primitiveComponent->SetAllPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
 }
 
 #endif // #if defined(__UNREAL__)

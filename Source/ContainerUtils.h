@@ -5,7 +5,7 @@
 #include <array>
 #include <utility>
 
-namespace CurveLib
+namespace Kurveball
 {
     // Zero-copy join for two arbitrary STL containers
     template<typename ContainerT>
@@ -18,4 +18,4 @@ namespace CurveLib
         // THIS IS SAFE because the caller receives and owns this array.
         return std::array<ContainerViewType, 2>{ first, second };
     }
-} // namespace CurveLib
+} // namespace Kurveball

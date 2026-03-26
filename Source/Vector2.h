@@ -5,7 +5,7 @@
 
 #include "MathUtils.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ScalarT>
     class Vector2;

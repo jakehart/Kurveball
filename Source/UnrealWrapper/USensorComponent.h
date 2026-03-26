@@ -1,7 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #pragma once
 
-#include "CurveLib/VelocityCurveOutput.h"
+#include "Kurveball/VelocityCurveOutput.h"
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -57,7 +57,7 @@ public:
 
     // Limits curve output to prevent the character from going through geo, modifying
     // the velocity in place if needed. Returns true if the velocity was modified.
-    bool ApplyCollisionToVelocity(CurveLib::VelocityCurveOutput& combinedOutput) const;
+    bool ApplyCollisionToVelocity(Kurveball::VelocityCurveOutput& combinedOutput) const;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TMap<FName, FSensorDescription> SensorDescriptions;

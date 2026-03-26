@@ -8,15 +8,15 @@
 
 #include <cstdlib>
 
-namespace CurveLib
+namespace Kurveball
 {
     // Generates a bland VelocityCurveInstance that only runs the very basics of
     // velocity curve playback, never engaging the fancy features such as looping
     // or axis masking. My unit tests call this factory function and customize the
     // struct it returns to test the desired features.
-    CurveLib::VelocityCurveInstance GenerateTestCurveInstance()
+    Kurveball::VelocityCurveInstance GenerateTestCurveInstance()
     {
-        using namespace CurveLib;
+        using namespace Kurveball;
 
         const auto defaultSamplerFunction = []([[maybe_unused]] float curveX) -> float
             {
@@ -37,7 +37,7 @@ namespace CurveLib
                 .mStartPosition = {0, 0, 0},
                 .mStretchDuration = Seconds(1),
                 .mRawAssetDuration = Seconds(1),
-                .mPlayCount = CurveLib::PLAY_COUNT_INFINITE,
+                .mPlayCount = Kurveball::PLAY_COUNT_INFINITE,
                 .mLoopStartX = 0,
                 .mLoopEndX = 0
             },
@@ -50,9 +50,9 @@ namespace CurveLib
         return testCurve;
     }
 
-    void TickCurveContext(CurveLib::VelocityCurveContext& ioContext, CurveLib::Seconds tickDuration, size_t numTicks)
+    void TickCurveContext(Kurveball::VelocityCurveContext& ioContext, Kurveball::Seconds tickDuration, size_t numTicks)
     {
-        using namespace CurveLib;
+        using namespace Kurveball;
 
         // Clear previous state to assure a clean slate for testing
         ioContext.mAbsoluteTime = {};
@@ -60,13 +60,13 @@ namespace CurveLib
         for (size_t i = 0; i < numTicks; ++i)
         {
             const Seconds absoluteTime = tickDuration * i;
-            CurveLib::TickPlayback(ioContext, absoluteTime);
+            Kurveball::TickPlayback(ioContext, absoluteTime);
         }
     }
 
-    CurveLib::Seconds RunCurveAndGetEndTime(CurveLib::VelocityCurveContext& ioContext, CurveLib::VelocityCurveInstance& ioCurveInstance, Seconds tickDuration = Seconds(0.1), size_t maxNumTicks = 10000)
+    Kurveball::Seconds RunCurveAndGetEndTime(Kurveball::VelocityCurveContext& ioContext, Kurveball::VelocityCurveInstance& ioCurveInstance, Seconds tickDuration = Seconds(0.1), size_t maxNumTicks = 10000)
     {
-        using namespace CurveLib;
+        using namespace Kurveball;
 
         // Start the timer at zero so that successive curves in the same testcase don't depend on each other
         ioContext.mAbsoluteTime = {};
@@ -77,9 +77,9 @@ namespace CurveLib
         for (uint16_t i = 0; i < maxNumTicks; ++i)
         {
             // Use the short tick time so we can verify end time with more precision
-            CurveLib::TickPlayback(ioContext, Seconds(i * tickDuration));
+            Kurveball::TickPlayback(ioContext, Seconds(i * tickDuration));
 
-            if (!CurveLib::IsCurveRunning(ioContext, ioCurveInstance.mMechanic.mInstanceId))
+            if (!Kurveball::IsCurveRunning(ioContext, ioCurveInstance.mMechanic.mInstanceId))
             {
                 break;
             }

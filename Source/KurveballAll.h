@@ -5,7 +5,7 @@
 #include "BezierCurve.h"
 #include "CircularBuffer.h"
 #include "CurveInstanceId.h"
-#include "CurveLibAll.h"
+#include "KurveballAll.h"
 #include "CurveSampler.h"
 #include "IntegratorFunctions.h"
 #include "IntegratorFunctionType.h"

@@ -7,7 +7,7 @@
 #include <ostream>
 #include <vector>
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename PositionT>
     class BezierCurve

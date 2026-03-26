@@ -3,7 +3,7 @@
 #include <array>
 #include <algorithm>
 
-namespace CurveLib
+namespace Kurveball
 {
     template<typename ContainedT, size_t Size>
     class CircularBuffer

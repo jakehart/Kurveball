@@ -8,13 +8,13 @@
 #include "UnitTypes.h"
 #include "Vector3.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     struct VelocityCurveContext;
     struct VelocityCurveInstance;
 
     // Determines which axis is treated as vertical. The other two will be considered horizontal.
-    // You should call this at startup to tell CurveLib which axis your engine considers to be vertical.
+    // You should call this at startup to tell Kurveball which axis your engine considers to be vertical.
     // The default is Y.
     void SetVerticalAxis(VelocityCurveContext& ioContext, Axis verticalAxis);
 

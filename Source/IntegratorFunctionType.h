@@ -5,7 +5,7 @@
 
 #include "Vector2.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Calculus integration function for a single sample of the area under the curve. 
     // Performs Riemann, trapezoidal, or another approximation algorithm. See IntegratorFunctions.h

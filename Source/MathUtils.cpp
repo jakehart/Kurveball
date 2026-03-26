@@ -2,7 +2,7 @@
 #include "MathUtils.h"
 #include <cmath>
 
-namespace CurveLib
+namespace Kurveball
 {
     float RestrictDegreeRange(float degrees)
     {

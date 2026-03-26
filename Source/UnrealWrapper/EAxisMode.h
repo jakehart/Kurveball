@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CurveLib/AxisMode.h"
+#include "Kurveball/AxisMode.h"
 
-// Wraps CurveLib::AxisMode in a way that Unreal can understand
+// Wraps Kurveball::AxisMode in a way that Unreal can understand
 UENUM(BlueprintType)
 enum class EAxisMode : uint8
 {
@@ -15,4 +15,4 @@ enum class EAxisMode : uint8
     
     numEntries UMETA(Hidden)
 };
-static_assert(static_cast<uint8_t>(EAxisMode::numEntries) == static_cast<uint8_t>(CurveLib::AxisMode::numEntries));
+static_assert(static_cast<uint8_t>(EAxisMode::numEntries) == static_cast<uint8_t>(Kurveball::AxisMode::numEntries));

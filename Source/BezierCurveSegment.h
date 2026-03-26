@@ -6,7 +6,7 @@
 #include <vector>
 #include "LookupTable.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Implementation of de Casteljau's algorithm to solve a Bezier curve of any degree (up to 3, cubic Bezier,
     // which contains 4 points).

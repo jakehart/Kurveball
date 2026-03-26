@@ -5,7 +5,7 @@
 
 #include "IntegratorFunctionType.h"
 
-namespace CurveLib
+namespace Kurveball
 {
     // Collects incoming samples, applies a calculus integration function to them, and
     // progressively accumulates the area under the curve.

@@ -1,6 +1,6 @@
 #pragma once    
 
-namespace CurveLib
+namespace Kurveball
 {
     enum class CoordinateSpace : std::uint8_t
     {

@@ -9,7 +9,7 @@
 #include <optional>
 #include <string>
 
-namespace CurveLib
+namespace Kurveball
 {
     constexpr size_t PLAY_COUNT_INFINITE = 0U;
 

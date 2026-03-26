@@ -6,7 +6,7 @@
 
 TEST_CASE("Integrate a horizontal line")
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     AreaAccumulator accumulator;
     REQUIRE(accumulator.GetTotalArea() == 0);

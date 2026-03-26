@@ -3,8 +3,8 @@
 
 #include "DrawDebugHelpers.h"
 
-#include "CurveLib/UnitTypes.h"
-#include "CurveLib/VelocityCurveOutput.h"
+#include "Kurveball/UnitTypes.h"
+#include "Kurveball/VelocityCurveOutput.h"
 
 USensorComponent::USensorComponent()
 {
@@ -61,9 +61,9 @@ bool USensorComponent::HasSensorResult(FName sensorName) const
     return true;
 }
 
-bool USensorComponent::ApplyCollisionToVelocity(CurveLib::VelocityCurveOutput& output) const
+bool USensorComponent::ApplyCollisionToVelocity(Kurveball::VelocityCurveOutput& output) const
 {
-    using namespace CurveLib;
+    using namespace Kurveball;
 
     const Float3 previousVelocity = output.mVelocity;
 
@@ -112,7 +112,7 @@ void USensorComponent::SanitizeSensorDescription(FSensorDescription& ioSensor)
     }
     else
     {
-        ioSensor.LocalDirection.Normalize(CurveLib::sFloatEpsilon);
+        ioSensor.LocalDirection.Normalize(Kurveball::sFloatEpsilon);
     }
 }
 
