@@ -7,10 +7,6 @@ project(Kurveball)
 file(GLOB SOURCE_FILES "Source/*.cpp")
 file(GLOB HEADER_FILES "Source/*.h" "Source/*.inl")
 
-# Glob files in the dependencies directory
-file(GLOB DEPENDENCY_SOURCES "Dependencies/*.cpp" "Dependencies/*.c")
-file(GLOB DEPENDENCY_HEADERS "Dependencies/*.hpp" "Dependencies/*.h")
-
 # Combine all source files
 set(ALL_SOURCES ${SOURCE_FILES} ${DEPENDENCY_SOURCES})
 
