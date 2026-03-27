@@ -4,9 +4,11 @@ Kurveball is a curve-driven movement and animation library designed to replace c
 
 Instead of writing code to create movement, you define a velocity curve: a simple graph where the X-axis is Time and the Y-axis is Speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's position and rotation automatically. Motion can be looped, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
 
-## 📜🪶 Philosophy
+## 🪶 Philosophy
 
-Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or tweaking numbers by trial and error.
+Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or changing numbers by trial and error.
+
+---
 
 ## 📐 How to Use in Unreal Engine
 
@@ -14,9 +16,13 @@ Just put Kurveball under your Source directory and add VelocityCurveComponent to
 
 Wrappers for other engines are on the roadmap! Godot is next in line after Unreal.
 
+---
+
 ## 🔩 Other Platforms and Engines
 
 Kurveball is not dependent on any specific platform or engine. It doesn't care which axis is up, what the world units are, or how your engine works. Just be consistent with your units and axes, start your mechanic with `Kurveball::StartVelocityCurve()`, and call `Kurveball::TickPlayback()`. The library handles the rest, storing the result in `VelocityCurveContext`.
+
+---
 
 ## 📦 Architecture & Extensibility
 
@@ -31,9 +37,12 @@ To port to a custom engine:
 3.  Map your engine's vector types to `Kurveball::Float3`.
 4.  Implement a `CurveSampler` for your engine's curve asset type.
 
+---
+
 ## 📄 License
 MIT Non-AI License. Copyright (c) 2026 Jake Hart.
-*See `LICENSE.md` for details.*
+
+This means that you may *not* use this code to *train* AI, or in any form of AI research. However, you *are* allowed to use the code in game projects that *use* AI. See LICENSE.md for details.
 
 ---
 
