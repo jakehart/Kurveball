@@ -547,7 +547,13 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velo
     auto* primitiveComponent = owner->GetComponentByClass<UPrimitiveComponent>();
     if (!primitiveComponent)
     {
-        UE_LOG(KurveballLog, Error, TEXT("Primitive component not found. Either disable VelocityCurveComponent::OutputVelocity or enable SimulatePhysics on your actor's root component"));
+        UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must add a physics volume to your actor and enable SimulatePhysics"));
+        return;
+    }
+
+    if (!primitiveComponent->IsSimulatingPhysics())
+    {
+        UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must enable SimulatePhysics on your actor's root component"));
         return;
     }
 

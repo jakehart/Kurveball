@@ -27,6 +27,8 @@ namespace Kurveball
     // allows it to end naturally.
     void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId);
 
+    // Immediately sends the playhead of the velocity curve to a certain x coordinate. This x is relative to the curve
+    // asset itself, before any stretching or looping is applied.
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate);
 
     Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceId instanceId);

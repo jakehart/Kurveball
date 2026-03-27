@@ -14,8 +14,8 @@ namespace Kurveball
 
     struct VelocityCurveContext
     {
-        CurveMap mLinearCurves;
-        CurveMap mRotationCurves;
+        CurveMap mLinearCurves{};
+        CurveMap mRotationCurves{};
 
         // Absolute time since start, as received from the user and saved by TickPlayback. (Usually excludes pause time)
         Seconds mAbsoluteTime{ 0 };
