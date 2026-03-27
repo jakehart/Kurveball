@@ -38,7 +38,7 @@ MIT Non-AI License. Copyright (c) 2025 Jake Hart.
 ---
 
 ## 🤝 Contributing
-If you find bugs, have ideas for new features, or want to help build a wrapper for Godot or Unity, please open an issue or submit a PR!
+If you find bugs, have ideas for new features, or want to help build a wrapper for your favorite engine, issues and PRs are welcome!
 
 ---
 

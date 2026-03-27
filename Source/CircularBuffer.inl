@@ -84,6 +84,63 @@ namespace Kurveball
     }
 
     template<typename ContainedT, size_t Size>
+    CircularBuffer<ContainedT, Size>::ConstIteratorT Kurveball::CircularBuffer<ContainedT, Size>::Begin() const
+    {
+        if (!mHasUpdated)
+        {
+            return mRing.cbegin();
+        }
+
+        size_t count = GetNumContained();
+        if (count == 0)
+        {
+            return mRing.cbegin();
+        }
+
+        // The oldest element is at (mWriteCursor - count) wrapped around
+        // Example: Size=5, Write=2, Count=3. Oldest is at (2-3)%5 = -1 -> 4.
+        // Wait, let's re-verify the "oldest" definition.
+        // In AddToEnd: mWriteCursor points to the NEXT slot to write.
+        // So the LAST written item is at (mWriteCursor - 1).
+        // The FIRST written item (oldest) is at (mWriteCursor - count).
+
+        // Since we are dealing with unsigned size_t, we need to handle the wrap carefully.
+        // (a - b) % N is tricky with unsigned if a < b.
+        // Better: (mWriteCursor + Size - count) % Size
+
+        size_t oldestIndex = (mWriteCursor + Size - count) % Size;
+
+        ConstIteratorT iter = mRing.cbegin();
+        std::advance(iter, oldestIndex);
+        return iter;
+    }
+
+
+    template<typename ContainedT, size_t Size>
+    CircularBuffer<ContainedT, Size>::ConstIteratorT CircularBuffer<ContainedT, Size>::End() const
+    {
+        if (!mHasUpdated)
+        {
+            return mRing.cbegin();
+        }
+
+        size_t count = GetNumContained();
+        if (count == 0)
+        {
+            return mRing.cbegin();
+        }
+
+        // The end iterator is the slot AFTER the newest element.
+        // The newest element is at (mWriteCursor - 1).
+        // So the end is at mWriteCursor.
+        // We just need to wrap it if necessary, though mWriteCursor is already wrapped.
+
+        ConstIteratorT iter = mRing.cbegin();
+        std::advance(iter, mWriteCursor);
+        return iter;
+    }
+
+    template<typename ContainedT, size_t Size>
     size_t CircularBuffer<ContainedT, Size>::WrapCursor(size_t absoluteCursor) const
     {
         const size_t wrappedCursor{ absoluteCursor % Size };

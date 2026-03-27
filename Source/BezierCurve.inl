@@ -42,10 +42,14 @@ namespace Kurveball
     template<typename PositionT>
     void BezierCurve<PositionT>::ToBinary(std::ostream& outStream) const
     {
-        const size_t numSegments = mSegments.size();
-        outStream.write((const char*)&numSegments, sizeof(size_t));
+        constexpr uint16_t CURRENT_VERSION = 0;
 
-        for (const auto segment : mSegments)
+        outStream.write((const char*)&CURRENT_VERSION, sizeof(CURRENT_VERSION));
+
+        const uint32_t numSegments = (uint32_t)mSegments.size();
+        outStream.write((const char*)&numSegments, sizeof(numSegments));
+
+        for (const auto& segment : mSegments)
         {
             segment.ToBinary(outStream);
         }
@@ -56,20 +60,31 @@ namespace Kurveball
     template<typename PositionT>
     BezierCurve<PositionT> BezierCurve<PositionT>::FromBinary(std::istream& inStream)
     {
-        size_t numSegments = 0U;
-        inStream.read((char*)&numSegments, sizeof(size_t));
-
-        CURVELIB_VERIFY_RETURN(numSegments > 0, {});
-
-        std::vector<BezierCurveSegment<PositionT>> segments{};
-        segments.reserve(numSegments);
-
-        for (size_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)
+        uint16_t fileVersion = 0;
+        inStream.read((char*)&fileVersion, sizeof(fileVersion));
+        
+        switch (fileVersion)
         {
-            segments.push_back(BezierCurveSegment<PositionT>::FromBinary(inStream));
-        }
+        case 0:
+            {
+                uint32_t numSegments = 0;
+                inStream.read((char*)&numSegments, sizeof(numSegments));
 
-        return BezierCurve(segments);
+                CURVELIB_VERIFY_RETURN(numSegments > 0, {});
+
+                std::vector<BezierCurveSegment<PositionT>> segments{};
+                segments.reserve(numSegments);
+
+                for (uint32_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)
+                {
+                    segments.push_back(BezierCurveSegment<PositionT>::FromBinary(inStream));
+                }
+
+                return BezierCurve(segments);
+            }
+        default:
+            CURVELIB_VERIFY_RETURN(false, {});
+        }
     }
 
     template<typename PositionT>

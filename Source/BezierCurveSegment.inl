@@ -84,10 +84,10 @@ namespace Kurveball
     template<typename PositionT>
     void BezierCurveSegment<PositionT>::ToBinary(std::ostream& outStream) const
     {
-        const size_t numPoints = mPoints.size();
-        outStream.write((const char*) &numPoints, sizeof(size_t));
+        const uint8_t numPoints = (uint8_t)mPoints.size();
+        outStream.write((const char*) &numPoints, sizeof(numPoints));
 
-        for (const auto point : mPoints)
+        for (const auto& point : mPoints)
         {
             point.ToBinary(outStream);
         }
@@ -98,15 +98,15 @@ namespace Kurveball
     template<typename PositionT>
     BezierCurveSegment<PositionT> BezierCurveSegment<PositionT>::FromBinary(std::istream& istream)
     {
-        size_t numPoints = 0U;
-        istream.read((char*)&numPoints, sizeof(size_t));
+        uint8_t numPoints = 0;
+        istream.read((char*)&numPoints, sizeof(numPoints));
 
         CURVELIB_VERIFY_RETURN(numPoints > 0, {});
 
         PointVector points;
         points.reserve(numPoints);
 
-        for (size_t i = 0; i < numPoints; ++i)
+        for (uint8_t i = 0; i < numPoints; ++i)
         {
             points.push_back(PositionT::FromBinary(istream));
         }
