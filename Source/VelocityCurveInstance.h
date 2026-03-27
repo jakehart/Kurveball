@@ -5,7 +5,6 @@
 #include <chrono>
 
 #include "AreaAccumulator.h"
-#include "CircularBuffer.h"
 #include "CurveSampler.h"
 #include "CurveSampler3D.h"
 #include "CurveMechanic.h"

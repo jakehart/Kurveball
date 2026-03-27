@@ -117,11 +117,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool RespectCollision = true;
 
-    // If true, control the actor using velocity and leave the physics simulation up to Unreal.
-    // If false, control the actor using position and ignore Unreal physics.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool OutputVelocity = true;
-
 private:
     Kurveball::VelocityCurveContext& AccessCurveContext();
 
