@@ -61,49 +61,6 @@ bool USensorComponent::HasSensorResult(FName sensorName) const
     return true;
 }
 
-bool USensorComponent::ApplyCollisionToVelocity(Kurveball::VelocityCurveOutput& output) const
-{
-    using namespace Kurveball;
-
-    const Float3 previousVelocity = output.mVelocity;
-
-    for (const auto& [sensorName, sensor] : SensorDescriptions)
-    {
-        if (!sensor.IsEnabled || !sensor.IsAutoCollide)
-        {
-            continue;
-        }
-
-        if (!sensor.Result.bBlockingHit && !sensor.Result.bStartPenetrating)
-        {
-            continue;
-        }
-
-        Float3 impactNormal(sensor.Result.ImpactNormal.X, sensor.Result.ImpactNormal.Y, sensor.Result.ImpactNormal.Z);
-        impactNormal.NormalizeInPlace();
-
-        //////////
-        const Float3 normalComponent = impactNormal * output.mVelocity.Dot(impactNormal);
-        
-        // Calculate the part of the input velocity that coincides with the hit normal of the object we hit,
-        // pointing out away from the obstacle (?)
-        const Float3 normalVelocity = normalComponent * output.mVelocity;
-
-        // Whatever's left is the velocity that would push us sideways along the obstacle
-        const Float3 tangentSlidingComponent = output.mVelocity - normalVelocity;
-        
-        // Push the character back from the collision
-        constexpr float RESTITUTION_COEFFICIENT = 1.f;
-        const Float3 restitutionComponent = normalVelocity * sensor.Result.PenetrationDepth * RESTITUTION_COEFFICIENT;
-
-        output.mVelocity = tangentSlidingComponent + restitutionComponent;
-    }
-
-    const bool velocityChanged = !output.mVelocity.Equals(previousVelocity);
-    return velocityChanged;
-}
-
-
 void USensorComponent::SanitizeSensorDescription(FSensorDescription& ioSensor)
 {
     if (ioSensor.LocalDirection.IsNearlyZero())
