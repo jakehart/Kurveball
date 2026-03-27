@@ -2,18 +2,17 @@
 This summarizes all the features and fixes that are needed in order to release Kurveball.
 
 ## Documentation
+mini-clip for README  
 Explainer video  
-README.md with example code and clip  
 
 ## Unreal Demo
 Example animation blueprint
-Some solution for slope traversability
-	likely RespectCollision
-Networked play using UE networking  
+RespectCollision bulletproofing
+UE networking adapter  
 "Create movement mechanic" menu item  
 Movement line/subway map  
 bugfix: falling through the floor at low framerates
-	this is due to the sensor check for gravity, which is hacky
+	this is due to the sensor check for gravity, which is hacky. remove USensorComponent
 
 ## BezierCurveSegment: Pack-in curve implementation
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments  
