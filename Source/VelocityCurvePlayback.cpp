@@ -273,8 +273,11 @@ namespace Kurveball
                 return;
             }
 
-            ioCurveOutput.mDirection = (ioCurveOutput.mDirection * axisMask).GetNormalized();
-            ioCurveOutput.mVelocity = (ioCurveOutput.mVelocity * axisMask).GetNormalized();
+            // Mask away the motion on undesired axes. This motion is simply gone, and its speed is not redirected
+            // into the remaining axes
+            ioCurveOutput.mVelocity = ioCurveOutput.mVelocity * axisMask;
+            
+            ioCurveOutput.mDirection = ioCurveOutput.mVelocity.GetNormalized();
             ioCurveOutput.mSpeed = ioCurveOutput.mVelocity.GetLength();
 
             ioCurveOutput.mPositionDelta = ioCurveOutput.mPositionDelta * axisMask;
