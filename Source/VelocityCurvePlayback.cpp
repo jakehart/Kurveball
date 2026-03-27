@@ -119,7 +119,6 @@ namespace Kurveball
             for (auto& [curveId, curveInstance] : ioCurvesInPhase)
             {
                 Internal::TickSingleCurve(curveInstance, ioContext);
-                Internal::RecordHistory(curveInstance);
                 Internal::CombineCurveOutput(finalOutput, curveInstance);
 
                 const Seconds curveRuntime = CalculateCurveRuntime(curveInstance);
@@ -311,9 +310,5 @@ namespace Kurveball
             }
         }
 
-        void RecordHistory(VelocityCurveInstance& ioCurveInstance)
-        {
-            ioCurveInstance.mHistory.AddToEnd(ioCurveInstance.mDistanceAccumulator.GetLatestSample());
-        }
     }
 }

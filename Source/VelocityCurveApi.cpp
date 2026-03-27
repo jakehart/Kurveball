@@ -281,7 +281,6 @@ namespace Kurveball
         }
 
         ioCurveInstance.mOutput = {.mPosition = ioCurveInstance.mMechanic.mStartPosition};
-        ioCurveInstance.mHistory.Clear();
     }
 
     void SetPosition(VelocityCurveContext& ioCurveContext, float x, float y, float z)
