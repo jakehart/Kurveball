@@ -42,5 +42,8 @@ namespace Kurveball
 
         // Folds the output from singleCurveOutput into ioCombinedOutput.
         void CombineCurveOutput(VelocityCurveOutput& ioCombinedOutput, const VelocityCurveInstance& instanceToCombine);
+
+        // Records a single curve's current (time, speed) output into its mHistory buffer.
+        void RecordHistory(VelocityCurveInstance& ioCurveInstance);
     }
 }

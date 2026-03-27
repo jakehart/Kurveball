@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "AreaAccumulator.h"
+#include "CircularBuffer.h"
 #include "CurveSampler.h"
 #include "CurveSampler3D.h"
 #include "CurveMechanic.h"
@@ -43,6 +44,11 @@ namespace Kurveball
         // This is combined with any other running curves to give the final result.
         Kurveball::VelocityCurveOutput mOutput {};
         
+        // Saves a history of this curve's most recent output velocities (with speedMultiplier multiplied in)
+        // for debug purposes.
+        // TODO: Make debug information completely optional to save memory, and make its size adjustable by the user
+        CircularBuffer<Float2, NUM_HISTORY_ENTRIES> mHistory {};
+
         std::string ToString() const
         {
             std::stringstream ss;
