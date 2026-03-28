@@ -137,10 +137,10 @@ namespace Kurveball
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
-        CURVELIB_VERIFY_RETURN(curveInstance);
+        CURVELIB_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
 
         // Zero or negative asset durations are invalid
-        CURVELIB_VERIFY_RETURN(curveInstance->mMechanic.mRawAssetDuration.count() > sFloatEpsilon);
+        CURVELIB_ERROR_RETURN(curveInstance->mMechanic.mRawAssetDuration.count() > sFloatEpsilon, ioContext, ErrorCode::InvalidCurveAsset);
 
         // Convert from stretched playtime back to raw curve asset coordinates
         float timeConversionFactor = 1.f;
@@ -318,7 +318,7 @@ namespace Kurveball
     void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceId curveID, CurveXFunction func)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, curveID);
-        CURVELIB_VERIFY_RETURN(curveInstance);
+        CURVELIB_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
 
         curveInstance->mXSampler = func;
     }

@@ -6,6 +6,7 @@
 #include "Axis.h"
 #include "CurveMap.h"
 #include "VelocityCurveOutput.h"
+#include "Asserts.h"
 
 namespace Kurveball
 {
@@ -34,6 +35,7 @@ namespace Kurveball
         Vector3<bool> mVerticalAxisMask{ false, true, false };
         Vector3<bool> mHorizontalAxisMask{ true, false, true };
 
-        // TODO: Add optional debug recording using the CurveOutputs
+        // Set this function pointer to be notified with an error code when something goes wrong inside Kurveball
+        ErrorHandler mErrorHandler;
     };
 }

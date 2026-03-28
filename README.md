@@ -4,7 +4,7 @@ Kurveball is a curve-driven movement and animation library designed to replace c
 
 Instead of writing code to create movement, you define a velocity curve: a simple graph where the X-axis is Time and the Y-axis is Speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's position and rotation automatically. Motion can be looped, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
 
-<a href="https://www.youtube.com/watch?v=hYtLclpY_uI"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="drawing" width="712" height="400"/></a><br>
+<a href="https://www.youtube.com/watch?v=hYtLclpY_uI" target="_blank"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="Kurveball jump tweaking" width="712" height="400"/></a><br>
 *(Click for YouTube version)*
 
 ## 🪶 Philosophy
@@ -15,7 +15,7 @@ Character movement is a complex math problem, but *designers* should see it as a
 
 ## 📐 How to Use in Unreal Engine
 
-Just put Kurveball under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation to your actor. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint. Kurveball is compatible with Unreal's CurveFloat type, so you can use Unreal's native editor to draw your velocity curves. No conversion needed.
+Just put Kurveball under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation to your actor. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint. Kurveball is compatible with Unreal's CurveFloat type, so you can use Unreal's native editor to draw your velocity curves. No conversion needed. See Examples/UnrealCurveDemo for an example.
 
 Wrappers for other engines are on the roadmap! Godot is next in line after Unreal.
 
