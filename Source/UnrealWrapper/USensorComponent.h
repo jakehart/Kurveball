@@ -61,6 +61,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TMap<FName, FSensorDescription> SensorDescriptions;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool ShowDebug = false;
 private:
     void SanitizeSensorDescription(FSensorDescription& ioSensor);
 

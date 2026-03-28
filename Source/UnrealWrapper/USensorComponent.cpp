@@ -123,7 +123,10 @@ void USensorComponent::AsyncTraceSensor(FSensorDescription& ioSensor)
     // I think this is because of a race between this line and the handler above. Need thread safety/mutex here
     //ioSensor.IsWaitingForResult = true;
 
-    DrawDebugLine(world, worldStartPosition, worldEndPosition, FColor::Red, false);
+    if (ShowDebug)
+    {
+        DrawDebugLine(world, worldStartPosition, worldEndPosition, FColor::Red, false);
+    }
 
     world->AsyncSweepByChannel(
         EAsyncTraceType::Single,
