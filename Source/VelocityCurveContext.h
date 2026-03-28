@@ -1,7 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #pragma once
 
-#include "CurveInstanceId.h"
+#include "CurveInstanceID.h"
 #include "CircularBuffer.h"
 #include "Axis.h"
 #include "CurveMap.h"

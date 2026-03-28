@@ -72,7 +72,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ECoordinateSpace CoordinateSpace = ECoordinateSpace::world;
 
-    Kurveball::CurveInstanceId GetCurveId() const
+    Kurveball::CurveInstanceID GetCurveID() const
     {
         return GetTypeHash(CurveInstanceName);
     }
@@ -81,7 +81,7 @@ public:
     {
         return
         {
-            .mInstanceId = GetTypeHash(CurveInstanceName),
+            .mInstanceID = GetTypeHash(CurveInstanceName),
             .mDebugName = std::string(TCHAR_TO_UTF8(*CurveInstanceName.ToString())),
             .mDirection = Kurveball::ToFloat3(Direction),
             .mCoordinateSpace = static_cast<Kurveball::CoordinateSpace>(CoordinateSpace),

@@ -4,5 +4,5 @@
 
 namespace Kurveball
 {
-    using CurveInstanceId = std::uint32_t;
+    using CurveInstanceID = std::uint32_t;
 }

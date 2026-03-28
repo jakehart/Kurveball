@@ -19,7 +19,7 @@ namespace Kurveball
 
     // Returns the current position of the playhead on the curve asset, expressed in the raw
     // x coordinate of the curve itself (with no looping or stretching applied).
-    float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceId curveInstanceId);
+    float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceID curveInstanceID);
     
     // Helper functions
     namespace Internal

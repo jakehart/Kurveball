@@ -2,7 +2,7 @@
 
 #include "AxisMode.h"
 #include "CoordinateSpace.h"
-#include "CurveInstanceId.h"
+#include "CurveInstanceID.h"
 #include "UnitTypes.h"
 #include "Vector3.h"
 
@@ -16,7 +16,7 @@ namespace Kurveball
     struct CurveMechanic
     {
         // TODO: Autopopulate this from the std::hash of the debug name if available and the instance ID is unset
-        CurveInstanceId mInstanceId{};
+        CurveInstanceID mInstanceID{};
         
         std::optional<std::string> mDebugName{};
 

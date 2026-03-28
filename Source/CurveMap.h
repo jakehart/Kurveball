@@ -6,5 +6,5 @@
 
 namespace Kurveball
 {
-    using CurveMap = std::unordered_map<CurveInstanceId, VelocityCurveInstance>;
+    using CurveMap = std::unordered_map<CurveInstanceID, VelocityCurveInstance>;
 }

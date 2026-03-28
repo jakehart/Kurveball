@@ -27,7 +27,7 @@ namespace Kurveball
         {
             .mMechanic =
             {
-                .mInstanceId = std::rand() % std::numeric_limits<CurveInstanceId>::max(),
+                .mInstanceID = std::rand() % std::numeric_limits<CurveInstanceID>::max(),
                 .mDebugName = "Test Curve",
                 .mDirection = {1, 0, 0},
                 .mCoordinateSpace = CoordinateSpace::world,
@@ -79,7 +79,7 @@ namespace Kurveball
             // Use the short tick time so we can verify end time with more precision
             Kurveball::TickPlayback(ioContext, Seconds(i * tickDuration));
 
-            if (!Kurveball::IsCurveRunning(ioContext, ioCurveInstance.mMechanic.mInstanceId))
+            if (!Kurveball::IsCurveRunning(ioContext, ioCurveInstance.mMechanic.mInstanceID))
             {
                 break;
             }

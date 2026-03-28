@@ -13,18 +13,18 @@ int32 UVelocityCurveDebugger::NativePaint(
     const FGeometry& AllottedGeometry,
     const FSlateRect& MyCullingRect,
     FSlateWindowElementList& outDrawElements,
-    int32 layerId,
+    int32 layerID,
     const FWidgetStyle& InWidgetStyle,
     bool bParentEnabled
 ) const
 {
     // Always call the parent implementation first
-    layerId = Super::NativePaint(Args, AllottedGeometry, MyCullingRect, outDrawElements, layerId, InWidgetStyle, bParentEnabled);
+    layerID = Super::NativePaint(Args, AllottedGeometry, MyCullingRect, outDrawElements, layerID, InWidgetStyle, bParentEnabled);
 
     const auto* curveComponent = GetCurveComponent();
     if (!curveComponent)
     {
-        return layerId + 1;
+        return layerID + 1;
     }
 
     // Get the local size of the widget's allocated space (in screen pixels)
@@ -36,16 +36,16 @@ int32 UVelocityCurveDebugger::NativePaint(
     static FSlateBrush backgroundBrush;
     backgroundBrush.DrawAs = ESlateBrushDrawType::Box;
     backgroundBrush.TintColor = CurveDebuggerOptions::sBackgroundColor;
-    FSlateDrawElement::MakeBox(outDrawElements, layerId, AllottedGeometry.ToPaintGeometry(), &backgroundBrush, ESlateDrawEffect::None, CurveDebuggerOptions::sBackgroundColor);
+    FSlateDrawElement::MakeBox(outDrawElements, layerID, AllottedGeometry.ToPaintGeometry(), &backgroundBrush, ESlateDrawEffect::None, CurveDebuggerOptions::sBackgroundColor);
 
-    DrawLegend(outDrawElements, layerId, AllottedGeometry);
+    DrawLegend(outDrawElements, layerID, AllottedGeometry);
 
     // TODO: Draw rule lines
 
-    DrawCurveGraph(outDrawElements, layerId, AllottedGeometry);
+    DrawCurveGraph(outDrawElements, layerID, AllottedGeometry);
 
-    // Increment layerId for subsequent drawing operations
-    return layerId + 1;
+    // Increment layerID for subsequent drawing operations
+    return layerID + 1;
 }
 
 const UVelocityCurveComponent* UVelocityCurveDebugger::GetCurveComponent() const
@@ -66,7 +66,7 @@ const UVelocityCurveComponent* UVelocityCurveDebugger::GetCurveComponent() const
     return curveComponent;
 }
 
-void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const
+void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const
 {
     static FSlateBrush legendBackgroundBrush;
     legendBackgroundBrush.DrawAs = ESlateBrushDrawType::Box;
@@ -90,7 +90,7 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
     auto joinedRefs = Kurveball::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
     auto allCurveInstances = joinedRefs | std::views::join;
 
-    for (const auto& [curveId, curveInstance] : allCurveInstances)
+    for (const auto& [curveID, curveInstance] : allCurveInstances)
     {
         FVector2D textPosition(0.0f, curveNum * fontHeight);
         FSlateLayoutTransform textTransform(1.f, textPosition);
@@ -103,13 +103,13 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
         
         std::stringstream curveDebugStr;
         curveDebugStr << curveName << ": " << curveInstance.mDistanceAccumulator.GetLatestSample().Y << "m/s, " << curveInstance.mDistanceAccumulator.GetTotalArea() << "cm";
-        FSlateDrawElement::MakeText(outDrawElements, layerId, AllottedGeometry.ToPaintGeometry(textTransform), UTF8_TO_TCHAR(curveDebugStr.str().c_str()), sLegendFont, ESlateDrawEffect::None, CurveDebuggerOptions::sLegendTextColor);
+        FSlateDrawElement::MakeText(outDrawElements, layerID, AllottedGeometry.ToPaintGeometry(textTransform), UTF8_TO_TCHAR(curveDebugStr.str().c_str()), sLegendFont, ESlateDrawEffect::None, CurveDebuggerOptions::sLegendTextColor);
 
         ++curveNum;
     }
 }
 
-void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const
+void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const
 {
     const auto* curveComponent = GetCurveComponent();
     if (!curveComponent)
@@ -123,9 +123,9 @@ void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElem
     auto joinedRefs = Kurveball::GetJoinedContainerReferences(context.mLinearCurves, context.mRotationCurves);
     auto allCurveInstances = joinedRefs | std::views::join;
 
-    for (const auto& [curveId, curveInstance] : allCurveInstances)
+    for (const auto& [curveID, curveInstance] : allCurveInstances)
     {
-        const uint32_t graphColorRaw = Kurveball::CalculateCurveDebugColor(curveId);
+        const uint32_t graphColorRaw = Kurveball::CalculateCurveDebugColor(curveID);
         FLinearColor graphColor = FLinearColor::FromSRGBColor(FColor(graphColorRaw));
         const auto historyPointsUnreal = ToUnrealPoints(curveInstance.mHistory.Begin(),
                                                         curveInstance.mHistory.End(),
@@ -136,7 +136,7 @@ void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElem
 
         FSlateDrawElement::MakeLines(
             outDrawElements,
-            layerId,
+            layerID,
             AllottedGeometry.ToPaintGeometry(),
             historyPointsUnreal,
             ESlateDrawEffect::None,

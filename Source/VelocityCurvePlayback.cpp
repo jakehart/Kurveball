@@ -62,9 +62,9 @@ namespace Kurveball
         return Seconds(curveRuntime);
     }
     
-    float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceId curveInstanceId)
+    float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceID curveInstanceID)
     {
-        const VelocityCurveInstance* curveInstance = GetCurveInstance(context, curveInstanceId);
+        const VelocityCurveInstance* curveInstance = GetCurveInstance(context, curveInstanceID);
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, context, ErrorCode::CurveNotFound, 0.f);
 
         if (curveInstance->mXSampler.has_value())
@@ -113,10 +113,10 @@ namespace Kurveball
                 return;
             }
 
-            std::vector<CurveInstanceId> curvesToRemove {};
+            std::vector<CurveInstanceID> curvesToRemove {};
             VelocityCurveOutput& finalOutput = ioContext.mOutput;
 
-            for (auto& [curveId, curveInstance] : ioCurvesInPhase)
+            for (auto& [curveID, curveInstance] : ioCurvesInPhase)
             {
                 Internal::TickSingleCurve(curveInstance, ioContext);
                 Internal::RecordHistory(curveInstance);
@@ -129,13 +129,13 @@ namespace Kurveball
                 {
                     // This curve is over, but avoid deleting while iterating
                     // TODO: Ensure that the perfect, final result is emitted here (to a subtick level)
-                    curvesToRemove.push_back(curveId);
+                    curvesToRemove.push_back(curveID);
                 }
             }
 
-            for (const auto curveId : curvesToRemove)
+            for (const auto curveID : curvesToRemove)
             {
-                ioCurvesInPhase.erase(curveId);
+                ioCurvesInPhase.erase(curveID);
             }
         }
 

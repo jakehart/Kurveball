@@ -130,8 +130,8 @@ void UVelocityCurveComponent::StopVelocityCurve(const UCurveMechanic* mechanic)
         return;
     }
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    Kurveball::StopVelocityCurve(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    Kurveball::StopVelocityCurve(mCurveContext, curveInstanceID);
 }
 
 void UVelocityCurveComponent::SoftStopVelocityCurve(const UCurveMechanic* mechanic)
@@ -142,8 +142,8 @@ void UVelocityCurveComponent::SoftStopVelocityCurve(const UCurveMechanic* mechan
         return;
     }
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    Kurveball::SoftStopVelocityCurve(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    Kurveball::SoftStopVelocityCurve(mCurveContext, curveInstanceID);
 }
 
 void UVelocityCurveComponent::StopAllVelocityCurves()
@@ -159,7 +159,7 @@ void UVelocityCurveComponent::SeekToX(const UCurveMechanic* mechanic, float curv
         return;
     }
 
-    Kurveball::SeekToX(mCurveContext, mechanic->GetCurveId(), curveXCoordinate);
+    Kurveball::SeekToX(mCurveContext, mechanic->GetCurveID(), curveXCoordinate);
 }
 
 void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic, bool updateSpeed, float speedMultiplier, bool updateDirection, FVector direction)
@@ -174,8 +174,8 @@ void UVelocityCurveComponent::UpdateVelocityCurve(const UCurveMechanic* mechanic
     const auto optSpeed{ updateSpeed ? std::optional<float>(speedMultiplier) : std::nullopt };
     const auto optDirection{ updateDirection ? std::optional<Kurveball::Float3>(Kurveball::ToFloat3(direction)) : std::nullopt };
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    Kurveball::UpdateVelocityCurve(mCurveContext, curveInstanceId, optSpeed, optDirection);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    Kurveball::UpdateVelocityCurve(mCurveContext, curveInstanceID, optSpeed, optDirection);
 }
 
 void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwardMechanic, const UCurveMechanic* sideMechanic, const FVector2D& inputAxes, bool isCameraRelative)
@@ -201,8 +201,8 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
         return;
     }
 
-    const Kurveball::CurveInstanceId forwardCurveId = forwardMechanic->GetCurveId();
-    const Kurveball::CurveInstanceId sideCurveId = sideMechanic->GetCurveId();
+    const Kurveball::CurveInstanceID forwardCurveID = forwardMechanic->GetCurveID();
+    const Kurveball::CurveInstanceID sideCurveID = sideMechanic->GetCurveID();
 
     const bool isVertical = forwardMechanic->AxisMode == EAxisMode::vertical;
 
@@ -244,7 +244,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
         return;
     }
 
-    const Kurveball::CurveInstanceId curveID = mechanic->GetCurveId();
+    const Kurveball::CurveInstanceID curveID = mechanic->GetCurveID();
 
     const float playheadPosition = Kurveball::CalculateCurveX(mCurveContext, curveID);
     
@@ -289,7 +289,7 @@ float UVelocityCurveComponent::GetMechanicSpeed(const UCurveMechanic* mechanic) 
         return 0.f;
     }
     
-    return Kurveball::GetMechanicSpeed(mCurveContext, mechanic->GetCurveId());
+    return Kurveball::GetMechanicSpeed(mCurveContext, mechanic->GetCurveID());
 }
 
 float UVelocityCurveComponent::GetTotalSpeed() const
@@ -305,8 +305,8 @@ bool UVelocityCurveComponent::IsCurveRunning(const UCurveMechanic* mechanic) con
         return false;
     }
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    return Kurveball::IsCurveRunning(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    return Kurveball::IsCurveRunning(mCurveContext, curveInstanceID);
 }
 
 bool UVelocityCurveComponent::IsAnyCurveRunning(bool includeLinear, bool includeRotational) const
@@ -322,8 +322,8 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
         return;
     }
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceID);
 
     if (!curveInstance)
     {
@@ -342,8 +342,8 @@ void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mech
         return;
     }
 
-    const Kurveball::CurveInstanceId curveInstanceId = mechanic->GetCurveId();
-    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceId);
+    const Kurveball::CurveInstanceID curveInstanceID = mechanic->GetCurveID();
+    Kurveball::VelocityCurveInstance* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, curveInstanceID);
 
     if (!curveInstance)
     {
@@ -446,15 +446,15 @@ FString UVelocityCurveComponent::GetCurveOutputAsDebugString(const UCurveMechani
         return "GetCurveOutputAsDebugString: Mechanic pin must be connected";
     }
 
-    const auto curveId = mechanic->GetCurveId();
-    const auto linearIter = mCurveContext.mLinearCurves.find(curveId);
+    const auto curveID = mechanic->GetCurveID();
+    const auto linearIter = mCurveContext.mLinearCurves.find(curveID);
     if (linearIter != mCurveContext.mLinearCurves.end())
     {
         //return FString(std::to_string(linearIter->second.mDistanceAccumulator.GetLatestSample().Y).c_str());
         return FString(linearIter->second.mOutput.ToString().c_str());
     }
 
-    const auto rotationIter = mCurveContext.mRotationCurves.find(curveId);
+    const auto rotationIter = mCurveContext.mRotationCurves.find(curveID);
     if (rotationIter != mCurveContext.mRotationCurves.end())
     {
         return FString(rotationIter->second.mOutput.ToString().c_str());
@@ -485,7 +485,7 @@ FString UVelocityCurveComponent::GetRunningCurvesAsDebugString() const
     return UTF8_TO_TCHAR(ss.str().c_str());
 }
 
-int32_t UVelocityCurveComponent::CurveNameToInstanceId(const FString& curveName) const
+int32_t UVelocityCurveComponent::CurveNameToInstanceID(const FString& curveName) const
 {
     return GetTypeHash(curveName);
 }
@@ -498,7 +498,7 @@ void UVelocityCurveComponent::DefineCurveXFunction(const UCurveMechanic* mechani
         return;
     }
 
-    if (auto* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, mechanic->GetCurveId()))
+    if (auto* curveInstance = Kurveball::AccessCurveInstance(mCurveContext, mechanic->GetCurveID()))
     {
         curveInstance->mXSampler.emplace([&]() -> float
             {

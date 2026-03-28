@@ -105,7 +105,7 @@ public:
     FString GetRunningCurvesAsDebugString() const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
-    int32 CurveNameToInstanceId(const FString& curveName) const;
+    int32 CurveNameToInstanceID(const FString& curveName) const;
 
     DECLARE_DYNAMIC_DELEGATE_RetVal(float, FCurveXSampler);
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")

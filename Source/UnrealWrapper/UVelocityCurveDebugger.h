@@ -31,16 +31,16 @@ protected:
         const FGeometry& AllottedGeometry,
         const FSlateRect& MyCullingRect,
         FSlateWindowElementList& OutDrawElements,
-        int32 layerId,
+        int32 layerID,
         const FWidgetStyle& InWidgetStyle,
         bool bParentEnabled) const override;
 private:
     // Returns the UVelocityCurveComponent from the currently possessed actor, or nullptr if none.
     const UVelocityCurveComponent* GetCurveComponent() const;
 
-    void DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const;
+    void DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const;
 
-    void DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerId, const FGeometry& AllottedGeometry) const;
+    void DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const;
 
     // Converts a buffer of Kurveball::Float3 to Unreal FVector2f for display on screen
     template <typename InputIteratorT>

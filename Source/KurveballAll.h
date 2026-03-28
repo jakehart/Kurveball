@@ -4,7 +4,7 @@
 #include "AreaAccumulator.h"
 #include "BezierCurve.h"
 #include "CircularBuffer.h"
-#include "CurveInstanceId.h"
+#include "CurveInstanceID.h"
 #include "KurveballAll.h"
 #include "CurveSampler.h"
 #include "IntegratorFunctions.h"

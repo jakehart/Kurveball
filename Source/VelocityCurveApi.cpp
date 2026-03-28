@@ -29,7 +29,7 @@ namespace Kurveball
 
     void StartVelocityCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& newCurve)
     {
-        const auto existingCurve{ GetCurveInstance(ioContext, newCurve.mMechanic.mInstanceId) };
+        const auto existingCurve{ GetCurveInstance(ioContext, newCurve.mMechanic.mInstanceID) };
         if (existingCurve)
         {
             // TODO: Warn about overwriting, perhaps return based on bool param in settings
@@ -43,17 +43,17 @@ namespace Kurveball
 
         if (IsRotationCurve(sanitizedCurve))
         {
-            ioContext.mRotationCurves[newCurve.mMechanic.mInstanceId] = sanitizedCurve;
+            ioContext.mRotationCurves[newCurve.mMechanic.mInstanceID] = sanitizedCurve;
         }
         else
         {
-            ioContext.mLinearCurves[newCurve.mMechanic.mInstanceId] = sanitizedCurve;
+            ioContext.mLinearCurves[newCurve.mMechanic.mInstanceID] = sanitizedCurve;
         }
     }
 
-    void UpdateVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId, std::optional<MetersPerSecond> speedMultiplier, std::optional<Float3> direction)
+    void UpdateVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, std::optional<MetersPerSecond> speedMultiplier, std::optional<Float3> direction)
     {
-        auto* curveInstance{ AccessCurveInstance(ioContext, instanceId) };
+        auto* curveInstance{ AccessCurveInstance(ioContext, instanceID) };
         if (!curveInstance)
         {
             // TODO: Warn
@@ -83,10 +83,10 @@ namespace Kurveball
         }
     }
 
-    void StopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId)
+    void StopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID)
     {
-        ioContext.mLinearCurves.erase(instanceId);
-        ioContext.mRotationCurves.erase(instanceId);
+        ioContext.mLinearCurves.erase(instanceID);
+        ioContext.mRotationCurves.erase(instanceID);
         // TODO: Curve exit modes or event notification of curve stop
     }
 
@@ -103,9 +103,9 @@ namespace Kurveball
         }
     }
     
-    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceId instanceId)
+    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID)
     {
-        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceID);
         if (!curveInstance)
         {
             // TODO: log
@@ -115,18 +115,18 @@ namespace Kurveball
         if (IsZero(curveInstance->mMechanic.mLoopEndX))
         {
             // This curve has no outro to play, so just stop it immediately
-            StopVelocityCurve(ioContext, instanceId);
+            StopVelocityCurve(ioContext, instanceID);
             return;
         }
 
         // If the playhead is currently before the outro...
-        if (CalculateCurveX(ioContext, instanceId) < curveInstance->mMechanic.mLoopEndX)
+        if (CalculateCurveX(ioContext, instanceID) < curveInstance->mMechanic.mLoopEndX)
         {
             // Prevent further looping
             curveInstance->mMechanic.mPlayCount = 1;
         
             // Seek to the outro and let it play
-            SeekToX(ioContext, instanceId, curveInstance->mMechanic.mLoopEndX + sFloatEpsilon);
+            SeekToX(ioContext, instanceID, curveInstance->mMechanic.mLoopEndX + sFloatEpsilon);
         }
         //else
         {
@@ -134,9 +134,9 @@ namespace Kurveball
         }
     }
 
-    void SeekToX(VelocityCurveContext& ioContext, CurveInstanceId instanceId, float curveXCoordinate)
+    void SeekToX(VelocityCurveContext& ioContext, CurveInstanceID instanceID, float curveXCoordinate)
     {
-        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceId);
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceID);
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
 
         // Zero or negative asset durations are invalid
@@ -153,9 +153,9 @@ namespace Kurveball
         curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * timeConversionFactor);
     }
 
-    Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceID instanceID)
     {
-        const auto* curveInstance = GetCurveInstance(context, instanceId);
+        const auto* curveInstance = GetCurveInstance(context, instanceID);
         if (!curveInstance)
         {
             return {};
@@ -164,9 +164,9 @@ namespace Kurveball
         return curveInstance->mMechanic.mDirection;
     }
 
-    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceID instanceID)
     {
-        const auto* curveInstance = GetCurveInstance(context, instanceId);
+        const auto* curveInstance = GetCurveInstance(context, instanceID);
         if (!curveInstance)
         {
             return 0.f;
@@ -186,9 +186,9 @@ namespace Kurveball
     }
 
 
-    bool IsCurveRunning(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    bool IsCurveRunning(const VelocityCurveContext& context, CurveInstanceID instanceID)
     {
-        return context.mLinearCurves.contains(instanceId) || context.mRotationCurves.contains(instanceId);
+        return context.mLinearCurves.contains(instanceID) || context.mRotationCurves.contains(instanceID);
     }
 
     bool IsAnyCurveRunning(const VelocityCurveContext& ioContext, bool includeLinear, bool includeRotational)
@@ -206,15 +206,15 @@ namespace Kurveball
         return false;
     }
 
-    const VelocityCurveInstance* GetCurveInstance(const VelocityCurveContext& context, CurveInstanceId instanceId)
+    const VelocityCurveInstance* GetCurveInstance(const VelocityCurveContext& context, CurveInstanceID instanceID)
     {
-        const auto linearIter{ context.mLinearCurves.find(instanceId) };
+        const auto linearIter{ context.mLinearCurves.find(instanceID) };
         if (linearIter != context.mLinearCurves.end())
         {
             return &linearIter->second;
         }
 
-        const auto rotationIter{ context.mRotationCurves.find(instanceId) };
+        const auto rotationIter{ context.mRotationCurves.find(instanceID) };
         if (rotationIter != context.mRotationCurves.end())
         {
             return &rotationIter->second;
@@ -223,15 +223,15 @@ namespace Kurveball
         return nullptr;
     }
 
-    VelocityCurveInstance* AccessCurveInstance(VelocityCurveContext& ioContext, CurveInstanceId instanceId)
+    VelocityCurveInstance* AccessCurveInstance(VelocityCurveContext& ioContext, CurveInstanceID instanceID)
     {
-        const auto linearIter{ ioContext.mLinearCurves.find(instanceId) };
+        const auto linearIter{ ioContext.mLinearCurves.find(instanceID) };
         if (linearIter != ioContext.mLinearCurves.end())
         {
             return &linearIter->second;
         }
 
-        const auto rotationIter{ ioContext.mRotationCurves.find(instanceId) };
+        const auto rotationIter{ ioContext.mRotationCurves.find(instanceID) };
         if (rotationIter != ioContext.mRotationCurves.end())
         {
             return &rotationIter->second;
@@ -243,9 +243,9 @@ namespace Kurveball
     void SanitizeCurveInstance(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context)
     {
         // If the user didn't specify a curve ID, give them a random one
-        if (ioCurveInstance.mMechanic.mInstanceId == CurveInstanceId{})
+        if (ioCurveInstance.mMechanic.mInstanceID == CurveInstanceID{})
         {
-            ioCurveInstance.mMechanic.mInstanceId = std::rand() % std::numeric_limits<CurveInstanceId>::max();
+            ioCurveInstance.mMechanic.mInstanceID = std::rand() % std::numeric_limits<CurveInstanceID>::max();
         }
 
         if (ioCurveInstance.mMechanic.mDirection.IsZero())
@@ -300,9 +300,9 @@ namespace Kurveball
         ioCurveContext.mOutput.mRotation.Set(x, y, z);
     }
 
-    uint32_t CalculateCurveDebugColor(CurveInstanceId curveId)
+    uint32_t CalculateCurveDebugColor(CurveInstanceID curveID)
     {
-        uint32_t color = curveId;
+        uint32_t color = curveID;
         // Ensure 100% opacity
         color |= 0x000000ff;
         return color;
@@ -315,7 +315,7 @@ namespace Kurveball
                 curveInstance.mMechanic.mAxisMode == AxisMode::roll;
     }
 
-    void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceId curveID, CurveXFunction func)
+    void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceID curveID, CurveXFunction func)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, curveID);
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);

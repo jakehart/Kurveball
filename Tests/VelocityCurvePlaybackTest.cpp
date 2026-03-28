@@ -187,7 +187,7 @@ TEST_CASE("TickPlayback rotation")
     curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
-    REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
     REQUIRE(context.mLinearCurves.size() == 0);
     REQUIRE(context.mRotationCurves.size() == 1);
 
@@ -276,7 +276,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
     curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
-    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
 
     float previousArea = 0.f;
     for (uint8_t i = 0; i < 100; ++i)
@@ -284,7 +284,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
         context.mAbsoluteTime = i * TICK_DURATION;
         Kurveball::TickPlayback(context, context.mAbsoluteTime);
 
-        const auto& accumulator = context.mLinearCurves.find(curveInstance.mMechanic.mInstanceId)->second.mDistanceAccumulator;
+        const auto& accumulator = context.mLinearCurves.find(curveInstance.mMechanic.mInstanceID)->second.mDistanceAccumulator;
         REQUIRE(accumulator.HasEverUpdated());
 
         const float currentArea = accumulator.GetTotalArea();
@@ -337,7 +337,7 @@ TEST_CASE("TickPlayback linear movement")
     curveInstance.mMechanic.mPlayCount = Kurveball::PLAY_COUNT_INFINITE;
 
     StartVelocityCurve(context, curveInstance);
-    REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
     REQUIRE(context.mLinearCurves.size() == 1);
     REQUIRE(context.mRotationCurves.size() == 0);
 
@@ -368,7 +368,7 @@ TEST_CASE("TickPlayback linear movement")
     REQUIRE(context.mHasUpdated);
     
     // Ensure that conditions stay stable on curve stop
-    Kurveball::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceId);
+    Kurveball::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceID);
     context.mAbsoluteTime += TICK_DURATION;
     Kurveball::TickPlayback(context, context.mAbsoluteTime);
     REQUIRE(context.mLinearCurves.empty());
@@ -399,5 +399,5 @@ TEST_CASE("Infinite playback")
         Kurveball::TickPlayback(context, absoluteTime);
     }
 
-    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceId));
+    REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
 }
