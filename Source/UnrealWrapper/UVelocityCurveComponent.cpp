@@ -58,13 +58,13 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // Rotation always uses degrees
     const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.Y, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.X);
     
-    /*if (OutputVelocity)
+    if (RespectCollision)
     {
         SendVelocityToUnreal(mCurveContext.mOutput.mVelocity, mCurveContext.mOutput.mAngularVelocity);
     }
-    else*/
+    else
     {
-        owner->TeleportTo(newPosition, newRotation, false, !RespectCollision);
+        owner->TeleportTo(newPosition, newRotation, false, true);
     }
 }
 
@@ -544,7 +544,16 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velo
         return;
     }
 
-    auto* primitiveComponent = owner->GetComponentByClass<UPrimitiveComponent>();
+    UPrimitiveComponent* primitiveComponent = nullptr;
+    if (owner->GetRootComponent())
+    {
+        primitiveComponent = Cast<UPrimitiveComponent>(owner->GetRootComponent());
+    }
+    else
+    {
+        primitiveComponent = owner->FindComponentByClass<UPrimitiveComponent>();
+    }
+
     if (!primitiveComponent)
     {
         UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must add a physics volume to your actor and enable SimulatePhysics"));
@@ -553,12 +562,11 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velo
 
     if (!primitiveComponent->IsSimulatingPhysics())
     {
-        UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must enable SimulatePhysics on your actor's root component"));
-        return;
+        primitiveComponent->SetSimulatePhysics(true);
     }
 
-    primitiveComponent->SetAllPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
-    primitiveComponent->SetAllPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
+    primitiveComponent->SetPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
+    primitiveComponent->SetPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
 }
 
 #endif // #if defined(__UNREAL__)
