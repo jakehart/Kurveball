@@ -4,7 +4,7 @@ Kurveball is a curve-driven movement and animation library designed to replace c
 
 Instead of writing code to create movement, you define a velocity curve: a simple graph where the X-axis is Time and the Y-axis is Speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's position and rotation automatically. Motion can be looped, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
 
-<a href="https://www.youtube.com/watch?v=hYtLclpY_uI"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="drawing" height="400"/></a><br>
+<a href="https://www.youtube.com/watch?v=hYtLclpY_uI"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="drawing" width="712" height="400"/></a><br>
 *(Click for YouTube version)*
 
 ## 🪶 Philosophy
