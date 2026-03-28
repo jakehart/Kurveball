@@ -5,19 +5,17 @@ This summarizes all the features and fixes that are needed in order to to get to
 Curve->curve speed matching and blending
 
 ## Unreal Demo
-Unreal quickstart video from zero   
-bugfix: falling through the floor at low framerates
-	this is due to the sensor check for gravity, which is hacky. remove USensorComponent
 Fix "Create movement mechanic" menu item (move to extension)  
+Unreal quickstart video from zero   
+bugfix: fix coordinate space issue when RespectCollision==true
+bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need subticking or some sort of last-frame correction
+	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
 
 ## BezierCurveSegment: Pack-in curve implementation
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments  
 Sample Bezier by arc length
 	3D distance-to-t lookup populated "backwards"
 Point reordering  
-
-## Housekeeping
-Naming consistency: preface Unreal assets with the commonly accepted two-letter prefixes   
 
 # v1.1 Roadmap
 Lower priority features that will make it into the next release.
