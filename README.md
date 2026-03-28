@@ -1,6 +1,6 @@
 # ╭╰ Kurveball ╭╰
 
-<iframe width="1030" height="579" src="https://www.youtube.com/embed/Nun1smLHx3c" title="Kurveball jump example" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Kurveball jump tweaking video](DocImages/KurveballJumpExampleThumbnail.gif)](https://www.youtube.com/watch?v=hYtLclpY_uI)
 
 Kurveball is a curve-driven movement and animation library designed to replace complex imperative movement code with intuitive visual graphs. 
 
