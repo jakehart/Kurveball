@@ -70,7 +70,7 @@ namespace Kurveball
                 uint32_t numSegments = 0;
                 inStream.read((char*)&numSegments, sizeof(numSegments));
 
-                CURVELIB_VERIFY_RETURN(numSegments > 0, {});
+                KURVEBALL_VERIFY_RETURN(numSegments > 0, {});
 
                 std::vector<BezierCurveSegment<PositionT>> segments{};
                 segments.reserve(numSegments);
@@ -83,7 +83,7 @@ namespace Kurveball
                 return BezierCurve(segments);
             }
         default:
-            CURVELIB_VERIFY_RETURN(false, {});
+            KURVEBALL_VERIFY_RETURN(false, {});
         }
     }
 
@@ -154,7 +154,7 @@ namespace Kurveball
     template<typename PositionT>
     void BezierCurve<PositionT>::MirrorTangents(size_t sourceSegmentNum)
     {
-        CURVELIB_VERIFY_RETURN(mSegments.size() > sourceSegmentNum);
+        KURVEBALL_VERIFY_RETURN(mSegments.size() > sourceSegmentNum);
 
         const auto& sourcePoints = mSegments[sourceSegmentNum].GetPoints();
 
@@ -177,7 +177,7 @@ namespace Kurveball
             if (previousSegmentPoints.size() >= 3)
             {
                 size_t tangentIndexToWrite = previousSegmentPoints.size() - 2;
-                CURVELIB_VERIFY_RETURN(tangentIndexToWrite > 0);
+                KURVEBALL_VERIFY_RETURN(tangentIndexToWrite > 0);
 
                 // The tangent is the second point in the source segment
                 const PositionT& sourceTangent = sourcePoints.at(1);

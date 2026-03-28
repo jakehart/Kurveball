@@ -18,9 +18,9 @@ namespace Kurveball
     using ErrorHandler = std::function<void(ErrorCode)>;
 }
 
-#define CURVELIB_VERIFY_RETURN(criterion, ...) { assert((criterion)); if(!(criterion)) return __VA_ARGS__; }
+#define KURVEBALL_VERIFY_RETURN(criterion, ...) { assert((criterion)); if(!(criterion)) return __VA_ARGS__; }
 
-#define CURVELIB_ERROR_RETURN(criterion, curveContext, errorCode, ...) { \
+#define KURVEBALL_ERROR_RETURN(criterion, curveContext, errorCode, ...) { \
     if(!(criterion)) \
     { \
         if(curveContext.mErrorHandler) \

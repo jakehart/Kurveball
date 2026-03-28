@@ -33,7 +33,7 @@ namespace Kurveball
     template<typename PositionT>
     BezierCurveSegment<PositionT>::ScalarType BezierCurveSegment<PositionT>::GetStartX() const
     {
-        CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
+        KURVEBALL_VERIFY_RETURN(!mPoints.empty(), 0);
 
         return mPoints.front().X;
     }
@@ -41,7 +41,7 @@ namespace Kurveball
     template<typename PositionT>
     BezierCurveSegment<PositionT>::ScalarType BezierCurveSegment<PositionT>::GetEndX() const
     {
-        CURVELIB_VERIFY_RETURN(!mPoints.empty(), 0);
+        KURVEBALL_VERIFY_RETURN(!mPoints.empty(), 0);
 
         return mPoints.back().X;
     }
@@ -50,7 +50,7 @@ namespace Kurveball
     PositionT BezierCurveSegment<PositionT>::CalculatePositionAtT(ScalarType t) const
     {
         const auto influences = CalculatePointInfluences(t);
-        CURVELIB_VERIFY_RETURN(influences.size() == mPoints.size(), {});
+        KURVEBALL_VERIFY_RETURN(influences.size() == mPoints.size(), {});
 
         PositionT finalPoint;
         for(size_t i = 0; i < mPoints.size(); ++i)
@@ -75,7 +75,7 @@ namespace Kurveball
             GenerateXTLookupTable();
         }
 
-        CURVELIB_VERIFY_RETURN(mLookupTable, {});
+        KURVEBALL_VERIFY_RETURN(mLookupTable, {});
 
         const ScalarType t = mLookupTable->CalculateValue(x);
         return CalculatePositionAtT(t);
@@ -101,7 +101,7 @@ namespace Kurveball
         uint8_t numPoints = 0;
         istream.read((char*)&numPoints, sizeof(numPoints));
 
-        CURVELIB_VERIFY_RETURN(numPoints > 0, {});
+        KURVEBALL_VERIFY_RETURN(numPoints > 0, {});
 
         PointVector points;
         points.reserve(numPoints);
@@ -155,7 +155,7 @@ namespace Kurveball
             GenerateXTLookupTable();
         }
 
-        CURVELIB_VERIFY_RETURN(mLookupTable, {});
+        KURVEBALL_VERIFY_RETURN(mLookupTable, {});
 
         return x >= mLookupTable->GetMinX() && x <= mLookupTable->GetMaxX();
     }
@@ -164,8 +164,8 @@ namespace Kurveball
     BezierCurveSegment<PositionT>::PointInfluenceVector BezierCurveSegment<PositionT>::CalculatePointInfluences(ScalarType t) const
     {
         const size_t numPoints = mPoints.size();
-        CURVELIB_VERIFY_RETURN(numPoints > 0, {});
-        CURVELIB_VERIFY_RETURN(numPoints <= MAX_SUPPORTED_POINTS, {});
+        KURVEBALL_VERIFY_RETURN(numPoints > 0, {});
+        KURVEBALL_VERIFY_RETURN(numPoints <= MAX_SUPPORTED_POINTS, {});
 
         // Which Bernstein polynomials to use depends on how many points we're blending between.
         // I've expressed them in monomial form (already FOILed/simplified), with zeroed terms (like 0t)

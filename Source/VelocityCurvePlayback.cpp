@@ -16,7 +16,7 @@ namespace Kurveball
     void TickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
     {
         // Pause (zero time delta) is fine, but make sure we aren't going back in time inadvertently
-        CURVELIB_ERROR_RETURN(absoluteTime.count() >= ioContext.mAbsoluteTime.count(), ioContext, ErrorCode::TimeReversal);
+        KURVEBALL_ERROR_RETURN(absoluteTime.count() >= ioContext.mAbsoluteTime.count(), ioContext, ErrorCode::TimeReversal);
 
         ioContext.mPreviousPosition = ioContext.mOutput.mPosition;
 
@@ -65,7 +65,7 @@ namespace Kurveball
     float CalculateCurveX(const VelocityCurveContext& context, CurveInstanceId curveInstanceId)
     {
         const VelocityCurveInstance* curveInstance = GetCurveInstance(context, curveInstanceId);
-        CURVELIB_ERROR_RETURN(curveInstance != nullptr, context, ErrorCode::CurveNotFound, 0.f);
+        KURVEBALL_ERROR_RETURN(curveInstance != nullptr, context, ErrorCode::CurveNotFound, 0.f);
 
         if (curveInstance->mXSampler.has_value())
         {
@@ -141,7 +141,7 @@ namespace Kurveball
 
         void TickSingleCurve(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context)
         {
-            CURVELIB_ERROR_RETURN(ioCurveInstance.mSpeedSampler != nullptr, context, ErrorCode::SpeedSamplerNotFound);
+            KURVEBALL_ERROR_RETURN(ioCurveInstance.mSpeedSampler != nullptr, context, ErrorCode::SpeedSamplerNotFound);
 
             const float curvePlayheadX{ CalculateCurveX(ioCurveInstance, context.mAbsoluteTime) };
             const float sampledSpeed{ ioCurveInstance.mSpeedSampler(curvePlayheadX) * ioCurveInstance.mMechanic.mSpeedMultiplier };
