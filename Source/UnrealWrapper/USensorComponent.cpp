@@ -15,6 +15,13 @@ void USensorComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    // Initialize to current position so that the first frame is correct
+    if (const auto* owner = GetOwner())
+    {
+        LastTickTransform = owner->GetTransform();
+    }
+
+
     for (auto& [sensorName, sensor] : SensorDescriptions)
     {
         SanitizeSensorDescription(sensor);
@@ -30,7 +37,7 @@ void USensorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
             continue;
         }
 
-        AsyncTraceSensor(sensor);
+        SyncTraceSensor(sensor);
     }
 
     if (const auto* owner = GetOwner())
@@ -73,7 +80,7 @@ void USensorComponent::SanitizeSensorDescription(FSensorDescription& ioSensor)
     }
 }
 
-void USensorComponent::AsyncTraceSensor(FSensorDescription& ioSensor)
+void USensorComponent::SyncTraceSensor(FSensorDescription& ioSensor)
 {
     const auto* owner = GetOwner();
     if (!owner)
@@ -87,58 +94,38 @@ void USensorComponent::AsyncTraceSensor(FSensorDescription& ioSensor)
         return;
     }
 
-    FTraceDelegate traceCompleteHandler;
-    traceCompleteHandler.BindLambda([&](const FTraceHandle& handle, FTraceDatum& traceData)
-        {
-            ioSensor.Result = {};
-            ioSensor.IsWaitingForResult = false;
-
-            if (traceData.OutHits.Num() < 1)
-            {
-                return;
-            }
-
-            const auto* hit = traceData.OutHits.GetData();
-            if (!hit)
-            {
-                return;
-            }
-
-            // Store the result by copy so we don't have to worry about object lifetime
-            ioSensor.Result = *hit;
-        });
+    const auto& currentTransform = owner->GetTransform();
 
     // Using last frame's position as the starting point to ensure that low FPS don't cause
     // us to be able to go through objects.
     const FVector worldStartPosition = LastTickTransform.TransformPosition(ioSensor.LocalStartPosition);
-    const FVector worldDirection = owner->GetTransform().TransformVector(ioSensor.LocalDirection);
+    const FVector worldDirection = currentTransform.TransformVector(ioSensor.LocalDirection);
 
-    // The end position is calculated from *this* frame's position to ensure that we reach the end of the trace
-    const FVector worldEndPosition = worldStartPosition + worldDirection * ioSensor.TraceLength;
+    // The end position is calculated from *this* frame's position, so that we get a smooth sweep from last frame's
+    // position to this frame's sensor endpoint
+    const FVector worldEndPosition = currentTransform.GetLocation() + worldDirection * ioSensor.TraceLength;
 
-    FCollisionQueryParams params;
+    FHitResult hit{};
+    FCollisionQueryParams params{};
     params.AddIgnoredActor(owner);
 
-    // TODO: When I set this to true, the async handler never meaningfully sets it back to false again.
-    // I think this is because of a race between this line and the handler above. Need thread safety/mutex here
-    //ioSensor.IsWaitingForResult = true;
+    bool bHit = GetWorld()->SweepSingleByChannel(
+        hit,
+        worldStartPosition,
+        worldEndPosition,
+        FQuat::Identity,
+        ECC_Visibility,
+        FCollisionShape::MakeSphere(ioSensor.RadiusCm),
+        params
+    );
+
+    ioSensor.Result = hit;
+    ioSensor.IsWaitingForResult = false;
 
     if (ShowDebug)
     {
         DrawDebugLine(world, worldStartPosition, worldEndPosition, FColor::Red, false);
     }
-
-    world->AsyncSweepByChannel(
-        EAsyncTraceType::Single,
-        worldStartPosition,
-        worldEndPosition,
-        FQuat::Identity,
-        ECollisionChannel::ECC_WorldDynamic,        
-        FCollisionShape::MakeSphere(ioSensor.RadiusCm), // TODO: reuse shape
-        params,
-        FCollisionResponseParams::DefaultResponseParam,
-        &traceCompleteHandler
-    );
 }
 
 #endif // #if defined(__UNREAL__)

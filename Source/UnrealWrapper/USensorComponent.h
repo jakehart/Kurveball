@@ -55,10 +55,6 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Sensors")
     bool HasSensorResult(FName sensorName) const;
 
-    // Limits curve output to prevent the character from going through geo, modifying
-    // the velocity in place if needed. Returns true if the velocity was modified.
-    bool ApplyCollisionToVelocity(Kurveball::VelocityCurveOutput& combinedOutput) const;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TMap<FName, FSensorDescription> SensorDescriptions;
 
@@ -67,7 +63,7 @@ public:
 private:
     void SanitizeSensorDescription(FSensorDescription& ioSensor);
 
-    void AsyncTraceSensor(FSensorDescription& ioSensor);
+    void SyncTraceSensor(FSensorDescription& ioSensor);
 
     FTransform LastTickTransform{};
 };
