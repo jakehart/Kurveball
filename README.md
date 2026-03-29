@@ -18,16 +18,16 @@ Character movement is a complex math problem, but *designers* should see it as a
 CurveMechanic is the definition of your movement mechanic. It points to the velocity curve you want to use, the speed you want to play it at, and any special parameters such as looping, time-stretching, or axis masking.
 
 <img src="DocImages/CurveMechanic.png"><br>
-Velocity Curve Asset: The curve that controls the entity's speed. In Unreal, this is a CurveFloat. y=0 is stopped, y=1 is top speed.
-Curve Instance Name: A unique name that you specify. You'll use this to start, update, and stop the mechanic.
-Direction: The direction you want to go, specified in terms of the Coordinate Space field below.
-CoordinateSpace: Choose whether you want the velocity curve to run in local space (relative to the actor's rotation) or in world space (absolute coordinates).
-SpeedMultiplier: The scale factor for your mechanic. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
-AxisMode: Masks the mechanic's output so that it only affects the axes you want, leaving the others alone. Possibilities are allMovementAxes, horizontal, vertical, yaw, pitch, and roll.
-StartTime: If zero, start now. Or specify a positive number to start later.
-StretchDuration: Zero means to play the velocity curve with no stretching, at its authored duration. Otherwise, specify a number of seconds to smoothly timestretch the curve's duration.
-PlayCount: By convention, a play count of zero means "loop forever." Any other count is interpreted literally, e.g. 1 to play the curve once in total.
-LoopStartX and LoopEndX: Loop points allow you to customize which part of the curve gets looped. In this way, you can create a curve with an intro that plays once, a looped midsection that plays some number of times according to PlayCount, and an outro that plays once. Zero means to loop the whole curve.
+* Velocity Curve Asset: The curve that controls the entity's speed. In Unreal, this is a CurveFloat. y=0 is stopped, y=1 is top speed.
+* Curve Instance Name: A unique name that you specify. You'll use this to start, update, and stop the mechanic.
+* Direction: The direction you want to go, specified in terms of the Coordinate Space field below.
+* CoordinateSpace: Choose whether you want the velocity curve to run in local space (relative to the actor's rotation) or in world space (absolute coordinates).
+* SpeedMultiplier: The scale factor for your mechanic. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
+* AxisMode: Masks the mechanic's output so that it only affects the axes you want, leaving the others alone. Possibilities are allMovementAxes, horizontal, vertical, yaw, pitch, and roll.
+* StartTime: If zero, start now. Or specify a positive number to start later.
+* StretchDuration: Zero means to play the velocity curve with no stretching, at its authored duration. Otherwise, specify a number of seconds to smoothly timestretch the curve's duration.
+* PlayCount: By convention, a play count of zero means "loop forever." Any other count is interpreted literally, e.g. 1 to play the curve once in total.
+* LoopStartX and LoopEndX: Loop points allow you to customize which part of the curve gets looped. In this way, you can create a curve with an intro that plays once, a looped midsection that plays some number of times according to PlayCount, and an outro that plays once. Zero means to loop the whole curve.
 
 ## 📐 How to Use in Unreal Engine
 
