@@ -24,7 +24,7 @@ CurveMechanic is the definition of your movement mechanic. It points to the velo
 * Coordinate Space: Choose whether you want the velocity curve to run in local space (relative to the actor's rotation) or in world space (absolute coordinates).
 * Speed Multiplier: The scale factor for your mechanic. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
 * Axis Mode: Masks the mechanic's output so that it only affects the axes you want, leaving the others alone. Possibilities are allMovementAxes, horizontal, vertical, yaw, pitch, and roll.
-* Start Time: If zero, start now. Or specify a positive number to start later.
+* Start Time: If zero, start now. Or specify a positive number of seconds to start later.
 * Stretch Duration: Zero means to play the velocity curve with no stretching, at its authored duration. Otherwise, specify a number of seconds to smoothly timestretch the curve's duration.
 * Play Count: By convention, a play count of zero means "loop forever." Any other count is interpreted literally, e.g. 1 to play the curve once in total.
 * Loop Start X and Loop End X: Loop points allow you to customize which part of the curve gets looped. In this way, you can create a curve with an intro that plays once, a looped midsection that plays some number of times according to PlayCount, and an outro that plays once. Zero means to loop the whole curve.

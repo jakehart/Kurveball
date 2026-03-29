@@ -11,6 +11,7 @@
 
 namespace Kurveball
 {
+    struct CurveMechanic;
     struct VelocityCurveContext;
     struct VelocityCurveInstance;
 
@@ -58,10 +59,23 @@ namespace Kurveball
 
     bool IsRotationCurve(const VelocityCurveInstance& curveInstance);
 
-    void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceID curveID, CurveXFunction func);
+    // Use this when you want your velocity curve's x to depend on something other than time. For example, you
+    // could read from different parts of the curve based on your own gameplay variables like health or distance away.
+    void DefineCustomCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceID curveID, CurveXFunction func);
+
+    // Transfers the speed from one curve onto another. First, it syncs the toCurve's playback to the speed that
+    // most closely matches the fromCurve. Then it executes a blend of your choosing. This is a convenience function
+    // that has the same effect as calling SyncToX(FindClosestSpeed()) and then Crossfade().
+    void TransferCurve(VelocityCurveContext& ioContext, CurveInstanceID fromCurveID, const CurveInstanceID toCurveID, BlendType blendType = BlendType::Linear, Seconds blendDuration = Seconds{ 0.4f });
+    
+    // This overload is able to start the "to" curve if it's not already running, since you're passing in a full
+    // CurveMechanic description of it.
+    void TransferCurve(VelocityCurveContext& ioContext, const CurveMechanic& fromMechanic, const CurveMechanic& toMechanic, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound = true);
+    
+    // Searches an entire velocity curve to find the speed that is closest to desired.
+    std::pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float stepSize = 0.05f);
 
     void Crossfade(VelocityCurveContext& ioContext, CurveInstanceID from, CurveInstanceID to, BlendType blendType, Seconds duration);
     void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, BlendType blendType, Seconds duration, bool isBlendIn);
-
     void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, CurveSamplerTY customBlendFunction);
 }

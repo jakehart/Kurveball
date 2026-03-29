@@ -540,6 +540,11 @@ const Kurveball::VelocityCurveContext& UVelocityCurveComponent::GetCurveContext(
     return mCurveContext;
 }
 
+void UVelocityCurveComponent::TransferCurve(UCurveMechanic* fromMechanic, UCurveMechanic* toMechanic, EBlendType blendType, float blendDuration, bool startToCurveIfNotFound)
+{
+    Kurveball::TransferCurve(mCurveContext, fromMechanic->ToNative(), toMechanic->ToNative(), static_cast<Kurveball::BlendType>(blendType), Kurveball::Seconds(blendDuration), startToCurveIfNotFound);
+}
+
 FRotator UVelocityCurveComponent::GetCameraRotation()
 {
     if (APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))

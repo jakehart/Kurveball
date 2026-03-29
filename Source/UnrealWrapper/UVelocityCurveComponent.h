@@ -118,6 +118,9 @@ public:
 
     const Kurveball::VelocityCurveContext& GetCurveContext() const;
 
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void TransferCurve(UCurveMechanic* fromMechanic, UCurveMechanic* toMechanic, EBlendType blendType, float blendDuration, bool startToCurveIfNotFound = true);
+
     // If true, collision stops this actor. If false, the actor can clip through collision.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool RespectCollision = true;
