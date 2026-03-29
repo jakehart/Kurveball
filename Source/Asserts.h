@@ -7,11 +7,13 @@ namespace Kurveball
 {
     enum class ErrorCode : uint8_t
     {
-        UnknownError = 0,
+        None = 0,
+        UnknownError,
         CurveNotFound,
         InvalidCurveAsset,
         TimeReversal,
-        SpeedSamplerNotFound
+        SpeedSamplerNotFound,
+        BlendTypeNotFound
     };
 
     // User-defined error handler function
@@ -23,6 +25,7 @@ namespace Kurveball
 #define KURVEBALL_ERROR_RETURN(criterion, curveContext, errorCode, ...) { \
     if(!(criterion)) \
     { \
+        curveContext.mLastErrorCode = errorCode; \
         if(curveContext.mErrorHandler) \
         { \
             curveContext.mErrorHandler(errorCode); \

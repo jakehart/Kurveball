@@ -36,12 +36,17 @@ namespace Kurveball
         // Used internally to remember where a curve started as a basis for finding its current state
         Position mStartPosition{};
 
+        // Used for DefineCurveXFunction, an API feature for advanced users.
         // By default, velocity curves play out over time, looping and stretching as defined by the parameters in CurveMechanic.
         // But in advanced use cases, you might want to use some other means to decide the x coordinate that is sampled from the
         // curve. For example, perhaps you want the X to depend upon distance above a certain plane, or upon speed, or even upon user
         // input. If you define this optional function, you can bind whatever data you need into your lambda and return a float
         // that determines the x coordinate to sample.
         std::optional<CurveXFunction> mXSampler = std::nullopt;
+
+        // Used to fade curves in and out. When defined, this function returns a value from [0, 1] which gets multiplied with the
+        // final output of the curve. See Crossfade, BlendIn, and BlendOut in VelocityCurveApi.h.
+        std::optional<CurveSamplerTY> mBlendSampler = std::nullopt;
         
         // The output (position, rotation, speed, etc.) of this individual curve from the most recent tick.
         // This is combined with any other running curves to give the final result.

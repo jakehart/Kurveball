@@ -3,10 +3,10 @@
 
 #include "CurveInstanceID.h"
 #include "CircularBuffer.h"
+#include "Asserts.h"
 #include "Axis.h"
 #include "CurveMap.h"
 #include "VelocityCurveOutput.h"
-#include "Asserts.h"
 
 namespace Kurveball
 {
@@ -37,5 +37,8 @@ namespace Kurveball
 
         // Set this function pointer to be notified with an error code when something goes wrong inside Kurveball
         ErrorHandler mErrorHandler;
+        // The most recent error code emitted, or ErrorCode::None if everything is OK. Provided as an alternative to the
+        // ErrorHandler for times when it's easier to poll.
+        mutable ErrorCode mLastErrorCode{ ErrorCode::None };
     };
 }

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <optional>
+#include "BlendType.h"
 #include "CurveInstanceID.h"
 #include "CurveSampler.h"
 #include "Axis.h"
@@ -46,8 +47,7 @@ namespace Kurveball
     VelocityCurveInstance* AccessCurveInstance(VelocityCurveContext& ioContext, CurveInstanceID instanceID);
     void SanitizeCurveInstance(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context);
 
-    // Usually, the entity we're controlling will have a starting position, and this function
-    // is handy for telling the curve context where that is. Users can also perform teleports this way.
+    // Used for telling the curve simulation about the entity's starting position, and for performing teleports
     void SetPosition(VelocityCurveContext& ioCurveContext, float x, float y, float z);
     
     void SetRotation(VelocityCurveContext& ioCurveContext, float x, float y, float z);
@@ -59,4 +59,9 @@ namespace Kurveball
     bool IsRotationCurve(const VelocityCurveInstance& curveInstance);
 
     void DefineCurveXFunction(VelocityCurveContext& ioContext, CurveInstanceID curveID, CurveXFunction func);
+
+    void Crossfade(VelocityCurveContext& ioContext, CurveInstanceID from, CurveInstanceID to, BlendType blendType, Seconds duration);
+    void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, BlendType blendType, Seconds duration, bool isBlendIn);
+
+    void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, CurveSamplerTY customBlendFunction);
 }

@@ -15,7 +15,8 @@ namespace Kurveball
 
     struct CurveMechanic
     {
-        // TODO: Autopopulate this from the std::hash of the debug name if available and the instance ID is unset
+        // The unique ID for this mechanic, as set by the user. This is used to tell Kurveball which
+        // curves to start, stop, and update. It is usually calculated from the string hash of mDebugName.
         CurveInstanceID mInstanceID{};
         
         std::optional<std::string> mDebugName{};
@@ -27,7 +28,10 @@ namespace Kurveball
         // or in worldspace.
         CoordinateSpace mCoordinateSpace{ CoordinateSpace::world };
         
+        // The scale factor for your mechanic.This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
         MetersPerSecond mSpeedMultiplier{ 0.f };
+
+        // Masks the mechanic's output so that it only affects the axes you want, leaving the others alone.
         AxisMode mAxisMode{ AxisMode::allMovementAxes };
 
         // If zero, this is populated to the current time when the curve is started. Otherwise,
@@ -39,7 +43,7 @@ namespace Kurveball
         // at its authored duration (mRawAssetDuration)
         Seconds mStretchDuration{ 0.f };
 
-        // This is just the x-width of the actual curve asset, starting at zero. This is the duration that
+        // This is the x-width of the actual curve asset, starting at zero. This is the duration that
         // the velocity curve would have without timestretching.
         Seconds mRawAssetDuration {};
 
@@ -47,10 +51,14 @@ namespace Kurveball
         // e.g. 1 to play the curve once total, 3 to play it 3 times, etc.
         uint32_t mPlayCount{ 1U };
         
+        // Loop points allow you to customize which part of the curve gets looped. You can
+        // create a curve with an intro that plays once, a looped midsection that plays
+        // some number of times according to PlayCount, and an outro that plays once.
+        // 
         // Loop start and end are in terms of the x axis of the velocity curve itself (not
         // including any timestretching or looping that might be applied).
+        // By convention, mLoopEndX = 0 means that the entire curve should loop.
         float mLoopStartX{ 0.f };
-        // By convention, mLoopEnd = 0 means that the loop includes the entire authored curve.
         float mLoopEndX{ 0.f };
     };
 }

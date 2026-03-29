@@ -318,4 +318,52 @@ namespace Kurveball
 
         curveInstance->mXSampler = func;
     }
+
+    void Crossfade(VelocityCurveContext& ioContext, CurveInstanceID from, CurveInstanceID to, BlendType blendType, Seconds duration)
+    {
+        // Fade the "from" curve out to zero
+        Blend(ioContext, from, blendType, duration, false);
+        // Fade the "to" curve in to one (full blast)
+        Blend(ioContext, to, blendType, duration, true);
+    }
+
+    void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, BlendType blendType, Seconds duration, bool isBlendIn)
+    {
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceID);
+        KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
+
+        const Seconds blendStartTime = ioContext.mAbsoluteTime;
+        const Seconds blendEndTime = ioContext.mAbsoluteTime + duration;
+        
+        // Direction multiplier: +1.0 for in, -1.0 for out
+        const float direction = isBlendIn ? 1.0f : -1.0f;
+        const float base = isBlendIn ? 0.0f : 1.0f;
+
+        switch (blendType)
+        {
+        case BlendType::Cut:
+            {
+                const float value = isBlendIn ? 1.0f : 0.0f;
+                curveInstance->mBlendSampler = [value]([[maybe_unused]] Seconds absoluteTime) { return value; };
+            }
+        case BlendType::Linear:
+        {
+            curveInstance->mBlendSampler = [blendStartTime, blendEndTime, direction, base](Seconds now)
+            {
+                const float progress = (now - blendStartTime).count() / (blendEndTime - blendStartTime).count();
+                return std::clamp(base + (direction * progress), 0.f, 1.f);
+            };
+        }
+        default:
+            KURVEBALL_ERROR_RETURN(false, ioContext, ErrorCode::BlendTypeNotFound);
+        }
+    }
+
+    void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, CurveSamplerTY customBlendFunction)
+    {
+        VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceID);
+        KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
+
+        curveInstance->mBlendSampler = customBlendFunction;
+    }
 }

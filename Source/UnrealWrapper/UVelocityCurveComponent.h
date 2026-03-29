@@ -111,6 +111,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void DefineCurveXFunction(const UCurveMechanic* mechanic, const FCurveXSampler& xSampler);
 
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void Crossfade(UCurveMechanic* from, UCurveMechanic* to, EBlendType blendType, float duration);
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void Blend(UCurveMechanic* mechanic, EBlendType blendType, float duration, bool isBlendIn);
+
     const Kurveball::VelocityCurveContext& GetCurveContext() const;
 
     // If true, collision stops this actor. If false, the actor can clip through collision.

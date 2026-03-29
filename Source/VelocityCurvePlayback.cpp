@@ -15,6 +15,8 @@ namespace Kurveball
 {
     void TickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
     {
+        ioContext.mLastErrorCode = ErrorCode::None;
+
         // Pause (zero time delta) is fine, but make sure we aren't going back in time inadvertently
         KURVEBALL_ERROR_RETURN(absoluteTime.count() >= ioContext.mAbsoluteTime.count(), ioContext, ErrorCode::TimeReversal);
 
@@ -144,7 +146,16 @@ namespace Kurveball
             KURVEBALL_ERROR_RETURN(ioCurveInstance.mSpeedSampler != nullptr, context, ErrorCode::SpeedSamplerNotFound);
 
             const float curvePlayheadX{ CalculateCurveX(ioCurveInstance, context.mAbsoluteTime) };
-            const float sampledSpeed{ ioCurveInstance.mSpeedSampler(curvePlayheadX) * ioCurveInstance.mMechanic.mSpeedMultiplier };
+            
+            float sampledSpeed{ ioCurveInstance.mSpeedSampler(curvePlayheadX) * ioCurveInstance.mMechanic.mSpeedMultiplier };
+            // Optional [0, 1] sampler to blend in or out
+            if (ioCurveInstance.mBlendSampler)
+            {
+                const auto& blendFunction = *ioCurveInstance.mBlendSampler;
+                const float blendResult = blendFunction(context.mAbsoluteTime);
+                sampledSpeed *= std::clamp(blendResult, 0.f, 1.f);
+            }
+
             const Float2 curveSample{ context.mAbsoluteTime.count(), sampledSpeed };
 
             ioCurveInstance.mDistanceAccumulator.AccumulateArea(curveSample);

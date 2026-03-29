@@ -14,6 +14,7 @@
 #include "KurveballLog.h"
 #include "Kurveball/ContainerUtils.h"
 #include "Kurveball/MathUtils.h"
+#include "Kurveball/UnrealWrapper/EBlendType.h"
 #include "Kurveball/UnrealWrapper/USensorComponent.h"
 #include "Kurveball/UnitTypes.h"
 #include "Kurveball/VelocityCurveApi.h"
@@ -505,6 +506,28 @@ void UVelocityCurveComponent::DefineCurveXFunction(const UCurveMechanic* mechani
                 return xSampler.Execute();
             });
     }
+}
+
+void UVelocityCurveComponent::Crossfade(UCurveMechanic* from, UCurveMechanic* to, EBlendType blendType, float duration)
+{
+    if (!from || !to)
+    {
+        UE_LOG(KurveballLog, Error, TEXT("Crossfade: From and To must be connected"));
+        return;
+    }
+
+    Kurveball::Crossfade(mCurveContext, from->GetCurveID(), to->GetCurveID(), static_cast<Kurveball::BlendType>(blendType), Kurveball::Seconds(duration));
+}
+
+void UVelocityCurveComponent::Blend(UCurveMechanic* mechanic, EBlendType blendType, float duration, bool isBlendIn)
+{
+    if (!mechanic)
+    {
+        UE_LOG(KurveballLog, Error, TEXT("Blend: Mechanic must be connected"));
+        return;
+    }
+
+    Kurveball::Blend(mCurveContext, mechanic->GetCurveID(), static_cast<Kurveball::BlendType>(blendType), Kurveball::Seconds(duration), isBlendIn);
 }
 
 Kurveball::VelocityCurveContext& UVelocityCurveComponent::AccessCurveContext()
