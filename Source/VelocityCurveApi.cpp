@@ -54,15 +54,11 @@ namespace Kurveball
     void UpdateVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, std::optional<MetersPerSecond> speedMultiplier, std::optional<Float3> direction)
     {
         auto* curveInstance{ AccessCurveInstance(ioContext, instanceID) };
-        if (!curveInstance)
-        {
-            // TODO: Warn
-            return;
-        }
+        KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
 
         // "Bake" the previous motion that the curve caused into its mStartPosition. This prevents the updated speed
         // and direction from applying retroactively to existing progress. 
-        //curveInstance->mMechanic.mStartPosition = curveInstance->mMechanic.mStartPosition + curveInstance->mMechanic.mDirection * curveInstance->mMechanic.mDistanceAccumulator.GetTotalArea();
+        //curveInstance->mStartPosition = curveInstance->mStartPosition + curveInstance->mMechanic.mDirection * curveInstance->mMechanic.mDistanceAccumulator.GetTotalArea();
         //curveInstance->mMechanic.mDistanceAccumulator.Reset();
 
         // Speed and direction can be updated independently, or both together in the same call
@@ -262,15 +258,15 @@ namespace Kurveball
             ioCurveInstance.mMechanic.mStartTime = context.mAbsoluteTime;
         }
 
-        if (ioCurveInstance.mMechanic.mStartPosition.IsZero())
+        if (ioCurveInstance.mStartPosition.IsZero())
         {
             // No starting position specified, so use the last known position
-            ioCurveInstance.mMechanic.mStartPosition = context.mOutput.mPosition;
+            ioCurveInstance.mStartPosition = context.mOutput.mPosition;
         }
         else if (ioCurveInstance.mMechanic.mCoordinateSpace == CoordinateSpace::local)
         {
             // Interpret the start position in localspace and transform to worldspace
-            ioCurveInstance.mMechanic.mStartPosition = ioCurveInstance.mMechanic.mStartPosition.LocalToWorldPosition(context.mOutput.mPosition, context.mOutput.mRotation);
+            ioCurveInstance.mStartPosition = ioCurveInstance.mStartPosition.LocalToWorldPosition(context.mOutput.mPosition, context.mOutput.mRotation);
         }
 
         if (std::abs(ioCurveInstance.mMechanic.mLoopStartX) < sFloatEpsilon &&
@@ -280,7 +276,7 @@ namespace Kurveball
             ioCurveInstance.mMechanic.mLoopEndX = (float)ioCurveInstance.mMechanic.mRawAssetDuration.count();
         }
 
-        ioCurveInstance.mOutput = {.mPosition = ioCurveInstance.mMechanic.mStartPosition};
+        ioCurveInstance.mOutput = {.mPosition = ioCurveInstance.mStartPosition};
         ioCurveInstance.mHistory.Clear();
     }
 

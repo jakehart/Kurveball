@@ -200,7 +200,7 @@ namespace Kurveball
             else
             {
                 // Follow a fixed direction from the start position.
-                singleOutput.mPosition = ioCurveInstance.mMechanic.mStartPosition + singleOutput.mDirection * totalDistance;
+                singleOutput.mPosition = ioCurveInstance.mStartPosition + singleOutput.mDirection * totalDistance;
                 
                 const float distanceThisStep = ioCurveInstance.mDistanceAccumulator.GetLatestStepArea();
                 singleOutput.mPositionDelta = singleOutput.mDirection * distanceThisStep;
@@ -266,7 +266,7 @@ namespace Kurveball
             case AxisMode::pitch:
             case AxisMode::roll:
                 // These are rotation modes, so no position should be emitted.
-                ioCurveOutput.mPosition = curveInstance.mMechanic.mStartPosition;
+                ioCurveOutput.mPosition = curveInstance.mStartPosition;
                 return;
             default:
                 // TODO: warn
@@ -284,7 +284,7 @@ namespace Kurveball
             
             // For the axes that the curve doesn't control, output the position from the previous tick
             Vector3<bool> inverseAxisMask = { !axisMask.X, !axisMask.Y, !axisMask.Z };
-            ioCurveOutput.mPosition = (ioCurveOutput.mPosition * axisMask) + (curveInstance.mMechanic.mStartPosition * inverseAxisMask);
+            ioCurveOutput.mPosition = (ioCurveOutput.mPosition * axisMask) + (curveInstance.mStartPosition * inverseAxisMask);
         }
 
         void CombineCurveOutput(VelocityCurveOutput& ioCombinedOutput, const VelocityCurveInstance& instanceToCombine)

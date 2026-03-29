@@ -46,12 +46,6 @@ public:
     // space, depending on the CoordinateSpace option below.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EAxisMode AxisMode = EAxisMode::allMovementAxes;
-    // If true, teleport the actor to CustomStartPosition before beginning the mechanic.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool UseCustomStartPosition;
-    // The position to teleport to when the mechanic starts (if UseCustomStartPosition is enabled).
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FVector CustomStartPosition;
     // If nonzero, VelocityCurveAsset will be stretched to this time in seconds. If zero,
     // the curve will be unstretched, its x axis interpreted directly in seconds.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -88,7 +82,6 @@ public:
             .mSpeedMultiplier = SpeedMultiplier,
             .mAxisMode = static_cast<Kurveball::AxisMode>(AxisMode),
             .mStartTime = Kurveball::Seconds(0),
-            .mStartPosition = UseCustomStartPosition ? Kurveball::ToFloat3(CustomStartPosition) : Kurveball::Float3(),
             .mStretchDuration = Kurveball::Seconds(StretchDuration),
             .mRawAssetDuration = Kurveball::Seconds(VelocityCurveAsset ? VelocityCurveAsset->FloatCurve.GetLastKey().Time : 1.f),
             .mPlayCount = (uint32)PlayCount,

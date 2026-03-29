@@ -358,7 +358,7 @@ TEST_CASE("TickPlayback linear movement")
 
             // Ensure that we moved the expected distance within a certain margin of error
             // Since we're using a flat speed graph for this test, we can compute the expected position by dead reckoning
-            expectedPosition = curveInstance.mMechanic.mStartPosition + curveInstance.mMechanic.mDirection * context.mAbsoluteTime.count() * curveInstance.mMechanic.mSpeedMultiplier;
+            expectedPosition = curveInstance.mStartPosition + curveInstance.mMechanic.mDirection * context.mAbsoluteTime.count() * curveInstance.mMechanic.mSpeedMultiplier;
             const auto positionError = expectedPosition - context.mOutput.mPosition;
 
             REQUIRE_THAT(positionError.GetLength(), Catch::Matchers::WithinAbs(0.f, DISTANCE_TOLERANCE));

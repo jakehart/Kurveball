@@ -34,8 +34,6 @@ namespace Kurveball
         // this is in terms of absoluteTime.
         // TODO: Express this in terms of delay for better devX?
         Seconds mStartTime{ 0.f };
-        // If zero (the default), uses the last known position as the starting point.
-        Position mStartPosition{};
 
         // By convention, a stretch duration of zero means to play the velocity curve with no stretching,
         // at its authored duration (mRawAssetDuration)

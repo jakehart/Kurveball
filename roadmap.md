@@ -4,11 +4,12 @@ This summarizes all the features and fixes that are needed in order to to get to
 ## Core
 Curve->curve speed matching and blending
 
-## Unreal Demo
+## Unreal
+All-in-one editor
 Fix "Create movement mechanic" menu item (move to extension)  
 Unreal quickstart video from zero   
 bugfix: fix coordinate space issue when RespectCollision==true
-bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need subticking or some sort of last-frame correction
+bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need subticking
 	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
 
 ## BezierCurveSegment: Pack-in curve implementation

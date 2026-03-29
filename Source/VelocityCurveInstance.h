@@ -33,6 +33,9 @@ namespace Kurveball
         // to move along a 3D world-space spline.
         std::optional<CurveSampler3D> mPositionSampler = std::nullopt;
 
+        // Used internally to remember where a curve started as a basis for finding its current state
+        Position mStartPosition{};
+
         // By default, velocity curves play out over time, looping and stretching as defined by the parameters in CurveMechanic.
         // But in advanced use cases, you might want to use some other means to decide the x coordinate that is sampled from the
         // curve. For example, perhaps you want the X to depend upon distance above a certain plane, or upon speed, or even upon user

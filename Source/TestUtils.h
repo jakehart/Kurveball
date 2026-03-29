@@ -34,7 +34,6 @@ namespace Kurveball
                 .mSpeedMultiplier = 123.f,
                 .mAxisMode = AxisMode::allMovementAxes,
                 .mStartTime = Seconds(0),
-                .mStartPosition = {0, 0, 0},
                 .mStretchDuration = Seconds(1),
                 .mRawAssetDuration = Seconds(1),
                 .mPlayCount = Kurveball::PLAY_COUNT_INFINITE,
