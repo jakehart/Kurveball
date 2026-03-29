@@ -2,9 +2,9 @@
 
 Kurveball is a curve-driven movement and animation library designed to replace complex movement code with intuitive visual graphs. 
 
-Instead of writing code to create movement, you define a velocity curve: a simple graph where the X-axis is time and the Y-axis is speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's position and rotation automatically. Motion can be looped, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
+Instead of writing code to create movement, you define a velocity curve: a simple graph where the horizontal axis is time and the vertical axis is speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's velocity, position, and rotation automatically. Motion can be looped, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
 
-<a href="https://www.youtube.com/watch?v=hYtLclpY_uI" target="_blank"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="Kurveball jump tweaking" width="712" height="400"/></a><br>
+<a href="https://www.youtube.com/watch?v=hYtLclpY_uI" target="_blank"><img src="DocImages/KurveballJumpExampleThumbnail.gif" alt="Kurveball jump tweaking" width="712" height="400"></a><br>
 *(Click for YouTube version)*
 
 ## 🪶 Philosophy
@@ -12,6 +12,22 @@ Instead of writing code to create movement, you define a velocity curve: a simpl
 Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or changing numbers by trial and error.
 
 ---
+
+## CurveMechanic Tweakables
+
+CurveMechanic is the definition of your movement mechanic. It points to the velocity curve you want to use, the speed you want to play it at, and any special parameters such as looping, time-stretching, or axis masking.
+
+<img src="DocImages/CurveMechanic.png"><br>
+Velocity Curve Asset: The curve that controls the entity's speed. In Unreal, this is a CurveFloat.
+Curve Instance Name: (No comment provided in snippet, but defined as std::optional<std::string>)
+Direction: The direction you want to go, specified in terms of the Coordinate Space field below.
+CoordinateSpace: Choose whether you want the velocity curve to run in the entity's local space or in world space.
+SpeedMultiplier: The top desired speed you want from your mechanic. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
+AxisMode: Masks the mechanic's output so that it only affects the axes you want, leaving the others alone. Possibilities are allMovementAxes, horizontal, vertical, yaw, pitch, and roll.
+StartTime: If zero, start now. If nonzero, start at the time you choose.
+StretchDuration: Zero means to play the velocity curve with no stretching, at its authored duration. Otherwise, specify a number of seconds to smoothly timestretch the curve's duration.
+PlayCount: By convention, a play count of zero means "loop forever." Any other count is interpreted literally, e.g. 1 to play the curve once in total.
+LoopStartX and LoopEndX: Loop points allow you to customize which part of the curve gets looped. In this way, you can create a curve with an intro that plays once, a looped midsection that plays some number of times according to PlayCount, and an outro that plays once. Zero means to loop the whole curve.
 
 ## 📐 How to Use in Unreal Engine
 
@@ -31,9 +47,9 @@ Kurveball is not dependent on any specific platform or engine. It doesn't care w
 
 Kurveball is split into two layers:
 1.  **Core (`Kurveball` namespace):** Pure C++ templates. **No dependencies on any specific engine.** Handles math, Bezier curves, integration, and data structures.
-2.  **Wrappers:** Engine-specific adapters. Translate engine types (`FVector`, `UCurveFloat`) into Core types.
+2.  **Wrappers:** Engine-specific adapters. Translate engine types into Core types, hook up the designer-facing functions in VelocityCurveApi.h to visual scripting, apply the curve results to your actor's position and rotation. 
 
-**Adding a New Engine:**
+**Adding an Engine Wrapper:**
 To port to a custom engine:
 1.  `#include Kurveball/Source/KurveballAll.h`
 2.  Implement a wrapper for `VelocityCurveContext`.
