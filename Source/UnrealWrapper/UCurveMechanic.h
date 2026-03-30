@@ -36,6 +36,12 @@ public:
     // mechanics.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FVector Direction;
+
+    // The mechanic can run in either actor-local or absolute world space, which affects the Direction, AxisMode, and
+    // CustomStartPosition options.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    ECoordinateSpace CoordinateSpace = ECoordinateSpace::world;
+
     // This number gets multiplied with your VelocityCurveAsset. If you defined your curve to have a maximum
     // height of y=1, SpeedMultiplier is in world units per second (centimeters per second). Negative speeds
     // (here or in your VelocityCurveAsset) go backwards.
@@ -61,10 +67,6 @@ public:
     // LoopEndX are zero, the entire curve will be looped.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float LoopEndX = 0;
-    // The mechanic can run in either local or world space, which affects the Direction, AxisMode, and
-    // CustomStartPosition options.
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ECoordinateSpace CoordinateSpace = ECoordinateSpace::world;
 
     Kurveball::CurveInstanceID GetCurveID() const
     {
