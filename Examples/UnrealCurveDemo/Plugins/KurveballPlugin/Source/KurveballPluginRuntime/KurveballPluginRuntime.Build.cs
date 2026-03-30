@@ -1,12 +1,12 @@
 using UnrealBuildTool;
 
-public class CurvePluginEditor : ModuleRules
+public class KurveballPluginRuntime : ModuleRules
 {
-	public CurvePluginEditor(ReadOnlyTargetRules Target) : base(Target)
+	public KurveballPluginRuntime(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateIncludePaths.Add("CurvePluginEditor/Private");
+		PrivateIncludePaths.Add("KurveballPluginRuntime/Private");
 
 		PublicDependencyModuleNames.AddRange
         (

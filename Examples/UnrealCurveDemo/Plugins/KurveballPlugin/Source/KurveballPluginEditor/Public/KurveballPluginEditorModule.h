@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class CURVEPLUGINEDITOR_API FCurvePluginEditorModule : public IModuleInterface
+class KURVEBALLPLUGINEDITOR_API FKurveballPluginEditorModule : public IModuleInterface
 {
 
 public:

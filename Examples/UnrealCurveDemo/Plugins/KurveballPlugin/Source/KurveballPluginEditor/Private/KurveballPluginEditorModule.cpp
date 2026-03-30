@@ -1,5 +1,5 @@
-#include "CurvePluginEditorModule.h"
-#include "CurvePluginEditor.h"
+#include "KurveballPluginEditorModule.h"
+#include "KurveballPluginEditor.h"
 
 #include "AssetToolsModule.h"
 #include "Dialogs/DlgPickAssetPath.h"
@@ -8,7 +8,7 @@
 #include "Factories/DataAssetFactory.h"
 
 
-IMPLEMENT_MODULE(FCurvePluginEditorModule, FCurvePluginEditor)
+IMPLEMENT_MODULE(FKurveballPluginEditorModule, FKurveballPluginEditor)
 
 namespace
 {
@@ -19,9 +19,9 @@ namespace
     static const FText sSectionFriendlyName = INVTEXT("Velocity Curve Mechanics");
 }
 
-void FCurvePluginEditorModule::StartupModule()
+void FKurveballPluginEditorModule::StartupModule()
 {
-	OnPostEngineInitDelegateHandle = FCoreDelegates::OnPostEngineInit.AddRaw(this, &FCurvePluginEditorModule::OnPostEngineInit);
+	OnPostEngineInitDelegateHandle = FCoreDelegates::OnPostEngineInit.AddRaw(this, &FKurveballPluginEditorModule::OnPostEngineInit);
 
     UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("ContentBrowser.AddNewContextMenu");
     FToolMenuSection& Section = Menu->AddSection(sSectionReferenceName, sSectionFriendlyName);
@@ -58,7 +58,7 @@ void FCurvePluginEditorModule::StartupModule()
 
 }
 
-void FCurvePluginEditorModule::ShutdownModule()
+void FKurveballPluginEditorModule::ShutdownModule()
 {
 	FCoreDelegates::OnPostEngineInit.Remove(OnPostEngineInitDelegateHandle);
 
@@ -71,7 +71,7 @@ void FCurvePluginEditorModule::ShutdownModule()
     }
 }
 
-void FCurvePluginEditorModule::OnPostEngineInit()
+void FKurveballPluginEditorModule::OnPostEngineInit()
 {
     // Do post engine stuff here
 }

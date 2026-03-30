@@ -48,7 +48,7 @@ Kurveball is not dependent on any specific platform or engine. It doesn't care w
 ## 📦 Architecture & Extensibility
 
 Kurveball is split into two layers:
-1.  **Core (`Kurveball` namespace):** Pure C++ and STL. No dependencies on any specific engine. Handles math, Bezier curves, integration, and data structures.
+1.  **Core (`Kurveball` namespace):** No dependencies on any specific engine. Handles math, Bezier curves, integration, and data structures. Pure C++ and STL, with the option to swap in eastl or another container library just by editing a few `using` directives.
 2.  **Wrappers:** Engine-specific adapters. These translate engine types into Core types, hook up the designer-facing functions in VelocityCurveApi.h to visual scripting, apply the curve results to your actor's position and rotation. 
 
 **Adding an Engine Wrapper:**

@@ -17,8 +17,6 @@ Sample Bezier by arc length
 	3D distance-to-t lookup populated "backwards"
 Point reordering  
 
-remove CurveMechanic::StartPosition. this is "static" data so it doesn't belong here
-
 # v1.1 Roadmap
 Lower priority features that will make it into the next release.
 

@@ -7,7 +7,7 @@
 	"Category": "Others",
 	"CreatedBy": "Jake Hart",
 	"CreatedByURL": "https://jake-hart.com",
-	"DocsURL": "https://github.com/jakehart/CurveLib",
+	"DocsURL": "https://github.com/jakehart/Kurveball",
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"CanContainContent": true,
@@ -17,9 +17,14 @@
 	"Modules": 
     [
 		{
-			"Name": "CurvePluginEditor",
+			"Name": "KurveballPluginRuntime",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "KurveballPluginEditor",
 			"Type": "Editor",
-			"LoadingPhase": "PreDefault"
+			"LoadingPhase": "Default"
 		}
 	]
 }

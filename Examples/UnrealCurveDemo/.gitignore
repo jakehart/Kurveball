@@ -1,6 +1,8 @@
 Binaries/
 DerivedDataCache/
 Intermediate/
-Plugins/
+Plugins/Binaries/
+Plugins/Intermediate/
+Plugins/VisualStudioTools/
 Saved/
 CurveDemo.sln
