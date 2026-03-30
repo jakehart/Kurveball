@@ -9,7 +9,7 @@
 namespace Kurveball
 {
     template<typename PositionT>
-    BezierCurve<PositionT>::BezierCurve(std::vector<CurveSegment> segments)
+    BezierCurve<PositionT>::BezierCurve(Vector<CurveSegment> segments)
         : mSegments(segments)
     {
     }
@@ -72,7 +72,7 @@ namespace Kurveball
 
                 KURVEBALL_VERIFY_RETURN(numSegments > 0, {});
 
-                std::vector<BezierCurveSegment<PositionT>> segments{};
+                Vector<BezierCurveSegment<PositionT>> segments{};
                 segments.reserve(numSegments);
 
                 for (uint32_t i = 0; i < numSegments && inStream.good() && !inStream.eof(); ++i)

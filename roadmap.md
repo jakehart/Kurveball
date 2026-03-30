@@ -1,8 +1,7 @@
 # v1.0 Roadmap
 This summarizes all the features and fixes that are needed in order to to get to the first release of Kurveball (v1.0).
 
-## Core
-Curve->curve speed matching and blending
+create using directives for vector etc.
 
 ## Unreal
 All-in-one editor

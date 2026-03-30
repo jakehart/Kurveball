@@ -360,7 +360,7 @@ namespace Kurveball
         // On the "to" curve, find the speed that most closely matches the one being output from the "from" curve
         if (speedToTransfer > 0.f)
         {
-            std::pair<float, MetersPerSecond> foundXandSpeed = FindClosestSpeed(ioContext, toCurve->mMechanic.mInstanceID, speedToTransfer);
+            Pair<float, MetersPerSecond> foundXandSpeed = FindClosestSpeed(ioContext, toCurve->mMechanic.mInstanceID, speedToTransfer);
             if (foundXandSpeed.first > 0.f)
             {
                 SeekToX(ioContext, toCurve->mMechanic.mInstanceID, foundXandSpeed.first);
@@ -368,10 +368,10 @@ namespace Kurveball
         }
 
         // Blend from the old curve to the new one
-        Crossfade(ioContext, fromCurve->mMechanic.mInstanceID, toCurve->mMechanic.mInstanceID, blendType, blendDuration);
+        Crossfade(ioContext, fromCurve ? fromCurve->mMechanic.mInstanceID : -1, toCurve ? toCurve->mMechanic.mInstanceID : -1, blendType, blendDuration);
     }
     
-    std::pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX, float stepSize)
+    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX, float stepSize)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, curveID);
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound, {0.f, 0.f});
@@ -412,6 +412,11 @@ namespace Kurveball
 
         const Seconds blendStartTime = ioContext.mAbsoluteTime;
         const Seconds blendEndTime = ioContext.mAbsoluteTime + duration;
+
+        if (blendStartTime == blendEndTime)
+        {
+            blendType = BlendType::Cut;
+        }
         
         // Direction multiplier: +1.0 for in, -1.0 for out
         const float direction = isBlendIn ? 1.0f : -1.0f;

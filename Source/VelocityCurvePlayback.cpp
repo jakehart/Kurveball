@@ -3,6 +3,7 @@
 
 #include "Asserts.h"
 #include "AxisMode.h"
+#include "ContainerTypes.h"
 #include "CoordinateSpace.h"
 #include "MathUtils.h"
 #include "UnitTypes.h"
@@ -115,7 +116,7 @@ namespace Kurveball
                 return;
             }
 
-            std::vector<CurveInstanceID> curvesToRemove {};
+            Vector<CurveInstanceID> curvesToRemove {};
             VelocityCurveOutput& finalOutput = ioContext.mOutput;
 
             for (auto& [curveID, curveInstance] : ioCurvesInPhase)

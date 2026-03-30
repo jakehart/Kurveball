@@ -19,13 +19,13 @@ namespace Kurveball
     }
 
     template<typename PositionT>
-    const std::vector<PositionT>& BezierCurveSegment<PositionT>::GetPoints() const
+    const Vector<PositionT>& BezierCurveSegment<PositionT>::GetPoints() const
     {
         return mPoints;
     }
 
     template<typename PositionT>
-    std::vector<PositionT>& BezierCurveSegment<PositionT>::AccessPoints() 
+    Vector<PositionT>& BezierCurveSegment<PositionT>::AccessPoints() 
     {
         return mPoints;
     }

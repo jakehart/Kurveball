@@ -17,7 +17,7 @@ namespace Kurveball
         using ScalarType = PositionT::ScalarType;
 
         BezierCurve() = default;
-        BezierCurve(std::vector<CurveSegment> segments);
+        BezierCurve(Vector<CurveSegment> segments);
 
         const auto& GetSegments() const;
         auto& AccessSegments();
@@ -41,7 +41,7 @@ namespace Kurveball
 
     private:
         // TODO: Knot points should not use redundant memory. Can use std::view for this
-        std::vector<CurveSegment> mSegments{};
+        Vector<CurveSegment> mSegments{};
     };
 }
 

@@ -3,6 +3,7 @@
 
 #include <optional>
 #include "BlendType.h"
+#include "ContainerTypes.h"
 #include "CurveInstanceID.h"
 #include "CurveSampler.h"
 #include "Axis.h"
@@ -73,7 +74,7 @@ namespace Kurveball
     void TransferCurve(VelocityCurveContext& ioContext, const CurveMechanic& fromMechanic, const CurveMechanic& toMechanic, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound = true);
     
     // Searches an entire velocity curve to find the speed that is closest to desired.
-    std::pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float stepSize = 0.05f);
+    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float stepSize = 0.05f);
 
     void Crossfade(VelocityCurveContext& ioContext, CurveInstanceID from, CurveInstanceID to, BlendType blendType, Seconds duration);
     void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, BlendType blendType, Seconds duration, bool isBlendIn);

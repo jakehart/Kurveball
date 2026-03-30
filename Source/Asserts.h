@@ -1,6 +1,6 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #pragma once
-#include <assert.h>
+#include <cassert>
 #include <functional>
 
 namespace Kurveball

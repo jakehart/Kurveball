@@ -14,7 +14,7 @@ namespace Kurveball
     class BezierCurveSegment
     {
     public:
-        using PointVector = std::vector<PositionT>;
+        using PointVector = Vector<PositionT>;
         using ScalarType = PositionT::ScalarType;
         static const uint8_t MAX_SUPPORTED_POINTS = 4; // Cubic Bezier
 
@@ -22,8 +22,8 @@ namespace Kurveball
         BezierCurveSegment(const PointVector& points);
 
         void SetPoints(const PointVector& points);
-        const std::vector<PositionT>& GetPoints() const;
-        std::vector<PositionT>& AccessPoints();
+        const Vector<PositionT>& GetPoints() const;
+        Vector<PositionT>& AccessPoints();
 
         ScalarType GetStartX() const;
         ScalarType GetEndX() const;
@@ -48,7 +48,7 @@ namespace Kurveball
         bool IncludesXCoordinate(ScalarType x) const;
 
     private:
-        using PointInfluenceVector = std::vector<ScalarType>;
+        using PointInfluenceVector = Vector<ScalarType>;
 
         // The number of t samples that mLookupTable will have when it's generated. This resolution is per segment.
         static const uint32_t LOOKUP_TABLE_SAMPLE_RATE = 64;

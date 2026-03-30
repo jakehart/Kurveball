@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ContainerTypes.h"
+
 namespace Kurveball
 {
     template<typename ScalarT>
@@ -24,10 +26,10 @@ namespace Kurveball
         size_t mSampleRate{ 64 };
 
         // (x, y)
-        using Sample = std::pair<ScalarType, ScalarType>;
+        using Sample = Pair<ScalarType, ScalarType>;
 
         // Contains the samples, presumed to be added in order by the calling code
-        std::vector<Sample> mSamples;
+        Vector<Sample> mSamples;
     };
 }
 
