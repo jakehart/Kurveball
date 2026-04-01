@@ -24,6 +24,10 @@
 			"Enabled": true
 		},
 		{
+			"Name": "KurveballPlugin",
+			"Enabled": true
+		},
+		{
 			"Name": "VisualStudioTools",
 			"Enabled": true,
 			"SupportedTargetPlatforms": [

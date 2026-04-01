@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kurveball/CoordinateSpace.h"
+#include "CoordinateSpace.h"
 
 // Wraps Kurveball::CoordinateSpace for Unreal
 UENUM(BlueprintType)

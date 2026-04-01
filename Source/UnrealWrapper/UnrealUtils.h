@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Kurveball/CurveSampler.h"
-#include "Kurveball/CurveSampler3D.h"
+#include "CurveSampler.h"
+#include "CurveSampler3D.h"
 
 class UCurveFloat;
 class USplineComponent;

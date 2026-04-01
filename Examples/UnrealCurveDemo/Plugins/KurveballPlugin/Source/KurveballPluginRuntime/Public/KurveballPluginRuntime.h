@@ -2,7 +2,7 @@
 
 #include "Modules/ModuleManager.h"
 
-class FKurveballPluginRuntimeModule : public IModuleInterface
+class KURVEBALLPLUGINRUNTIME_API FKurveballPluginRuntimeModule : public IModuleInterface
 {
 public:
     virtual void StartupModule() override;

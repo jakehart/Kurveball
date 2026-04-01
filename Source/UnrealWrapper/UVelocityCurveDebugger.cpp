@@ -1,12 +1,12 @@
-#include "UVelocityCurveDebugger.h"
-#include "UVelocityCurveComponent.h"
+#include "UnrealWrapper/UVelocityCurveDebugger.h"
+#include "UnrealWrapper/UVelocityCurveComponent.h"
 #include <Fonts/FontMeasure.h>
 #include <Kismet/GameplayStatics.h>
 #include <Layout/Geometry.h>
 #include <Rendering/DrawElements.h>
 
-#include "Kurveball/ContainerUtils.h"
-#include "Kurveball/VelocityCurveApi.h"
+#include "ContainerUtils.h"
+#include "VelocityCurveApi.h"
 
 int32 UVelocityCurveDebugger::NativePaint(
     const FPaintArgs& Args,

@@ -1,10 +1,10 @@
 #if defined(__UNREAL__)
-#include "USensorComponent.h"
+#include "UnrealWrapper/USensorComponent.h"
 
 #include "DrawDebugHelpers.h"
 
-#include "Kurveball/UnitTypes.h"
-#include "Kurveball/VelocityCurveOutput.h"
+#include "UnitTypes.h"
+#include "VelocityCurveOutput.h"
 
 USensorComponent::USensorComponent()
 {

@@ -1,7 +1,7 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #if defined(__UNREAL__)
 
-#include "Kurveball/UnrealWrapper/UVelocityCurveComponent.h"
+#include "UnrealWrapper/UVelocityCurveComponent.h"
 
 #include <Blueprint/UserWidget.h>
 #include <Engine/Engine.h>
@@ -11,17 +11,17 @@
 
 #include <sstream>
 
-#include "KurveballLog.h"
-#include "Kurveball/ContainerUtils.h"
-#include "Kurveball/MathUtils.h"
-#include "Kurveball/UnrealWrapper/EBlendType.h"
-#include "Kurveball/UnrealWrapper/USensorComponent.h"
-#include "Kurveball/UnitTypes.h"
-#include "Kurveball/VelocityCurveApi.h"
-#include "Kurveball/VelocityCurveInstance.h"
-#include "Kurveball/VelocityCurvePlayback.h"
+#include "UnrealWrapper/KurveballLog.h"
+#include "ContainerUtils.h"
+#include "MathUtils.h"
+#include "UnrealWrapper/EBlendType.h"
+#include "UnrealWrapper/USensorComponent.h"
+#include "UnitTypes.h"
+#include "VelocityCurveApi.h"
+#include "VelocityCurveInstance.h"
+#include "VelocityCurvePlayback.h"
 
-#include "UVelocityCurveDebugger.h"
+#include "UnrealWrapper/UVelocityCurveDebugger.h"
 
 // Sets default values for this component's properties
 UVelocityCurveComponent::UVelocityCurveComponent()

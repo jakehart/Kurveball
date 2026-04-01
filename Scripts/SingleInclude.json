@@ -1,0 +1,9 @@
+{
+	"project": "Kurveball",
+	"target": "KurveballSingleFile.h",
+	"sources": [
+		"../Source/KurveballAll.h"
+	],
+	"include_paths": [
+	]
+}

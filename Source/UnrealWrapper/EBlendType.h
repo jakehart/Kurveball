@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kurveball/BlendType.h"
+#include "BlendType.h"
 
 // Wraps Kurveball::BlendType in a way that Unreal can understand
 UENUM(BlueprintType)

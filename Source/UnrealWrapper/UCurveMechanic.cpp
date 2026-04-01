@@ -2,6 +2,6 @@
 
 #if defined(__UNREAL__)
 
-#include "UCurveMechanic.h"
+#include "UnrealWrapper/UCurveMechanic.h"
 
 #endif // #if defined(__UNREAL__)

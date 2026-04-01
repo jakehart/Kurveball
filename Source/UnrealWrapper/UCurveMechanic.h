@@ -6,11 +6,11 @@
 #include "Engine/DataAsset.h"
 #include "Engine/DataTable.h"
 
-#include "Kurveball/Vector3.h"
-#include "Kurveball/CurveMechanic.h"
-#include "Kurveball/UnrealWrapper/ECoordinateSpace.h"
-#include "Kurveball/UnrealWrapper/EAxisMode.h"
-#include "Kurveball/UnrealWrapper/UnrealUtils.h"
+#include "Vector3.h"
+#include "CurveMechanic.h"
+#include "UnrealWrapper/ECoordinateSpace.h"
+#include "UnrealWrapper/EAxisMode.h"
+#include "UnrealWrapper/UnrealUtils.h"
 
 #include "UCurveMechanic.generated.h"
 
@@ -19,7 +19,7 @@
 // in their Content pane. This makes it easier to modularly load and unload movement
 // mechanics.
 UCLASS(BlueprintType)
-class CURVEDEMO_API UCurveMechanic : public UDataAsset, public FTableRowBase
+class KURVEBALLPLUGINRUNTIME_API UCurveMechanic : public UDataAsset, public FTableRowBase
 {
     GENERATED_BODY()
     

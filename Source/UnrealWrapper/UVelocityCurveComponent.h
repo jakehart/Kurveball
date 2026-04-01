@@ -4,9 +4,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 
-#include "Kurveball/VelocityCurveContext.h"
-#include "Kurveball/VelocityCurveInstance.h"
-#include "Kurveball/UnrealWrapper/UCurveMechanic.h"
+#include "VelocityCurveContext.h"
+#include "VelocityCurveInstance.h"
+#include "UnrealWrapper/UCurveMechanic.h"
 
 #include "UVelocityCurveComponent.generated.h"
 
@@ -15,7 +15,7 @@ class USplineMeshComponent;
 class UVelocityCurveDebugger;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class CURVEDEMO_API UVelocityCurveComponent : public UActorComponent
+class KURVEBALLPLUGINRUNTIME_API UVelocityCurveComponent : public UActorComponent
 {
     GENERATED_BODY()
 

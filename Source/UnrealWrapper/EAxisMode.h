@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kurveball/AxisMode.h"
+#include "AxisMode.h"
 
 // Wraps Kurveball::AxisMode in a way that Unreal can understand
 UENUM(BlueprintType)

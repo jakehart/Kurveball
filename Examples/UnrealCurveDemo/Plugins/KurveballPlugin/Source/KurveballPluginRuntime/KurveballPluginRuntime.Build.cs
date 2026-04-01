@@ -6,7 +6,8 @@ public class KurveballPluginRuntime : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateIncludePaths.Add("KurveballPluginRuntime/Private");
+		PublicIncludePaths.Add("KurveballPluginRuntime/Public");
+		PublicIncludePaths.Add("KurveballPluginRuntime/Public/UnrealWrapper");
 
 		PublicDependencyModuleNames.AddRange
         (
@@ -25,6 +26,7 @@ public class KurveballPluginRuntime : ModuleRules
                 "Engine",
 				"CoreUObject",
                 "UnrealEd",
+				"UMG",
 				"Slate",
 				"SlateCore",
 				"ToolMenus"

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
 #include "UVelocityCurveDebugger.generated.h"
 
 class UVelocityCurveComponent;

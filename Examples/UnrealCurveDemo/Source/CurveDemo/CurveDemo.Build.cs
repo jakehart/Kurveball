@@ -19,7 +19,8 @@ public class CurveDemo : ModuleRules
 			"GameplayStateTreeModule",
 			"UMG",
 			"Slate",
-			"SlateCore"
+			"SlateCore",
+			"KurveballPluginRuntime",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

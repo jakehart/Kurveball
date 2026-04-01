@@ -1,0 +1,10 @@
+{
+	"project": "Kurveball",
+	"target": "KurveballSingleFileUnreal.h",
+	"sources": [
+		"../Source/UnrealWrapper/UnrealWrapperAll.cpp"
+	],
+	"include_paths": [
+		"include"
+	]
+}

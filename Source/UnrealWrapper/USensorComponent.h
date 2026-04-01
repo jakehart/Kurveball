@@ -1,14 +1,15 @@
 // MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #pragma once
 
-#include "Kurveball/VelocityCurveOutput.h"
+#include "VelocityCurveOutput.h"
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
 #include "USensorComponent.generated.h"
 
 USTRUCT(BlueprintType)
-struct FSensorDescription
+struct KURVEBALLPLUGINRUNTIME_API FSensorDescription
 {
     GENERATED_BODY()
 public:
@@ -39,7 +40,7 @@ private:
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class CURVEDEMO_API USensorComponent : public UActorComponent
+class KURVEBALLPLUGINRUNTIME_API USensorComponent : public UActorComponent
 {
     GENERATED_BODY()
 

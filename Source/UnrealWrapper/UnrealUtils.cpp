@@ -1,6 +1,7 @@
-#include "UnrealUtils.h"
-#include "Kurveball/Vector3.h"
-#include "KurveballLog.h"
+#include "UnrealWrapper/UnrealUtils.h"
+
+#include "UnrealWrapper/KurveballLog.h"
+#include "Vector3.h"
 
 #include <Components/SplineComponent.h>
 

@@ -11,6 +11,8 @@ Instead of writing code to create movement, you define a velocity curve: a simpl
 
 Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or changing numbers by trial and error.
 
+Kurveball is engine-agnostic. It is written in modern C++ in a dependency-injected "C with classes" style, similarly to ImGui.
+
 ---
 
 ## CurveMechanic Tweakables

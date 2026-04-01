@@ -1,6 +1,8 @@
 #include "KurveballPluginRuntime.h"
 #include "Modules/ModuleManager.h"
 
+#include "KurveballAll.h"
+
 // This macro registers the module with Unreal's module manager.
 // FDefaultModuleImpl is a generic implementation that does nothing special.
 IMPLEMENT_MODULE(FDefaultModuleImpl, KurveballPluginRuntime);
