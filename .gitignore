@@ -10,3 +10,5 @@ CMakeFiles/
 .github
 .vs
 .vsconfig
+Examples/UnrealCurveDemo/Plugins/KurveballPlugin/Source/KurveballPluginRuntime/Private/
+Examples/UnrealCurveDemo/Plugins/KurveballPlugin/Source/KurveballPluginRuntime/Public/
