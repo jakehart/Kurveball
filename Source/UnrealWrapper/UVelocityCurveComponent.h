@@ -123,7 +123,7 @@ public:
 
     // If true, collision stops this actor. If false, the actor can clip through collision.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool RespectCollision = true;
+    bool RespectCollision = false;
 
 private:
     Kurveball::VelocityCurveContext& AccessCurveContext();
