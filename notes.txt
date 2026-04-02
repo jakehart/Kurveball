@@ -1,3 +1,5 @@
+Q&A-style wizard where the designer describes the mechanic?
+
 // The curve's speedMultiplier will vary from 0 to topSpeed as the memory address varies from 0 to its maximum value. The caller remains responsible for the lifetime of whatever's contained at addr and should unlink the curve before deallocating the memory.
 void LinkCurveToMemory(CurveMechanic& ioMechanic, const void* addr, size_t size);
 

@@ -6,7 +6,7 @@
 
 UCurveMechanic::UCurveMechanic()
     :   VelocityCurveAsset(nullptr),
-        CurveInstanceName("CurveMechanic"),
+        UniqueName("CurveMechanic"),
         Direction(1.f, 0.f, 0.f),
         CoordinateSpace(ECoordinateSpace::local),
         SpeedMultiplier(1000.f),

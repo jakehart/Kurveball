@@ -32,7 +32,7 @@ public:
     UCurveFloat* VelocityCurveAsset;
     // Must be unique. A name for this movement mechanic.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FName CurveInstanceName;
+    FName UniqueName;
     // The direction that the velocity curve should go. Can be in local or world space, depending on
     // the value of CoordinateSpace below. This isn't relevant for rotation mechanics or for spline-following
     // mechanics.
@@ -72,15 +72,15 @@ public:
 
     Kurveball::CurveInstanceID GetCurveID() const
     {
-        return GetTypeHash(CurveInstanceName);
+        return GetTypeHash(UniqueName);
     }
 
     Kurveball::CurveMechanic ToNative() const
     {
         return
         {
-            .mInstanceID = GetTypeHash(CurveInstanceName),
-            .mDebugName = std::string(TCHAR_TO_UTF8(*CurveInstanceName.ToString())),
+            .mInstanceID = GetTypeHash(UniqueName),
+            .mDebugName = std::string(TCHAR_TO_UTF8(*UniqueName.ToString())),
             .mDirection = Kurveball::ToFloat3(Direction),
             .mCoordinateSpace = static_cast<Kurveball::CoordinateSpace>(CoordinateSpace),
             .mSpeedMultiplier = SpeedMultiplier,

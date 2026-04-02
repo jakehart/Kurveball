@@ -58,7 +58,7 @@ void FKurveballPluginEditorModule::StartupModule()
                         ));
 
                         mechanic->VelocityCurveAsset = curve;
-                        mechanic->CurveInstanceName = assetName;
+                        mechanic->UniqueName = assetName;
                     }
                 }),
             FCanExecuteAction()
