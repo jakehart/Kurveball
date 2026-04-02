@@ -6,14 +6,15 @@ public class KurveballPluginEditor : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateIncludePaths.Add("KurveballPluginEditor/Private");
-
 		PublicDependencyModuleNames.AddRange
         (
 			new string[]
 			{
 				"Core",
 				"InputCore",
+                "UnrealEd",
+				"EditorFramework",
+				"AssetDefinition",
 				"KurveballPluginRuntime"
 			}
 		);
@@ -25,7 +26,6 @@ public class KurveballPluginEditor : ModuleRules
 			{
                 "Engine",
 				"CoreUObject",
-                "UnrealEd",
 				"Slate",
 				"SlateCore",
 				"ToolMenus"

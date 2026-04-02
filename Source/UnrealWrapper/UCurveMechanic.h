@@ -24,6 +24,8 @@ class KURVEBALLPLUGINRUNTIME_API UCurveMechanic : public UDataAsset, public FTab
     GENERATED_BODY()
     
 public:
+    UCurveMechanic();
+
     // An Unreal CurveFloat asset that you use to control the speed of the actor. The x axis
     // is time, and y is speed.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -40,7 +42,7 @@ public:
     // The mechanic can run in either actor-local or absolute world space, which affects the Direction, AxisMode, and
     // CustomStartPosition options.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ECoordinateSpace CoordinateSpace = ECoordinateSpace::world;
+    ECoordinateSpace CoordinateSpace;
 
     // This number gets multiplied with your VelocityCurveAsset. If you defined your curve to have a maximum
     // height of y=1, SpeedMultiplier is in world units per second (centimeters per second). Negative speeds
@@ -51,22 +53,22 @@ public:
     // and it decides which axes the mechanic should act upon. Axes can be in local or world
     // space, depending on the CoordinateSpace option below.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    EAxisMode AxisMode = EAxisMode::allMovementAxes;
+    EAxisMode AxisMode;
     // If nonzero, VelocityCurveAsset will be stretched to this time in seconds. If zero,
     // the curve will be unstretched, its x axis interpreted directly in seconds.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float StretchDuration = 0;
+    float StretchDuration;
     // The number of times to play the looped portion of the curve. If zero, loop forever.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int64 PlayCount = 0;
+    int64 PlayCount;
     // The beginning of the part of VelocityCurveAsset you want to loop. If both LoopStartX and
     // LoopEndX are zero, the entire curve will be looped.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LoopStartX = 0;
+    float LoopStartX;
     // The end of the part of VelocityCurveAsset you want to loop. If both LoopStartX and
     // LoopEndX are zero, the entire curve will be looped.
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LoopEndX = 0;
+    float LoopEndX;
 
     Kurveball::CurveInstanceID GetCurveID() const
     {

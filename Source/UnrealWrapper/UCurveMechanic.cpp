@@ -4,4 +4,18 @@
 
 #include "UnrealWrapper/UCurveMechanic.h"
 
+UCurveMechanic::UCurveMechanic()
+    :   VelocityCurveAsset(nullptr),
+        CurveInstanceName("CurveMechanic"),
+        Direction(1.f, 0.f, 0.f),
+        CoordinateSpace(ECoordinateSpace::local),
+        SpeedMultiplier(1000.f),
+        AxisMode(EAxisMode::allMovementAxes),
+        StretchDuration(0.f),
+        PlayCount(0),
+        LoopStartX(0.f),
+        LoopEndX(0.f)
+{
+}
+
 #endif // #if defined(__UNREAL__)

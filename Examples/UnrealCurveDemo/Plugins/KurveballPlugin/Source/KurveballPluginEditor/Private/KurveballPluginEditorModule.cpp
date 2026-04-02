@@ -7,6 +7,7 @@
 #include "Engine/PrimaryAssetLabel.h"
 #include "Factories/DataAssetFactory.h"
 
+#include "UnrealWrapper/UCurveMechanic.h"
 
 IMPLEMENT_MODULE(FKurveballPluginEditorModule, FKurveballPluginEditor)
 
@@ -38,16 +39,26 @@ void FKurveballPluginEditorModule::StartupModule()
 
                     if (PickAssetPathWidget->ShowModal() == EAppReturnType::Ok)
                     {
-                        // Get the full name of where we want to create the physics asset.
-                        //FString path = PickAssetPathWidget->GetFullAssetPath().ToString();
                         FString path = PickAssetPathWidget->GetAssetPath().ToString();
                         FName assetName(PickAssetPathWidget->GetAssetName().ToString());
 
-                        //This code will run when the submenu item is clicked
-                        UDataAssetFactory* factory = NewObject<UDataAssetFactory>(UDataAssetFactory::StaticClass());
-                        factory->DataAssetClass = UPrimaryAssetLabel::StaticClass();
-                        
-                        [[maybe_unused]] UObject* mechanic = FAssetToolsModule::GetModule().Get().CreateAsset(assetName.ToString(), path, UDataAsset::StaticClass(), factory);
+                        UCurveMechanic* mechanic = static_cast<UCurveMechanic*>(FAssetToolsModule::GetModule().Get().CreateAsset(
+                                                                assetName.ToString(),
+                                                                path,
+                                                                UCurveMechanic::StaticClass(),
+                                                                nullptr // Factory is optional for simple types
+                        ));
+
+                        const auto curveName = assetName.ToString() + "Curve";
+                        UCurveFloat* curve = static_cast<UCurveFloat*>(FAssetToolsModule::GetModule().Get().CreateAsset(
+                            curveName,
+                            path,
+                            UCurveFloat::StaticClass(),
+                            nullptr
+                        ));
+
+                        mechanic->VelocityCurveAsset = curve;
+                        mechanic->CurveInstanceName = assetName;
                     }
                 }),
             FCanExecuteAction()

@@ -13,6 +13,10 @@ mkdir Releases
 mkdir Releases\SingleFile\
 move Scripts\KurveballSingleFile.* Releases\SingleFile\
 
+mkdir %UNREAL_PLUGIN_OUTPUT_PATH%
+mkdir %UNREAL_RUNTIME_HEADER_PATH%
+mkdir %UNREAL_RUNTIME_SOURCE_PATH%
+
 copy Source\*.h %UNREAL_RUNTIME_HEADER_PATH%
 copy Source\*.inl %UNREAL_RUNTIME_HEADER_PATH%
 copy Source\*.cpp %UNREAL_RUNTIME_SOURCE_PATH%
