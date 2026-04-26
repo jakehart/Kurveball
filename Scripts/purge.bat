@@ -18,7 +18,4 @@ del .vsconfig
 rd /s /q Plugins\KurveballPlugin\Binaries
 rd /s /q Plugins\KurveballPlugin\Intermediate
 
-rd /s /q Plugins\CurvePluginEditor\Binaries
-rd /s /q Plugins\CurvePluginEditor\Intermediate
-
 popd

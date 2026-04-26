@@ -262,16 +262,17 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }*/
     else
     {
-        // Nonzero input
+		// Nonzero input
         if (!Kurveball::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
             StartVelocityCurve(mechanic);
         }
 
-        Kurveball::Float3 direction{1, 0, 0}; // forward
+        Kurveball::Float3 direction = Kurveball::ToFloat3(mechanic->Direction);
         if (mechanic->CoordinateSpace == ECoordinateSpace::world)
         {
+            // Rotate direction by current world rotation
             direction = direction.LocalToWorldDirection(mCurveContext.mOutput.mRotation);
         }
 
