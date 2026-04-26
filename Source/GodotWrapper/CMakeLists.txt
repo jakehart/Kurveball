@@ -7,7 +7,7 @@ endif()
 
 # Maps to project name in MSVS
 set(LIBNAME "KurveballGodotPlugin")
-set(GODOT_PROJECT_DIR "../Examples/godot-curve-demo" CACHE STRING "The directory of a Godot project folder")
+set(GODOT_PROJECT_DIR "../../Examples/godot-curve-demo" CACHE STRING "The directory of a Godot project folder")
 
 # Make sure all the dependencies are satisfied
 find_package(Python3 3.4 REQUIRED)
