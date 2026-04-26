@@ -33,6 +33,8 @@ target_sources(Kurveball PRIVATE
 
 # Unit tests
 add_subdirectory(Tests)
+# Note: the Unreal plugin doesn't appear here because it's built with Unreal Build Tool. See KurveballPlugin.uplugin
+add_subdirectory(Source/GodotWrapper)
 add_subdirectory(Examples/CurveEditor)
 
 # Generate the .lib files in the Lib directory
