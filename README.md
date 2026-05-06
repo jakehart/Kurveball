@@ -15,7 +15,7 @@ Kurveball is engine-agnostic. It is written in modern C++ in a dependency-inject
 
 ---
 
-## CurveMechanic Tweakables
+## 📈 CurveMechanic Tweakables
 
 CurveMechanic is the definition of your movement mechanic. It points to the velocity curve you want to use, the speed you want to play it at, and any special parameters such as looping, time-stretching, or axis masking.
 
@@ -33,11 +33,13 @@ CurveMechanic is the definition of your movement mechanic. It points to the velo
 
 ## 📐 How to Use in Unreal Engine
 
-Take at look at Examples/UnrealCurveDemo for a working example.
+Take at look at Examples/UnrealCurveDemo/CurveDemo.uproject for a working example. It's based on the Unreal third-person template project, but it uses velocity curves for all its movement mechanics. The blueprint on BP_CharacterPawn is a good starting point to see what kinds of things are possible.
 
 To use in your own project, put Kurveball under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint. Kurveball is compatible with Unreal's CurveFloat type, so you can use Unreal's native editor to draw your velocity curves. No conversion needed.
 
-Wrappers for other engines are on the roadmap! Godot is next in line after Unreal.
+## Godot Integration Status
+
+
 
 ---
 
@@ -75,6 +77,6 @@ If you find bugs, have ideas for new features, or want to help build a wrapper f
 ---
 
 ### 💡 Why use Kurveball?
-*   **For Designers:** You'll be able to create movement and camera mechanics independently and without intervention from engineers. Iterate on movement feel in seconds by shaping a curve.
-*   **For Programmers:** You'll be freed from having to implement code for individual character movement mechanics or cameras.
+*   **For Designers:** You'll be able to create modular movement and camera mechanics independently and without intervention from engineers. Iterate on movement feel by drawing the speed you want.
+*   **For Programmers:** You'll be freed from having to implement code for individual character movement mechanics or cameras. The output of designers' movement mechanics are stored in VelocityCurveContext as simple position, velocity, and rotation data that you can send into your engine or physics sim.
 *   **For Artists:** You'll be able to create precise, reproducible animations that sync perfectly with gameplay. You'll know the exact root motion curve of the motion in-game.
