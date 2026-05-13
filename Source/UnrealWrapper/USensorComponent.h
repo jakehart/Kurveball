@@ -39,7 +39,7 @@ private:
     friend class USensorComponent;
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class KURVEBALLPLUGINRUNTIME_API USensorComponent : public UActorComponent
 {
     GENERATED_BODY()
@@ -56,10 +56,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Sensors")
     bool HasSensorResult(FName sensorName) const;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ShowOnlyInnerProperties), Category = "Sensors")
     TMap<FName, FSensorDescription> SensorDescriptions;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sensors")
     bool ShowDebug = false;
 private:
     void SanitizeSensorDescription(FSensorDescription& ioSensor);
