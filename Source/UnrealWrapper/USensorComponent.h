@@ -23,7 +23,7 @@ public:
     FVector LocalDirection = {};
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float TraceLength = 1.f;
+    float TraceLength = 100.f;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float RadiusCm = 50.f;
