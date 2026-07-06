@@ -413,7 +413,7 @@ namespace Kurveball
         const Seconds blendStartTime = ioContext.mAbsoluteTime;
         const Seconds blendEndTime = ioContext.mAbsoluteTime + duration;
 
-        if (blendStartTime == blendEndTime)
+        if (IsZero(duration))
         {
             blendType = BlendType::Cut;
         }
@@ -425,18 +425,22 @@ namespace Kurveball
         switch (blendType)
         {
         case BlendType::Cut:
-            {
-                const float value = isBlendIn ? 1.0f : 0.0f;
-                curveInstance->mBlendSampler = [value]([[maybe_unused]] Seconds absoluteTime) { return value; };
-            }
+			{
+				const float value = isBlendIn ? 1.0f : 0.0f;
+				curveInstance->mBlendSampler = [value]([[maybe_unused]] Seconds absoluteTime) { return value; };
+				
+				break;
+			}
         case BlendType::Linear:
-        {
-            curveInstance->mBlendSampler = [blendStartTime, blendEndTime, direction, base](Seconds now)
-            {
-                const float progress = (now - blendStartTime).count() / (blendEndTime - blendStartTime).count();
-                return std::clamp(base + (direction * progress), 0.f, 1.f);
-            };
-        }
+			{
+				curveInstance->mBlendSampler = [blendStartTime, blendEndTime, direction, base](Seconds now)
+				{
+					const float progress = (now - blendStartTime).count() / (blendEndTime - blendStartTime).count();
+					return std::clamp(base + (direction * progress), 0.f, 1.f);
+				};
+				
+				break;
+			}
         default:
             KURVEBALL_ERROR_RETURN(false, ioContext, ErrorCode::BlendTypeNotFound);
         }

@@ -16,8 +16,6 @@ optional "cancel on collision" functionality
 BUT how will i handle restitution from the engine sim? OR do i want to just do restitution myself based on a curve from the user?
 hub world in demo?
 
-abstract art style
-
 need to be able to check stick intent -- have a function that checks against a target to see if the world input vector is pointed toward that target or not (within some degree measure)
 
 
