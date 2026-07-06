@@ -62,8 +62,8 @@ namespace Kurveball
 
         // "Bake" the previous motion that the curve caused into its mStartPosition. This prevents the updated speed
         // and direction from applying retroactively to existing progress. 
-        //curveInstance->mStartPosition = curveInstance->mStartPosition + curveInstance->mMechanic.mDirection * curveInstance->mMechanic.mDistanceAccumulator.GetTotalArea();
-        //curveInstance->mMechanic.mDistanceAccumulator.Reset();
+        curveInstance->mStartPosition = curveInstance->mStartPosition + curveInstance->mMechanic.mDirection * curveInstance->mMechanic.mDistanceAccumulator.GetTotalArea();
+        curveInstance->mMechanic.mDistanceAccumulator.Reset();
 
         // Speed and direction can be updated independently, or both together in the same call
         if (speedMultiplier.has_value())
