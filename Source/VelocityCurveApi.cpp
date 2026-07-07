@@ -272,6 +272,8 @@ namespace Kurveball
             // Interpret the start position in localspace and transform to worldspace
             ioCurveInstance.mStartPosition = ioCurveInstance.mStartPosition.LocalToWorldPosition(context.mOutput.mPosition, context.mOutput.mRotation);
         }
+		
+		ioCurveInstance.mOutput.mPosition = ioCurveInstance.mStartPosition;
 
         if (std::abs(ioCurveInstance.mMechanic.mLoopStartX) < sFloatEpsilon &&
             std::abs(ioCurveInstance.mMechanic.mLoopEndX) < sFloatEpsilon)

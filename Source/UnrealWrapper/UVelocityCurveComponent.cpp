@@ -83,6 +83,9 @@ void UVelocityCurveComponent::BeginPlay()
     // correct axes when you use eAxisMode::vertical or eAxisMode::horizontal.
     Kurveball::SetVerticalAxis(mCurveContext, Axis::Z);
 
+    const FVector position = owner->GetActorLocation();
+    Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
+
     const FRotator rotation = owner->GetActorRotation();
     const FVector euler = rotation.Euler();
     Kurveball::SetRotation(mCurveContext, euler.X, euler.Y, euler.Z);
