@@ -71,7 +71,7 @@ public:
     bool IsAnyCurveRunning(bool includeLinear = true, bool includeRotational = true) const;
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
-    void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight = 0.f);
+    void AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent);
 
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void GenerateParabolicSpline(const UCurveMechanic* mechanic, float heightCm, FVector destination);

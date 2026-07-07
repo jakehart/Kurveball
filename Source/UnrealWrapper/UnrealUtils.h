@@ -1,3 +1,4 @@
+/////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "CurveSampler.h"
@@ -16,5 +17,5 @@ namespace Kurveball
     FVector ToFVector(const Float3& curveLibVector);
     
     CurveSamplerXY CreateSamplerXY(const UCurveFloat* curveAsset);
-    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent, float desiredHeight = 0.f);
+    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent);
 }

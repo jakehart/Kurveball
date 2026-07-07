@@ -316,7 +316,7 @@ bool UVelocityCurveComponent::IsAnyCurveRunning(bool includeLinear, bool include
     return Kurveball::IsAnyCurveRunning(mCurveContext, includeLinear, includeRotational);
 }
 
-void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent, float desiredHeight)
+void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const USplineComponent* splineComponent)
 {
     if (!splineComponent || splineComponent->GetSplineLength() < Kurveball::sFloatEpsilon)
     {
@@ -333,7 +333,7 @@ void UVelocityCurveComponent::AttachSpline(const UCurveMechanic* mechanic, const
         return;
     }
 
-    curveInstance->mPositionSampler = Kurveball::CreateUnrealSplineSampler(splineComponent, desiredHeight);
+    curveInstance->mPositionSampler = Kurveball::CreateUnrealSplineSampler(splineComponent);
 }
 
 void UVelocityCurveComponent::GenerateParabolicSpline(const UCurveMechanic* mechanic, float heightCm, FVector destination)

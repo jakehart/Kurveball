@@ -40,7 +40,7 @@ namespace Kurveball
             };
     }
 
-    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent, float desiredHeight)
+    CurveSampler3D CreateUnrealSplineSampler(const USplineComponent* splineComponent)
     {
         static const CurveSampler3D NULL_SAMPLER = [](float) {return Kurveball::Float3(0, 0, 0); };
 
@@ -50,26 +50,14 @@ namespace Kurveball
             return NULL_SAMPLER;
         }
 
-        // Scale to desiredHeight
-        float heightScale = 1.f;
-        if (desiredHeight > sFloatEpsilon)
-        {
-            const auto localBounds = splineComponent->CalcLocalBounds();
-            const float nativeSplineHeight = localBounds.GetBox().Max.Z - localBounds.GetBox().Min.Z;
-            if (nativeSplineHeight > sFloatEpsilon)
-            {
-                heightScale = desiredHeight / nativeSplineHeight;
-            }
-        }
-
-        return [splineComponent, heightScale](float distance)
+        return [splineComponent](float distance)
             {
                 // Make sure the spline is still valid at the time of sampling
                 if (splineComponent && splineComponent->IsValidLowLevelFast(false))
                 {
                     // Return the position at this arc distance
-                    const FVector rawPosition = splineComponent->GetLocationAtDistanceAlongSpline(distance, ESplineCoordinateSpace::Local);
-                    return Kurveball::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z * heightScale);
+                    const FVector rawPosition = splineComponent->GetLocationAtDistanceAlongSpline(distance, ESplineCoordinateSpace::World);
+                    return Kurveball::Float3(rawPosition.X, rawPosition.Y, rawPosition.Z);
                 }
 
                 UE_LOG(KurveballLog, Warning, TEXT("CreateUnrealSplineSampler sampling from spline that became null"));
