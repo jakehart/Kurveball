@@ -1,23 +1,8 @@
+// MIT NON-AI License. Copyright (c) 2025 Jake Hart. See LICENSE.md
 #include <catch_amalgamated.hpp>
 
-#include "AxisMode.h"
-#include "CoordinateSpace.h"
-#include "Vector3.h"
-#include "VelocityCurveApi.h"
-#include "VelocityCurveContext.h"
-#include "VelocityCurveInstance.h"
-#include "VelocityCurveOutput.h"
-#include "VelocityCurvePlayback.h"
-
+#include "KurveballAll.h"
 #include "TestUtils.h"
-
-const Kurveball::Seconds TICK_DURATION(0.1);
-const Kurveball::Seconds TIME_TOLERANCE = TICK_DURATION * 2.f;
-const Kurveball::Seconds TICK_DURATION_SHORT(0.05);
-const Kurveball::Seconds TIME_TOLERANCE_SHORT = TICK_DURATION_SHORT * 2.f;
-
-const float DEGREE_TOLERANCE = 1.f;
-const float DISTANCE_TOLERANCE = 0.5f;
 
 TEST_CASE("TickPlayback with local direction")
 {

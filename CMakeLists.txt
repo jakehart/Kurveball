@@ -1,5 +1,5 @@
 # Set the minimum version of CMake required
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.6)
 
 # Define the project name
 project(Kurveball)
@@ -40,3 +40,6 @@ add_subdirectory(Examples/CurveEditor)
 # Generate the .lib files in the Lib directory
 set_target_properties(Kurveball PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
 set_target_properties(Kurveball PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
+
+#set_target_properties(Kurveball PROPERTIES VS_STARTUP_PROJECT KurveballTests)
+set_directory_properties(PROPERTIES VS_STARTUP_PROJECT KurveballTests)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.6)
 project(Kurveball)
 
 # Glob all files in this directory

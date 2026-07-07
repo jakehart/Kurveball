@@ -57,7 +57,7 @@ Kurveball is split into two layers:
 
 **Adding an Engine Wrapper:**
 To port to a custom engine:
-1.  `#include Kurveball/Source/KurveballAll.h`
+1.  `#include "Kurveball/Source/KurveballAll.h"`
 2.  Implement a wrapper for `VelocityCurveContext`.
 3.  Map your engine's vector types to `Kurveball::Float3`.
 4.  Implement a `CurveSampler` for your engine's curve asset type.
