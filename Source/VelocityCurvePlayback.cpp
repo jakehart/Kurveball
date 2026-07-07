@@ -182,41 +182,50 @@ namespace Kurveball
         void ApplyAccumulatorToPosition(VelocityCurveInstance& ioCurveInstance, const VelocityCurveContext& context)
         {
             VelocityCurveOutput& singleOutput = ioCurveInstance.mOutput;
-            singleOutput = {};
+            
+            // The previous position is needed in order to compute position delta and direction when using splines,
+            // so preserve it before clearing the output.
+            const Vector3 oldPosition = singleOutput.mPosition;
 
-            if (ioCurveInstance.mMechanic.mCoordinateSpace == CoordinateSpace::local)
-            {
-                // Interpret the direction in entity-local space and transform it to worldspace.
-                // The rest of the output is based on the direction
-                singleOutput.mDirection = ioCurveInstance.mMechanic.mDirection.LocalToWorldDirection(context.mOutput.mRotation);
-            }
-            else
-            {
-                singleOutput.mDirection = ioCurveInstance.mMechanic.mDirection;
-            }
+            singleOutput = {};
 
             // The area under the curve is the distance travelled
             const float totalDistance = ioCurveInstance.mDistanceAccumulator.GetTotalArea();
+
+            if (ioCurveInstance.mPositionSampler)
+            {
+                // Read position from a spline or other sampler function
+                const Kurveball::Float3 newPosition = (*ioCurveInstance.mPositionSampler)(totalDistance);
+                singleOutput.mPositionDelta = newPosition - oldPosition;
+                singleOutput.mPosition = newPosition;
+                singleOutput.mDirection = singleOutput.mPositionDelta.GetNormalized();
+            }
+            else
+            {
+                // Follow a fixed direction from the start position.
+                
+                if (ioCurveInstance.mMechanic.mCoordinateSpace == CoordinateSpace::local)
+                {
+                    // Interpret the direction in entity-local space and transform it to worldspace.
+                    // The rest of the output is based on the direction
+                    singleOutput.mDirection = ioCurveInstance.mMechanic.mDirection.LocalToWorldDirection(context.mOutput.mRotation);
+                }
+                else
+                {
+                    singleOutput.mDirection = ioCurveInstance.mMechanic.mDirection;
+                }
+
+                singleOutput.mPosition = ioCurveInstance.mStartPosition + singleOutput.mDirection * totalDistance;
+
+                const float distanceThisStep = ioCurveInstance.mDistanceAccumulator.GetLatestStepArea();
+
+                singleOutput.mPositionDelta = singleOutput.mDirection * distanceThisStep;
+            }
 
             const float rawSpeedSample = ioCurveInstance.mDistanceAccumulator.GetLatestSample().Y;
             singleOutput.mSpeed = rawSpeedSample;
 
             singleOutput.mVelocity = singleOutput.mDirection * singleOutput.mSpeed;
-
-            if (ioCurveInstance.mPositionSampler)
-            {
-                const Kurveball::Float3 splinePosition = (*ioCurveInstance.mPositionSampler)(totalDistance);
-                singleOutput.mPositionDelta = splinePosition - singleOutput.mPosition;
-                singleOutput.mPosition = splinePosition;
-            }
-            else
-            {
-                // Follow a fixed direction from the start position.
-                singleOutput.mPosition = ioCurveInstance.mStartPosition + singleOutput.mDirection * totalDistance;
-                
-                const float distanceThisStep = ioCurveInstance.mDistanceAccumulator.GetLatestStepArea();
-                singleOutput.mPositionDelta = singleOutput.mDirection * distanceThisStep;
-            }
 
             MaskCurveOutput(singleOutput, context, ioCurveInstance);
         }
