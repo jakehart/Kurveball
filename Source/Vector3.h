@@ -55,8 +55,8 @@ namespace Kurveball
         Vector3<ScalarT> GetNormalized() const;
         void NormalizeInPlace();
         void Set(ScalarT x, ScalarT y, ScalarT z);
-        bool Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance = sFloatEpsilon);
-        bool Equals(ScalarType x, ScalarType y, ScalarType z, ScalarT tolerance = sFloatEpsilon);
+        bool Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance = sFloatEpsilon) const;
+        bool Equals(ScalarType x, ScalarType y, ScalarType z, ScalarT tolerance = sFloatEpsilon) const;
         float Dot(const Vector3<ScalarT> otherVector);
         
         // Turns all components that are denormals into 0. Any components that exceed this threshold

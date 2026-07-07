@@ -1,25 +1,26 @@
 # v1.0 Roadmap
 This summarizes all the features and fixes that are needed in order to to get to the first release of Kurveball (v1.0).
 
-create using directives for vector etc.
-
 ## Core
-unit tests for TransferCurve
-need subticking
+unit tests for TransferCurve  
+need subticking  
 	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
-	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)
+	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)  
+bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal
 All-in-one editor
 Unreal quickstart video from zero   
 bugfix: fix coordinate space issue when RespectCollision==true
 bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need to require a certain distance range in order to stop the curve (within one frame of zero, or negative y in any amount), and then correct to the proper height
+Convert to and from BezierCurveSegment (pack-in curve implementation)  
 
 ## BezierCurveSegment: Pack-in curve implementation
 Should be able to share points between adjacent segments. Either with refs, or by making an optimized BezierCurve and ditching the segments  
 Sample Bezier by arc length
 	3D distance-to-t lookup populated "backwards"
 Point reordering  
+Library of commonly used curves (easing functions)
 
 # v1.1 Roadmap
 Lower priority features that will make it into the next release.

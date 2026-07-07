@@ -80,7 +80,7 @@ namespace Kurveball
     }
 
     template<typename ScalarT>
-    bool Vector3<ScalarT>::Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance)
+    bool Vector3<ScalarT>::Equals(const Vector3<ScalarT> otherVector, ScalarT tolerance) const
     {
         return std::abs(X - otherVector.X) < tolerance &&
                 std::abs(Y - otherVector.Y) < tolerance &&
@@ -88,7 +88,7 @@ namespace Kurveball
     }
 
     template<typename ScalarT>
-    bool Vector3<ScalarT>::Equals(ScalarType x, ScalarType y, ScalarType z, ScalarT tolerance)
+    bool Vector3<ScalarT>::Equals(ScalarType x, ScalarType y, ScalarType z, ScalarT tolerance) const
     {
         return std::abs(X - x) < tolerance &&
             std::abs(Y - y) < tolerance &&

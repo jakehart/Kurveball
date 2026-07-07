@@ -17,6 +17,7 @@ namespace Kurveball
 
     const float DEGREE_TOLERANCE = 1.f;
     const float DISTANCE_TOLERANCE = 0.5f;
+    const float SPEED_TOLERANCE = 0.1f;
 
     struct VelocityCurveContext;
 
