@@ -144,10 +144,122 @@ TEST_CASE("StopVelocityCurve")
     using namespace Kurveball;
     VelocityCurveContext context;
 
-    auto curveInstance = GenerateTestCurveInstance();
-    StartVelocityCurve(context, curveInstance);
-    REQUIRE(IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
+    auto curveInstanceToStop = GenerateTestCurveInstance();
+    StartVelocityCurve(context, curveInstanceToStop);
+    REQUIRE(IsCurveRunning(context, curveInstanceToStop.mMechanic.mInstanceID));
 
+    auto curveInstanceToKeep = GenerateTestCurveInstance();
+    StartVelocityCurve(context, curveInstanceToKeep);
+    REQUIRE(IsCurveRunning(context, curveInstanceToKeep.mMechanic.mInstanceID));
+
+    StopVelocityCurve(context, curveInstanceToStop.mMechanic.mInstanceID);
+    REQUIRE(!IsCurveRunning(context, curveInstanceToStop.mMechanic.mInstanceID));
+    REQUIRE(IsCurveRunning(context, curveInstanceToKeep.mMechanic.mInstanceID));
+}
+
+TEST_CASE("StopAllVelocityCurves")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto curveInstance1 = GenerateTestCurveInstance();
+    auto curveInstance2 = GenerateTestCurveInstance();
+    auto curveInstance3 = GenerateTestCurveInstance();
+    
+    StartVelocityCurve(context, curveInstance1);
+    StartVelocityCurve(context, curveInstance2);
+    StartVelocityCurve(context, curveInstance3);
+    
+    REQUIRE(IsCurveRunning(context, curveInstance1.mMechanic.mInstanceID));
+    REQUIRE(IsCurveRunning(context, curveInstance2.mMechanic.mInstanceID));
+    REQUIRE(IsCurveRunning(context, curveInstance3.mMechanic.mInstanceID));
+
+    StopAllVelocityCurves(context);
+
+    REQUIRE(!IsAnyCurveRunning(context));
+}
+
+TEST_CASE("SoftStopVelocityCurve")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto curveInstanceInput = GenerateTestCurveInstance();
+    curveInstanceInput.mMechanic.mLoopStartX = 0;
+    curveInstanceInput.mMechanic.mLoopEndX = 0.75f;
+    curveInstanceInput.mMechanic.mPlayCount = 0; // Infinite replays
+    curveInstanceInput.mMechanic.mRawAssetDuration = Seconds(1.f);
+    curveInstanceInput.mMechanic.mStretchDuration = Seconds(0.f); // Unstretched
+
+    StartVelocityCurve(context, curveInstanceInput);
+    TickCurveContext(context, TICK_DURATION, 2);
+
+    // Since this is a const ref, it updates automatically as the curve runs
+    const VelocityCurveInstance* curveInstanceInternal = GetCurveInstance(context, curveInstanceInput.mMechanic.mInstanceID);
+    REQUIRE(curveInstanceInternal != nullptr);
+    const VelocityCurveOutput& curveOutput = curveInstanceInternal->mOutput;
+
+    REQUIRE_THAT(CalculateCurveX(context, curveInstanceInput.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(TICK_DURATION.count() * 2.f, TIME_TOLERANCE_SHORT.count()));
+
+    REQUIRE(IsCurveRunning(context, curveInstanceInput.mMechanic.mInstanceID));
+
+    SoftStopVelocityCurve(context, curveInstanceInput.mMechanic.mInstanceID);
+    
+    REQUIRE(curveInstanceInternal->mMechanic.mPlayCount == 1);
+
+    REQUIRE_THAT(Internal::CalculateCurveX(*curveInstanceInternal, context.mAbsoluteTime), Catch::Matchers::WithinAbs(0.75f, TIME_TOLERANCE_SHORT.count()));
+
+    // Soft stop isn't immediate, so the curve should still be running, just seeked to the outro
+    REQUIRE(IsCurveRunning(context, curveInstanceInput.mMechanic.mInstanceID));
+
+    // Tick once to make sure that playback continues correctly after the seek
+    TickCurveContext(context, TICK_DURATION, 1);
+
+    // Verify that we're at the outro section plus one tick
+    REQUIRE_THAT(CalculateCurveX(context, curveInstanceInput.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.75f + TICK_DURATION.count(), TIME_TOLERANCE_SHORT.count()));
+
+    // Since SoftStop seeked to the loop end at 0.75, three more ticks of 0.1sec each are enough for the curve to end
+    TickCurveContext(context, TICK_DURATION, 3);
+
+    REQUIRE(!IsCurveRunning(context, curveInstanceInput.mMechanic.mInstanceID));
+    REQUIRE(!IsAnyCurveRunning(context));
+}
+
+TEST_CASE("SeekToX")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto curveInstance = GenerateTestCurveInstance();
+    curveInstance.mMechanic.mLoopStartX = 0.0f;
+    curveInstance.mMechanic.mLoopEndX = 0.0f; // Play the full curve
+
+    StartVelocityCurve(context, curveInstance);
+
+    SeekToX(context, curveInstance.mMechanic.mInstanceID, 0.5f);
+    REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.5f, TIME_TOLERANCE_SHORT.count()));
+
+    // Verify that playback continues correctly after seek
+    TickCurveContext(context, TICK_DURATION, 1);
+    CAPTURE(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID));
+    REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.5f + TICK_DURATION.count(), TIME_TOLERANCE_SHORT.count()));
+
+    // Start over and test it with loop points
     StopVelocityCurve(context, curveInstance.mMechanic.mInstanceID);
-    REQUIRE(!IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
+    curveInstance.mMechanic.mLoopStartX = 0.3f;
+    curveInstance.mMechanic.mLoopEndX = 0.77f;
+    curveInstance.mMechanic.mPlayCount = 55;
+    StartVelocityCurve(context, curveInstance);
+    
+    // Seek to somewhere before the loop point
+    SeekToX(context, curveInstance.mMechanic.mInstanceID, 0.1f);
+    REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.1f, TIME_TOLERANCE_SHORT.count()));
+
+    // Seek to inside the looped section
+    SeekToX(context, curveInstance.mMechanic.mInstanceID, 0.44f);
+    REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.44f, TIME_TOLERANCE_SHORT.count()));
+
+    // Seek to after the looped section
+    SeekToX(context, curveInstance.mMechanic.mInstanceID, 0.99f);
+    REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.99f, TIME_TOLERANCE_SHORT.count()));
 }

@@ -44,6 +44,11 @@ namespace Kurveball
         return std::abs(scalar) < tolerance;
     }
 
+    template<typename ScalarT>
+    bool IsEqual(ScalarT scalar1, ScalarT scalar2, ScalarT tolerance = sFloatMinDenormal)
+    {
+        return std::abs(scalar1 - scalar2) < tolerance;
+    }
 
     template<typename ScalarT>
     ScalarT FloorToZero(ScalarT scalar, ScalarT tolerance = sFloatMinDenormal)

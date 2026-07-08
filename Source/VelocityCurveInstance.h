@@ -18,6 +18,8 @@ namespace Kurveball
     struct VelocityCurveInstance
     {
         // The curve's description as received from the user and sanitized in StartVelocityCurve.
+        // It is stored by copy so that we can manipulate its copy in this curve instance without
+        // affecting the original.
         CurveMechanic mMechanic {};
         
         // Each tick, TickPlayback (in VelocityCurvePlayback.h) samples the speed from the velocity curve,

@@ -44,12 +44,11 @@ namespace Kurveball
     {
         using namespace Kurveball;
 
-        // Clear previous state to assure a clean slate for testing
-        ioContext.mAbsoluteTime = {};
+        const Seconds startingAbsoluteTime = ioContext.mAbsoluteTime;
 
-        for (size_t i = 0; i < numTicks; ++i)
+        for (size_t i = 1; i <= numTicks; ++i)
         {
-            const Seconds absoluteTime = tickDuration * i;
+            const Seconds absoluteTime = startingAbsoluteTime + tickDuration * i;
             TickPlayback(ioContext, absoluteTime);
         }
     }

@@ -6,6 +6,7 @@ unit tests for TransferCurve
 need subticking  
 	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
 	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)  
+util to reach position using curve instance by setting its mStretchDuration and/or mPlayCount  
 bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal
@@ -24,6 +25,9 @@ Library of commonly used curves (easing functions)
 
 # v1.1 Roadmap
 Lower priority features that will make it into the next release.
+
+## Core
+Logging wrapper to expose internal logs to arbitrary engines
 
 ## Godot wrapper
 

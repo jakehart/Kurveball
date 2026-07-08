@@ -122,9 +122,6 @@ namespace Kurveball
         // If the playhead is currently before the outro...
         if (CalculateCurveX(ioContext, instanceID) < curveInstance->mMechanic.mLoopEndX)
         {
-            // Prevent further looping
-            curveInstance->mMechanic.mPlayCount = 1;
-        
             // Seek to the outro and let it play
             SeekToX(ioContext, instanceID, curveInstance->mMechanic.mLoopEndX + sFloatEpsilon);
         }
@@ -151,6 +148,13 @@ namespace Kurveball
 
         // "Backdate" the curve so that the playhead is at the desired X
         curveInstance->mMechanic.mStartTime = ioContext.mAbsoluteTime - Seconds(curveXCoordinate * timeConversionFactor);
+
+        // If seeking past the loop end, make sure that the looping logic doesn't capture the playhead and move it back
+        // inside the looped portion
+        if (curveXCoordinate >= curveInstance->mMechanic.mLoopEndX)
+        {
+            curveInstance->mMechanic.mPlayCount = 1;
+        }
     }
 
     Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceID instanceID)
