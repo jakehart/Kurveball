@@ -35,7 +35,7 @@ namespace Kurveball
     void SeekToX(VelocityCurveContext& ioContext, CurveInstanceID instanceID, float curveXCoordinate);
 
     Float3 GetMechanicDirection(const VelocityCurveContext& context, CurveInstanceID instanceID);
-    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceID instanceID);
+    float GetMechanicSpeedOutput(const VelocityCurveContext& context, CurveInstanceID instanceID);
     float GetTotalSpeed(const VelocityCurveContext& context);
 
     // This clears everything back to the startup state. All curve instances are forgotten,

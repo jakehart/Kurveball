@@ -37,10 +37,6 @@ Take at look at Examples/UnrealCurveDemo/CurveDemo.uproject for a working exampl
 
 To use in your own project, put Kurveball under your Source directory and add VelocityCurveComponent to your actor. This wrapper automatically applies the velocity curves' position and rotation. With the component added, you can call all of the API functions (like StartVelocityCurve) directly from Unreal Blueprint. Kurveball is compatible with Unreal's CurveFloat type, so you can use Unreal's native editor to draw your velocity curves. No conversion needed.
 
-## Godot Integration Status
-
-
-
 ---
 
 ## 🔩 Other Platforms and Engines

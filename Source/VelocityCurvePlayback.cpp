@@ -41,7 +41,7 @@ namespace Kurveball
         ioContext.mOutput.mHasUpdated = true;
     }
 
-    Seconds CalculateCurveRuntime(const VelocityCurveInstance& curveInstance)
+    Seconds CalculateTotalRuntime(const VelocityCurveInstance& curveInstance)
     {
         if (curveInstance.mMechanic.mPlayCount == Kurveball::PLAY_COUNT_INFINITE)
         {
@@ -125,7 +125,7 @@ namespace Kurveball
                 Internal::RecordHistory(curveInstance);
                 Internal::CombineCurveOutput(finalOutput, curveInstance);
 
-                const Seconds curveRuntime = CalculateCurveRuntime(curveInstance);
+                const Seconds curveRuntime = CalculateTotalRuntime(curveInstance);
                 const bool isRuntimeInfinite = curveRuntime.count() < sFloatEpsilon;
 
                 if (!isRuntimeInfinite && ioContext.mAbsoluteTime > curveInstance.mMechanic.mStartTime + curveRuntime)

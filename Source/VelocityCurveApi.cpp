@@ -168,7 +168,7 @@ namespace Kurveball
         return curveInstance->mMechanic.mDirection;
     }
 
-    float GetMechanicSpeed(const VelocityCurveContext& context, CurveInstanceID instanceID)
+    float GetMechanicSpeedOutput(const VelocityCurveContext& context, CurveInstanceID instanceID)
     {
         const auto* curveInstance = GetCurveInstance(context, instanceID);
         if (!curveInstance)

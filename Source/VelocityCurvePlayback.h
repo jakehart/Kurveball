@@ -15,7 +15,7 @@ namespace Kurveball
 
     // Returns the time that a curve will take to run, including its loop and stretch parameters.
     // If the curve will run forever, returns zero.
-    Seconds CalculateCurveRuntime(const VelocityCurveInstance& curveInstance);
+    Seconds CalculateTotalRuntime(const VelocityCurveInstance& curveInstance);
 
     // Returns the current position of the playhead on the curve asset, expressed in the raw
     // x coordinate of the curve itself (with no looping or stretching applied).

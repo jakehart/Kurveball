@@ -6,7 +6,7 @@ unit tests for TransferCurve
 need subticking  
 	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
 	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)  
-util to reach position using curve instance by setting its mStretchDuration and/or mPlayCount  
+util to reach position using curve instance by setting its mStretchDuration and/or mPlayCount. some of this gap in functionality is already filled by GenerateParabolicSpline, but that doesn't cover the base case of e.g. walking somewhere, and we shouldn't need splines just to reach a destination.  
 bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal

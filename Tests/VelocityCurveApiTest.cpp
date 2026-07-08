@@ -262,4 +262,42 @@ TEST_CASE("SeekToX")
     // Seek to after the looped section
     SeekToX(context, curveInstance.mMechanic.mInstanceID, 0.99f);
     REQUIRE_THAT(CalculateCurveX(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.99f, TIME_TOLERANCE_SHORT.count()));
+
+    // Tick so that the curve ends
+    TickCurveContext(context, TICK_DURATION, 1);
+
+    REQUIRE(!IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));
+    REQUIRE(!IsAnyCurveRunning(context));
+}
+
+TEST_CASE("GetMechanicDirection")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    Vector3 testDirection(0.123f, 0.456f, 0.789f);
+    testDirection.NormalizeInPlace();
+
+    auto curveInstance = GenerateTestCurveInstance();
+    curveInstance.mMechanic.mDirection.Set(testDirection.X, testDirection.Y, testDirection.Z);
+
+    StartVelocityCurve(context, curveInstance);
+    TickCurveContext(context, TICK_DURATION, 1);
+
+    REQUIRE(GetMechanicDirection(context, curveInstance.mMechanic.mInstanceID).Equals(testDirection));
+}
+
+TEST_CASE("GetMechanicSpeedOutput")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto curveInstance = GenerateTestCurveInstance();
+    curveInstance.mMechanic.mSpeedMultiplier = 333.3f;
+
+    StartVelocityCurve(context, curveInstance);
+    TickCurveContext(context, TICK_DURATION, 1);
+
+    // Since the test curve always returns 1, we should get the speed multiplier back
+    REQUIRE_THAT(GetMechanicSpeedOutput(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(curveInstance.mMechanic.mSpeedMultiplier, SPEED_TOLERANCE));
 }
