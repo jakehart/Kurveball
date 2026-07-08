@@ -301,3 +301,92 @@ TEST_CASE("GetMechanicSpeedOutput")
     // Since the test curve always returns 1, we should get the speed multiplier back
     REQUIRE_THAT(GetMechanicSpeedOutput(context, curveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(curveInstance.mMechanic.mSpeedMultiplier, SPEED_TOLERANCE));
 }
+
+TEST_CASE("GetTotalSpeed")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto curveInstance1 = GenerateTestCurveInstance();
+    curveInstance1.mMechanic.mSpeedMultiplier = 100.0f;
+    curveInstance1.mMechanic.mDirection.Set(1, 0, 0);
+    StartVelocityCurve(context, curveInstance1);
+
+    // Start another curve going the opposite direction
+    auto curveInstance2 = GenerateTestCurveInstance();
+    curveInstance2.mMechanic.mSpeedMultiplier = 20.0f;
+    curveInstance2.mMechanic.mDirection.Set(-1, 0, 0);
+    StartVelocityCurve(context, curveInstance2);
+
+    // Since going opposite ways, expect speed to be the difference between the two curves' speed multipliers
+    TickCurveContext(context, TICK_DURATION, 2);
+    REQUIRE_THAT(GetTotalSpeed(context), Catch::Matchers::WithinAbs(80.f, SPEED_TOLERANCE));
+
+    // Set curve 2 to go in the same direction as curve 1
+    UpdateVelocityCurve(context, curveInstance2.mMechanic.mInstanceID, std::nullopt, curveInstance1.mMechanic.mDirection);
+
+    // Speed is now the sum of the speed multipliers
+    TickCurveContext(context, TICK_DURATION, 2);
+    REQUIRE_THAT(GetTotalSpeed(context), Catch::Matchers::WithinAbs(120.f, SPEED_TOLERANCE));
+}
+
+TEST_CASE("ResetContext")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    StartVelocityCurve(context, GenerateTestCurveInstance());
+    StartVelocityCurve(context, GenerateTestCurveInstance());
+    StartVelocityCurve(context, GenerateTestCurveInstance());
+
+    ResetContext(context);
+
+    REQUIRE(!IsAnyCurveRunning(context));
+}
+
+TEST_CASE("TransferCurve")
+{
+    using namespace Kurveball;
+    VelocityCurveContext context;
+
+    auto sourceCurveInstance = GenerateTestCurveInstance();
+    sourceCurveInstance.mSpeedSampler = [](float curveX)
+        {
+            // Straight line, y=x
+            return curveX;
+        };
+    sourceCurveInstance.mMechanic.mRawAssetDuration = Seconds(1.f);
+    sourceCurveInstance.mMechanic.mSpeedMultiplier = 1.f;
+    StartVelocityCurve(context, sourceCurveInstance);
+
+    // Tick 30% of the way through the source curve. We expect speed to be 0.3
+    TickCurveContext(context, Seconds(0.1f), 3);
+
+    REQUIRE_THAT(GetMechanicSpeedOutput(context, sourceCurveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.3f, SPEED_TOLERANCE));
+
+    auto targetCurveInstance = GenerateTestCurveInstance();
+    targetCurveInstance.mSpeedSampler = [](float curveX)
+        {
+            // x-flipped line
+            return 1 - curveX;
+        };
+    targetCurveInstance.mMechanic.mRawAssetDuration = Seconds(1.f);
+    targetCurveInstance.mMechanic.mSpeedMultiplier = 1.f;
+    // No need to start targetCurveInstance, since TransferCurve() is able to do so
+
+    SECTION("Hard cut")
+    {
+        TransferCurve(context, sourceCurveInstance, targetCurveInstance, BlendType::Cut, Seconds(0.f), true);
+
+        REQUIRE(!IsCurveRunning(context, sourceCurveInstance.mMechanic.mInstanceID));
+        REQUIRE(IsCurveRunning(context, targetCurveInstance.mMechanic.mInstanceID));
+        // Since the target curve is x-flipped from the source curve, its x should be at 70%
+        REQUIRE_THAT(CalculateCurveX(context, targetCurveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.7f, SPEED_TOLERANCE));
+
+        // Do a tiny tick just to update the speed output without significantly advancing the curve
+        TickCurveContext(context, Seconds(0.00001f), 1);
+
+        REQUIRE_THAT(GetMechanicSpeedOutput(context, targetCurveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.3f, SPEED_TOLERANCE));
+    }
+
+}

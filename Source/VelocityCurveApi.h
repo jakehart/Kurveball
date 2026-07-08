@@ -71,7 +71,7 @@ namespace Kurveball
     
     // This overload is able to start the "to" curve if it's not already running, since you're passing in a full
     // CurveMechanic description of it.
-    void TransferCurve(VelocityCurveContext& ioContext, const CurveMechanic& fromMechanic, const CurveMechanic& toMechanic, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound = true);
+    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration = Seconds{ 0.4f }, bool startToCurveIfNotFound = true);
     
     // Searches an entire velocity curve to find the speed that is closest to desired.
     Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float stepSize = 0.05f);

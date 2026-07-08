@@ -337,13 +337,13 @@ namespace Kurveball
         VelocityCurveInstance* toCurve = AccessCurveInstance(ioContext, toCurveID);
         KURVEBALL_ERROR_RETURN(toCurve != nullptr, ioContext, ErrorCode::CurveNotFound);
 
-        return TransferCurve(ioContext, fromCurve->mMechanic, toCurve->mMechanic, blendType, blendDuration, false);
+        return TransferCurve(ioContext, *fromCurve, *toCurve, blendType, blendDuration, false);
     }
 
-    void TransferCurve(VelocityCurveContext& ioContext, const CurveMechanic& fromMechanic, const CurveMechanic& toMechanic, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound)
+    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound)
     {
-        VelocityCurveInstance* fromCurve = AccessCurveInstance(ioContext, fromMechanic.mInstanceID);
-        VelocityCurveInstance* toCurve = AccessCurveInstance(ioContext, toMechanic.mInstanceID);
+        VelocityCurveInstance* fromCurve = AccessCurveInstance(ioContext, fromCurveDescriptor.mMechanic.mInstanceID);
+        VelocityCurveInstance* toCurve = AccessCurveInstance(ioContext, toCurveDescriptor.mMechanic.mInstanceID);
         
         // Remember how much speed we want to transfer from the "from" curve
         MetersPerSecond speedToTransfer = 0.f;
@@ -354,11 +354,10 @@ namespace Kurveball
 
         if (!toCurve && startToCurveIfNotFound)
         {
-            Kurveball::VelocityCurveInstance curveInstanceToStart{ .mMechanic = toMechanic };
-            StartVelocityCurve(ioContext, curveInstanceToStart);
+            StartVelocityCurve(ioContext, toCurveDescriptor);
 
-            // Slight inefficiency in fetching this, but we need the real, sanitized version, not our local variable
-            toCurve = AccessCurveInstance(ioContext, toMechanic.mInstanceID);
+            // Slight inefficiency in fetching this, but we need the real, in-memory, sanitized version, not the descriptor that was passed in
+            toCurve = AccessCurveInstance(ioContext, toCurveDescriptor.mMechanic.mInstanceID);
         }
         
         KURVEBALL_ERROR_RETURN(toCurve != nullptr, ioContext, ErrorCode::CurveNotFound);
@@ -432,8 +431,10 @@ namespace Kurveball
         {
         case BlendType::Cut:
 			{
-				const float value = isBlendIn ? 1.0f : 0.0f;
-				curveInstance->mBlendSampler = [value]([[maybe_unused]] Seconds absoluteTime) { return value; };
+                if (!isBlendIn)
+                {
+                    StopVelocityCurve(ioContext, instanceID);
+                }
 				
 				break;
 			}
