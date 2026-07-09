@@ -10,7 +10,8 @@ bugfix: no velocity or direction output on the first tick (since there's no accu
 
 ## Unreal
 All-in-one editor
-Unreal quickstart video from zero   
+Unreal quickstart video from zero  
+Early out from jump when button is released
 bugfix: fix coordinate space issue when RespectCollision==true
 bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need to require a certain distance range in order to stop the curve (within one frame of zero, or negative y in any amount), and then correct to the proper height
 Convert to and from BezierCurveSegment (pack-in curve implementation)  
