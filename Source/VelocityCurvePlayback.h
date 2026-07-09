@@ -11,7 +11,14 @@ namespace Kurveball
     struct VelocityCurveOutput;
     enum class AxisMode : std::uint8_t;
 
-    void TickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime);
+    // Ticks the velocity curve from a variable timestep, e.g. from the Update function in Unity, or TickComponent in Unreal.
+    // A variable timestep means that the time between calls is not always evenly spaced.
+    void VariableTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime);
+
+    // Ticks the velocity curve context when called from a fixed tick (e.g. the physics tick, or FixedUpdate in Unity).
+    // If you have a variable tick, or you don't know whether you're running a fixed tick or not, call
+    // VariableTickPlayback.
+    void FixedTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime);
 
     // Returns the time that a curve will take to run, including its loop and stretch parameters.
     // If the curve will run forever, returns zero.

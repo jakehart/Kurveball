@@ -4,7 +4,7 @@
 #include "KurveballAll.h"
 #include "TestUtils.h"
 
-TEST_CASE("TickPlayback with local direction")
+TEST_CASE("FixedTickPlayback with local direction")
 {
     constexpr size_t NUM_TICKS = 10;
     using namespace Kurveball;
@@ -28,7 +28,7 @@ TEST_CASE("TickPlayback with local direction")
     REQUIRE_THAT(context.mOutput.mDirection.Z, Catch::Matchers::WithinAbs(0, DISTANCE_TOLERANCE));
 }
 
-TEST_CASE("TickPlayback with negative curve output")
+TEST_CASE("FixedTickPlayback with negative curve output")
 {
     constexpr size_t NUM_TICKS = 100;
     using namespace Kurveball;
@@ -51,7 +51,7 @@ TEST_CASE("TickPlayback with negative curve output")
     REQUIRE_THAT(context.mOutput.mPosition.X, Catch::Matchers::WithinAbs(expectedX, DISTANCE_TOLERANCE));
 }
 
-TEST_CASE("TickPlayback with rotation - wide ticks")
+TEST_CASE("FixedTickPlayback with rotation - wide ticks")
 {
     constexpr size_t NUM_TICKS = 10;
     using namespace Kurveball;
@@ -70,7 +70,7 @@ TEST_CASE("TickPlayback with rotation - wide ticks")
     REQUIRE_THAT(context.mOutput.mRotation.Z, Catch::Matchers::WithinAbs(expectedYawDegrees, DEGREE_TOLERANCE));
 }
 
-TEST_CASE("TickPlayback with rotation - short ticks")
+TEST_CASE("FixedTickPlayback with rotation - short ticks")
 {
     constexpr size_t NUM_TICKS = 100;
     using namespace Kurveball;
@@ -89,7 +89,7 @@ TEST_CASE("TickPlayback with rotation - short ticks")
     REQUIRE_THAT(context.mOutput.mRotation.Z, Catch::Matchers::WithinAbs(expectedYawDegrees, DEGREE_TOLERANCE));
 }
 
-TEST_CASE("TickPlayback with stretch duration")
+TEST_CASE("FixedTickPlayback with stretch duration")
 {
     using namespace Kurveball;
 
@@ -126,7 +126,7 @@ TEST_CASE("TickPlayback with stretch duration")
     }
 }
 
-TEST_CASE("TickPlayback with stretch duration and loop points")
+TEST_CASE("FixedTickPlayback with stretch duration and loop points")
 {
     using namespace Kurveball;
 
@@ -160,7 +160,7 @@ TEST_CASE("TickPlayback with stretch duration and loop points")
     }
 }
 
-TEST_CASE("TickPlayback rotation")
+TEST_CASE("FixedTickPlayback rotation")
 {
     using namespace Kurveball;
 
@@ -180,7 +180,7 @@ TEST_CASE("TickPlayback rotation")
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = Seconds(i * 1.f);
-        Kurveball::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::FixedTickPlayback(context, context.mAbsoluteTime);
 
         if (i > 0)
         {
@@ -199,7 +199,7 @@ TEST_CASE("TickPlayback rotation")
     }
 }
 
-TEST_CASE("TickPlayback with starting position (position drift check)")
+TEST_CASE("FixedTickPlayback with starting position (position drift check)")
 {
     using namespace Kurveball;
 
@@ -213,9 +213,9 @@ TEST_CASE("TickPlayback with starting position (position drift check)")
     curveInstance.mMechanic.mSpeedMultiplier = 0.f; // Go nowhere so that any position error is isolated
 
     Kurveball::StartVelocityCurve(context, curveInstance);
-    TickPlayback(context, context.mAbsoluteTime);
-    TickPlayback(context, context.mAbsoluteTime);
-    TickPlayback(context, context.mAbsoluteTime);
+    FixedTickPlayback(context, context.mAbsoluteTime);
+    FixedTickPlayback(context, context.mAbsoluteTime);
+    FixedTickPlayback(context, context.mAbsoluteTime);
 
     REQUIRE_THAT(context.mOutput.mPosition.X, Catch::Matchers::WithinAbs(10, Kurveball::sFloatEpsilon));
     REQUIRE_THAT(context.mOutput.mPosition.Y, Catch::Matchers::WithinAbs(10, Kurveball::sFloatEpsilon));
@@ -251,7 +251,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
     }
 }
 
-TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during TickPlayback")
+TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during FixedTickPlayback")
 {
     using namespace Kurveball;
 
@@ -267,7 +267,7 @@ TEST_CASE("VelocityCurveInstance::mDistanceAccumulator data continuity during Ti
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = i * TICK_DURATION;
-        Kurveball::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::FixedTickPlayback(context, context.mAbsoluteTime);
 
         const auto& accumulator = context.mLinearCurves.find(curveInstance.mMechanic.mInstanceID)->second.mDistanceAccumulator;
         REQUIRE(accumulator.HasEverUpdated());
@@ -309,7 +309,7 @@ TEST_CASE("CombineCurveOutput")
     REQUIRE(combinedOutput.mSpeed == (output1.mVelocity + output2.mVelocity).GetNormalized().GetLength());
 }
 
-TEST_CASE("TickPlayback linear movement")
+TEST_CASE("FixedTickPlayback linear movement")
 {
     using namespace Kurveball;
 
@@ -330,7 +330,7 @@ TEST_CASE("TickPlayback linear movement")
     for (uint8_t i = 0; i < 100; ++i)
     {
         context.mAbsoluteTime = Seconds(i * TICK_DURATION.count());
-        Kurveball::TickPlayback(context, context.mAbsoluteTime);
+        Kurveball::FixedTickPlayback(context, context.mAbsoluteTime);
 
         REQUIRE(context.mOutput.mHasUpdated);
         
@@ -355,7 +355,7 @@ TEST_CASE("TickPlayback linear movement")
     // Ensure that conditions stay stable on curve stop
     Kurveball::StopVelocityCurve(context, curveInstance.mMechanic.mInstanceID);
     context.mAbsoluteTime += TICK_DURATION;
-    Kurveball::TickPlayback(context, context.mAbsoluteTime);
+    Kurveball::FixedTickPlayback(context, context.mAbsoluteTime);
     REQUIRE(context.mLinearCurves.empty());
     REQUIRE(context.mRotationCurves.empty());
     REQUIRE(context.mOutput.mVelocity.IsZero());
@@ -381,7 +381,7 @@ TEST_CASE("Infinite playback")
     for (int i = 0; i < 1000; ++i)
     {
         absoluteTime = Seconds(i * TICK_DURATION.count());
-        Kurveball::TickPlayback(context, absoluteTime);
+        Kurveball::FixedTickPlayback(context, absoluteTime);
     }
 
     REQUIRE(Kurveball::IsCurveRunning(context, curveInstance.mMechanic.mInstanceID));

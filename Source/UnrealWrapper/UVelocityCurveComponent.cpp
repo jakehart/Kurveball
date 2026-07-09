@@ -51,7 +51,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     const FVector position = owner->GetActorLocation();
     Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
     
-    Kurveball::TickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));
+    Kurveball::VariableTickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));
 
     // The velocity curve context doesn't care which world units we use as long as we're consistent.
     // Here we're using Unreal units (cm) directly.

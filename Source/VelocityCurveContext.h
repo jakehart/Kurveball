@@ -18,13 +18,13 @@ namespace Kurveball
         CurveMap mLinearCurves{};
         CurveMap mRotationCurves{};
 
-        // Absolute time since start, as received from the user and saved by TickPlayback. (Usually excludes pause time)
+        // Absolute time since start, as received from the user and saved by FixedTickPlayback. (Usually excludes pause time)
         Seconds mAbsoluteTime{ 0 };
         
-        // Automatically updated in TickPlayback, based on the current vs. previous mAbsoluteTime.
+        // Automatically updated in FixedTickPlayback, based on the current vs. previous mAbsoluteTime.
         Seconds mDeltaTime{ 0 };
 
-        // The most recent output from TickPlayback().
+        // The most recent output from FixedTickPlayback().
         VelocityCurveOutput mOutput;
         bool mHasUpdated{ false };
 

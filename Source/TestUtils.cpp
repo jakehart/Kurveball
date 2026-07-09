@@ -49,7 +49,7 @@ namespace Kurveball
         for (size_t i = 1; i <= numTicks; ++i)
         {
             const Seconds absoluteTime = startingAbsoluteTime + tickDuration * i;
-            TickPlayback(ioContext, absoluteTime);
+            FixedTickPlayback(ioContext, absoluteTime);
         }
     }
 
@@ -66,7 +66,7 @@ namespace Kurveball
         for (uint16_t i = 0; i < maxNumTicks; ++i)
         {
             // Use the short tick time so we can verify end time with more precision
-            TickPlayback(ioContext, Seconds(i * tickDuration));
+            FixedTickPlayback(ioContext, Seconds(i * tickDuration));
 
             if (!IsCurveRunning(ioContext, ioCurveInstance.mMechanic.mInstanceID))
             {

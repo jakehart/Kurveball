@@ -22,7 +22,7 @@ namespace Kurveball
         // affecting the original.
         CurveMechanic mMechanic {};
         
-        // Each tick, TickPlayback (in VelocityCurvePlayback.h) samples the speed from the velocity curve,
+        // Each tick, FixedTickPlayback (in VelocityCurvePlayback.h) samples the speed from the velocity curve,
         // then feeds it into this accumulator that calculates the area under the curve at each update step
         // (which is used to calculate position delta), and adds it to the total area (which corresponds to
         // total distance travelled and is used to calculate the current position).

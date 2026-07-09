@@ -14,7 +14,13 @@
 
 namespace Kurveball
 {
-    void TickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
+    void VariableTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
+    {
+        // TODO: Use TickScheduler
+        FixedTickPlayback(ioContext, absoluteTime);
+    }
+
+    void FixedTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
     {
         ioContext.mLastErrorCode = ErrorCode::None;
 
