@@ -2,7 +2,6 @@
 This summarizes all the features and fixes that are needed in order to to get to the first release of Kurveball (v1.0).
 
 ## Core
-unit tests for TransferCurve  
 need subticking  
 	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
 	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)  

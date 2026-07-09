@@ -22,6 +22,14 @@ target_include_directories(Kurveball PUBLIC
 set_property(TARGET Kurveball PROPERTY CXX_STANDARD 20)
 set_property(TARGET Kurveball PROPERTY CXX_STANDARD_REQUIRED ON)
 
+# Add post-build step to copy the source files to the Unreal plugin directory
+add_custom_command(
+    TARGET Kurveball POST_BUILD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/Scripts
+    COMMAND cmd /c "${CMAKE_SOURCE_DIR}/Scripts/CopyToUnrealPlugin.bat"
+    COMMENT "Running CopyToUnreal.bat..."
+)
+
 # Combine all header files for Solution Explorer visibility
 set(ALL_HEADERS ${HEADER_FILES} ${DEPENDENCY_HEADERS})
 

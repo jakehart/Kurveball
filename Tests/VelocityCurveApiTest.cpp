@@ -389,4 +389,5 @@ TEST_CASE("TransferCurve")
         REQUIRE_THAT(GetMechanicSpeedOutput(context, targetCurveInstance.mMechanic.mInstanceID), Catch::Matchers::WithinAbs(0.3f, SPEED_TOLERANCE));
     }
 
+    // TODO: Test linear crossfade
 }
