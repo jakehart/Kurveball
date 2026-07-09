@@ -286,15 +286,15 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }
 }
 
-float UVelocityCurveComponent::GetMechanicSpeed(const UCurveMechanic* mechanic) const
+float UVelocityCurveComponent::GetMechanicSpeedOutput(const UCurveMechanic* mechanic) const
 {
     if (!mechanic)
     {
-        UE_LOG(KurveballLog, Error, TEXT("GetMechanicSpeed: Must connect mechanic pin"));
+        UE_LOG(KurveballLog, Error, TEXT("GetMechanicSpeedOutput: Must connect mechanic pin"));
         return 0.f;
     }
     
-    return Kurveball::GetMechanicSpeed(mCurveContext, mechanic->GetCurveID());
+    return Kurveball::GetMechanicSpeedOutput(mCurveContext, mechanic->GetCurveID());
 }
 
 float UVelocityCurveComponent::GetTotalSpeed() const
@@ -546,7 +546,12 @@ const Kurveball::VelocityCurveContext& UVelocityCurveComponent::GetCurveContext(
 
 void UVelocityCurveComponent::TransferCurve(UCurveMechanic* fromMechanic, UCurveMechanic* toMechanic, EBlendType blendType, float blendDuration, bool startToCurveIfNotFound)
 {
-    Kurveball::TransferCurve(mCurveContext, fromMechanic->ToNative(), toMechanic->ToNative(), static_cast<Kurveball::BlendType>(blendType), Kurveball::Seconds(blendDuration), startToCurveIfNotFound);
+    if (startToCurveIfNotFound && !Kurveball::IsCurveRunning(mCurveContext, toMechanic->GetCurveID()))
+    {
+        StartVelocityCurve(toMechanic);
+    }
+
+    Kurveball::TransferCurve(mCurveContext, fromMechanic->GetCurveID(), toMechanic->GetCurveID(), static_cast<Kurveball::BlendType>(blendType), Kurveball::Seconds(blendDuration));
 }
 
 FRotator UVelocityCurveComponent::GetCameraRotation()

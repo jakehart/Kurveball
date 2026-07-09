@@ -58,7 +58,7 @@ public:
     void InputAxisToVelocityCurve(const UCurveMechanic* mechanic, float inputAxis);
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
-    float GetMechanicSpeed(const UCurveMechanic* mechanic) const;
+    float GetMechanicSpeedOutput(const UCurveMechanic* mechanic) const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VelocityCurves")
     float GetTotalSpeed() const;
