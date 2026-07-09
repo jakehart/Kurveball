@@ -102,12 +102,12 @@ namespace Kurveball
     }
 
     template<typename ScalarT>
-    void Vector3<ScalarT>::FloorToZero()
+    void Vector3<ScalarT>::ThresholdToZero()
     {
         // From MathUtils.h
-        X = Kurveball::FloorToZero(X, sFloatMinDenormal);
-        Y = Kurveball::FloorToZero(Y, sFloatMinDenormal);
-        Z = Kurveball::FloorToZero(Z, sFloatMinDenormal);
+        X = Kurveball::ThresholdToZero(X, sFloatMinDenormal);
+        Y = Kurveball::ThresholdToZero(Y, sFloatMinDenormal);
+        Z = Kurveball::ThresholdToZero(Z, sFloatMinDenormal);
     }
 
     template<typename ScalarT>

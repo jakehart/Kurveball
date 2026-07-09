@@ -132,7 +132,7 @@ namespace Kurveball
             
             assert(t >= 0 && t <= 1);
 
-            mLookupTable->AddSample(FloorToZero(position.X), FloorToZero(t));
+            mLookupTable->AddSample(ThresholdToZero(position.X), ThresholdToZero(t));
         }
     }
 

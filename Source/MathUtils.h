@@ -51,9 +51,9 @@ namespace Kurveball
     }
 
     template<typename ScalarT>
-    ScalarT FloorToZero(ScalarT scalar, ScalarT tolerance = sFloatMinDenormal)
+    ScalarT ThresholdToZero(ScalarT scalar, ScalarT threshold = sFloatMinDenormal)
     {
-        if (std::abs(scalar) < tolerance)
+        if (std::abs(scalar) < threshold)
         {
             return 0;
         }

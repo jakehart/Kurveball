@@ -61,7 +61,7 @@ namespace Kurveball
         
         // Turns all components that are denormals into 0. Any components that exceed this threshold
         // (positive or negative) get left alone.
-        void FloorToZero();
+        void ThresholdToZero();
 
         // Applies an Euler rotation in degrees to this position, returning a copy.
         [[nodiscard]] Position RotateEulerZYX(EulerAngles anglesDegrees) const;

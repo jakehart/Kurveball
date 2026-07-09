@@ -6,6 +6,7 @@
 #include "Asserts.h"
 #include "Axis.h"
 #include "CurveMap.h"
+#include "TickScheduler.h"
 #include "VelocityCurveOutput.h"
 
 namespace Kurveball
@@ -34,6 +35,10 @@ namespace Kurveball
         // applying AxisMode::horizontal or AxisMode::vertical.
         Vector3<bool> mVerticalAxisMask{ false, true, false };
         Vector3<bool> mHorizontalAxisMask{ true, false, true };
+
+        // Used only in variable-tick mode (when you're calling VariableTickPlayback instead of FixedTickUpdate).
+        // Converts a variable timestep into subticks that are a stable, fixed time apart from each other. 
+        TickScheduler mTickScheduler;
 
         // Set this function pointer to be notified with an error code when something goes wrong inside Kurveball
         ErrorHandler mErrorHandler;

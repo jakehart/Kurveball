@@ -177,10 +177,10 @@ namespace Kurveball
             }
 
             // Replace any output denormals with zero for performance
-            ioCurveInstance.mOutput.mDirection.FloorToZero();
-            ioCurveInstance.mOutput.mPositionDelta.FloorToZero();
-            ioCurveInstance.mOutput.mPosition.FloorToZero();
-            ioCurveInstance.mOutput.mVelocity.FloorToZero();
+            ioCurveInstance.mOutput.mDirection.ThresholdToZero();
+            ioCurveInstance.mOutput.mPositionDelta.ThresholdToZero();
+            ioCurveInstance.mOutput.mPosition.ThresholdToZero();
+            ioCurveInstance.mOutput.mVelocity.ThresholdToZero();
 
             ioCurveInstance.mOutput.mHasUpdated = true;
         }
