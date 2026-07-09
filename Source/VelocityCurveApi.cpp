@@ -60,11 +60,6 @@ namespace Kurveball
         auto* curveInstance{ AccessCurveInstance(ioContext, instanceID) };
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound);
 
-        // "Bake" the previous motion that the curve caused into its mStartPosition. This prevents the updated speed
-        // and direction from applying retroactively to existing progress. 
-        curveInstance->mStartPosition = curveInstance->mStartPosition + curveInstance->mMechanic.mDirection * curveInstance->mDistanceAccumulator.GetTotalArea();
-        curveInstance->mDistanceAccumulator.Reset();
-
         // Speed and direction can be updated independently, or both together in the same call
         if (speedMultiplier.has_value())
         {
