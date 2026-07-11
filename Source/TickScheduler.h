@@ -26,12 +26,18 @@ namespace Kurveball
 		// callbacks defined below.
 		void VariableTick(Seconds absoluteTime);
 
+		// Sets the time between each virtual subtick. This determines how finely the subticks are scheduled.
+		void SetFixedSubtickDuration(Seconds fixedSubtickDuration);
+
+		// See mFullSubtickCallback below.
 		void SetFullSubtickCallback(FixedSubtickCallback subtickCallback);
+
+		// See mPartialSubtickCallback below.
 		void SetPartialSubtickCallback(PartialSubtickCallback partialCallback);
 
 	private:
-		// The last absoluteTime at which this scheduler was called. This is updated when VariableTick() is called.
-		Seconds mLastVariableTickTime{ 0.f };
+		// The timestamp of the last full subtick that was completed, in terms of absoluteTime. This is updated when VariableTick() is called.
+		Seconds mLastCompletedSubtickTime{ 0.f };
 		
 		// The guaranteed time between each subtick.
 		Seconds mFixedSubtickDuration{ 0.05f };
@@ -45,5 +51,3 @@ namespace Kurveball
 		PartialSubtickCallback mPartialSubtickCallback;
 	};
 }
-
-#include "TickScheduler.inl"

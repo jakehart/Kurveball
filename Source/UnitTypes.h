@@ -15,4 +15,10 @@ namespace Kurveball
 
     using MetersPerSecond = float;
     using Seconds = std::chrono::duration<float>;
+
+    // Custom _sec literal for defining seconds. Must be long double due to required compiler precision
+    constexpr Seconds operator""_sec(long double numSeconds)
+    {
+        return Seconds(numSeconds);
+    }
 }
