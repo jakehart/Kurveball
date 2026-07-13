@@ -602,6 +602,7 @@ void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velo
         primitiveComponent->SetSimulatePhysics(true);
     }
 
+    primitiveComponent->WakeAllRigidBodies();
     primitiveComponent->SetPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
     primitiveComponent->SetPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
 }
