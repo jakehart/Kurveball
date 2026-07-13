@@ -8,8 +8,10 @@
 
 namespace Kurveball
 {
-	TickScheduler::TickScheduler(Seconds fixedSubtickDuration)
-		: mFixedSubtickDuration(fixedSubtickDuration)
+	TickScheduler::TickScheduler(Seconds fixedSubtickDuration, FixedSubtickCallback fullSubtickCallback, PartialSubtickCallback partialCallback)
+		: mFixedSubtickDuration(fixedSubtickDuration),
+		  mFullSubtickCallback(fullSubtickCallback),
+		  mPartialSubtickCallback(partialCallback)
 	{
 	}
 

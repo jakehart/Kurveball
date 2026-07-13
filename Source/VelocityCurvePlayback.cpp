@@ -7,6 +7,7 @@
 #include "CoordinateSpace.h"
 #include "MathUtils.h"
 #include "UnitTypes.h"
+#include "TickScheduler.h"
 #include "VelocityCurveApi.h"
 #include "VelocityCurveContext.h"
 #include "VelocityCurveInstance.h"
@@ -16,8 +17,23 @@ namespace Kurveball
 {
     void VariableTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)
     {
-        // TODO: Use TickScheduler
-        FixedTickPlayback(ioContext, absoluteTime);
+        // Lazy creation of the tick scheduler. Branch prediction optimizes away the cost of the if statement
+        // after the first couple of calls
+        if (!ioContext.mTickScheduler.has_value())
+        {
+            ioContext.mTickScheduler = TickScheduler();
+            ioContext.mTickScheduler->SetFullSubtickCallback([&ioContext](Seconds subtickAbsoluteTime, Seconds fixedSubtickDuration)
+                {
+                    FixedTickPlayback(ioContext, subtickAbsoluteTime);
+                });
+
+            ioContext.mTickScheduler->SetPartialSubtickCallback([&ioContext](Seconds partialSubtickAbsoluteTime, Seconds partialSubtickDuration)
+                {
+                    // TODO: apply results to output without updating accumulator
+                });
+        }
+     
+        ioContext.mTickScheduler->VariableTick(absoluteTime);
     }
 
     void FixedTickPlayback(VelocityCurveContext& ioContext, Seconds absoluteTime)

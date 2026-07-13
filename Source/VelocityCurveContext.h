@@ -9,6 +9,8 @@
 #include "TickScheduler.h"
 #include "VelocityCurveOutput.h"
 
+#include <optional>
+
 namespace Kurveball
 {
     static constexpr size_t sNumRecordedTicks{ 4U };
@@ -37,8 +39,9 @@ namespace Kurveball
         Vector3<bool> mHorizontalAxisMask{ true, false, true };
 
         // Used only in variable-tick mode (when you're calling VariableTickPlayback instead of FixedTickUpdate).
-        // Converts a variable timestep into subticks that are a stable, fixed time apart from each other. 
-        TickScheduler mTickScheduler;
+        // Converts a variable timestep into subticks that are a stable, fixed time apart from each other. Lazy-initialized
+        // by VariableTickPlayback on first use.
+        std::optional<TickScheduler> mTickScheduler = std::nullopt;
 
         // Set this function pointer to be notified with an error code when something goes wrong inside Kurveball
         ErrorHandler mErrorHandler;
