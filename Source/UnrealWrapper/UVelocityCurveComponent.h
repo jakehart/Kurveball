@@ -23,6 +23,9 @@ protected:
     virtual void BeginPlay() override;
 public:    
     UVelocityCurveComponent();
+
+    void FindAndSetUpPrimitiveComponent(AActor* owner);
+
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
     // Starts a curve-driven movement mechanic on this actor. The x axis is time, and the y axis
@@ -136,4 +139,6 @@ private:
 
     Kurveball::VelocityCurveContext mCurveContext;
     UVelocityCurveDebugger* mCurveDebugger = nullptr;
+
+    UPrimitiveComponent* mPrimitiveComponent = nullptr;
 };

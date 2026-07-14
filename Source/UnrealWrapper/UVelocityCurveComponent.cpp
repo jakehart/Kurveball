@@ -27,12 +27,50 @@
 UVelocityCurveComponent::UVelocityCurveComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
+
+    if (RespectCollision)
+    {
+        // Run before physics so we can give it a velocity before the simulation and still allow UE to handle collisions
+        // via restitution velocity
+        PrimaryComponentTick.TickGroup = TG_PrePhysics;
+    }
+}
+
+void UVelocityCurveComponent::FindAndSetUpPrimitiveComponent(AActor* owner)
+{
+    mPrimitiveComponent = nullptr;
+
+    if (!owner)
+    {
+        return;
+    }
+
+    if (owner->GetRootComponent())
+    {
+        mPrimitiveComponent = Cast<UPrimitiveComponent>(owner->GetRootComponent());
+    }
+    else
+    {
+        mPrimitiveComponent = owner->FindComponentByClass<UPrimitiveComponent>();
+    }
+
+    if (!mPrimitiveComponent)
+    {
+        return;
+    }
+
+    if (!mPrimitiveComponent->IsSimulatingPhysics())
+    {
+        mPrimitiveComponent->SetSimulatePhysics(true);
+    }
+
+    mPrimitiveComponent->SetUseCCD(true);
 }
 
 void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    
+
     auto* owner = GetOwner();
     if (!owner)
     {
@@ -50,7 +88,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // Tell Kurveball about any position change that happened due to collision or simulated physics
     const FVector position = owner->GetActorLocation();
     Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
-    
+
     Kurveball::VariableTickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));
 
     // The velocity curve context doesn't care which world units we use as long as we're consistent.
@@ -58,8 +96,8 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     const FVector newPosition = Kurveball::ToFVector(mCurveContext.mOutput.mPosition);
     // Rotation always uses degrees
     const FRotator newRotation = FRotator(mCurveContext.mOutput.mRotation.Y, mCurveContext.mOutput.mRotation.Z, mCurveContext.mOutput.mRotation.X);
-    
-    if (RespectCollision)
+
+    if (RespectCollision && mPrimitiveComponent)
     {
         SendVelocityToUnreal(mCurveContext.mOutput.mVelocity, mCurveContext.mOutput.mAngularVelocity);
     }
@@ -77,6 +115,17 @@ void UVelocityCurveComponent::BeginPlay()
     if (!owner)
     {
         return;
+    }
+
+    if (RespectCollision)
+    {
+        FindAndSetUpPrimitiveComponent(owner);
+
+        if (!mPrimitiveComponent)
+        {
+            UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must add a physics volume to your actor and enable SimulatePhysics"));
+            RespectCollision = false;
+        }
     }
 
     // Unreal uses Z+ up. Kurveball needs to know this so that it can mask off the
@@ -114,14 +163,14 @@ void UVelocityCurveComponent::StartVelocityCurve(const UCurveMechanic* mechanic)
         return;
     }
 
-    Kurveball::VelocityCurveInstance curveInstance{.mMechanic = mechanic->ToNative()};
-    
+    Kurveball::VelocityCurveInstance curveInstance{ .mMechanic = mechanic->ToNative() };
+
     double minX = 0, maxX = 0;
     mechanic->VelocityCurveAsset->GetTimeRange(minX, maxX);
 
     // TODO: Properly support curves with negative x content
     curveInstance.mMechanic.mRawAssetDuration = Kurveball::Seconds(maxX - minX);
-    
+
     curveInstance.mSpeedSampler = Kurveball::CreateSamplerXY(mechanic->VelocityCurveAsset);
     Kurveball::StartVelocityCurve(mCurveContext, curveInstance);
 }
@@ -232,7 +281,7 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
 
     // Transform the input from camera-space to world-space as a middleman
     const FVector worldInputDir = cameraRotation.GetInverse().RotateVector(localInputDir);
-        
+
     // Transform into character-local space
     localInputDir = owner->GetActorRotation().RotateVector(worldInputDir);
 
@@ -251,7 +300,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     const Kurveball::CurveInstanceID curveID = mechanic->GetCurveID();
 
     const float playheadPosition = Kurveball::CalculateCurveX(mCurveContext, curveID);
-    
+
     if (Kurveball::IsZero(inputAxis))
     {
         // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
@@ -265,7 +314,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     }*/
     else
     {
-		// Nonzero input
+        // Nonzero input
         if (!Kurveball::IsCurveRunning(mCurveContext, curveID))
         {
             // Call the Unreal-wrapped version of StartVelocityCurve so we inject the FloatCurve sampler
@@ -293,7 +342,7 @@ float UVelocityCurveComponent::GetMechanicSpeedOutput(const UCurveMechanic* mech
         UE_LOG(KurveballLog, Error, TEXT("GetMechanicSpeedOutput: Must connect mechanic pin"));
         return 0.f;
     }
-    
+
     return Kurveball::GetMechanicSpeedOutput(mCurveContext, mechanic->GetCurveID());
 }
 
@@ -406,7 +455,7 @@ FVector UVelocityCurveComponent::GetAngularVelocity()
 
 void UVelocityCurveComponent::ShowCurveDebugger(bool show)
 {
-    if(show)
+    if (show)
     {
         // Ensure we are in a valid world context
         UWorld* world = GetWorld();
@@ -575,36 +624,15 @@ FRotator UVelocityCurveComponent::GetCameraRotation()
 
 void UVelocityCurveComponent::SendVelocityToUnreal(const Kurveball::Float3& velocity, const Kurveball::Float3& angularVelocity)
 {
-    const auto* owner = GetOwner();
-    if (!owner)
+    if (!mPrimitiveComponent)
     {
+        // Error already logged in BeginPlay()
         return;
     }
 
-    UPrimitiveComponent* primitiveComponent = nullptr;
-    if (owner->GetRootComponent())
-    {
-        primitiveComponent = Cast<UPrimitiveComponent>(owner->GetRootComponent());
-    }
-    else
-    {
-        primitiveComponent = owner->FindComponentByClass<UPrimitiveComponent>();
-    }
-
-    if (!primitiveComponent)
-    {
-        UE_LOG(KurveballLog, Error, TEXT("To use RespectCollision=true, you must add a physics volume to your actor and enable SimulatePhysics"));
-        return;
-    }
-
-    if (!primitiveComponent->IsSimulatingPhysics())
-    {
-        primitiveComponent->SetSimulatePhysics(true);
-    }
-
-    primitiveComponent->WakeAllRigidBodies();
-    primitiveComponent->SetPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
-    primitiveComponent->SetPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
+    mPrimitiveComponent->WakeAllRigidBodies();
+    mPrimitiveComponent->SetPhysicsLinearVelocity(Kurveball::ToFVector(velocity));
+    mPrimitiveComponent->SetPhysicsAngularVelocityInDegrees(Kurveball::ToFVector(angularVelocity));
 }
 
 #endif // #if defined(__UNREAL__)
