@@ -26,8 +26,8 @@ set_property(TARGET Kurveball PROPERTY CXX_STANDARD_REQUIRED ON)
 add_custom_command(
     TARGET Kurveball POST_BUILD
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/Scripts
-    COMMAND cmd /c "${CMAKE_SOURCE_DIR}/Scripts/CopyToUnrealPlugin.bat"
-    COMMENT "Running CopyToUnreal.bat..."
+    COMMAND cmd /c "${CMAKE_SOURCE_DIR}/Scripts/SymlinkToUnrealPlugin.bat"
+    COMMENT "Running SymlinkToUnrealPlugin.bat..."
 )
 
 # Combine all header files for Solution Explorer visibility
