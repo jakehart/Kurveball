@@ -7,7 +7,7 @@ bugfix: no velocity or direction output on the first tick (since there's no accu
 
 ## Unreal
 Early out from jump when button is released
-bugfix: turning causes weird speed drops, since the rotation curve eats part of the forward curve velocity
+bugfix: turning causes weird speed drops, since the rotation curve eats part of the forward curve velocity. project axes using dot?
 All-in-one mechanic/curve editor
 Unreal quickstart video from zero  
 bugfix: fix coordinate space issue when RespectCollision==true. Could be in InputAxisToVelocityCurve()?
@@ -19,13 +19,13 @@ Should be able to share points between adjacent segments. Either with refs, or b
 Sample Bezier by arc length
 	3D distance-to-t lookup populated "backwards"
 Point reordering  
-Library of commonly used curves (easing functions)
+Library of commonly used curves (easing functions and perhaps their derivatives)
 
 # v1.1 Roadmap
 Lower priority features that will make it into the next release.
 
 ## Core
-Logging wrapper to expose internal logs to arbitrary engines
+Logging wrapper lambda to expose internal logs to arbitrary engines
 
 ## Godot wrapper
 
