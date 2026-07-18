@@ -1,6 +1,6 @@
 # ╭╰ Kurveball ╭╰
 
-Kurveball is a curve-driven movement and animation library designed to replace complex movement code with intuitive visual graphs. 
+Kurveball is a kinematic, curve-driven movement and animation library designed to replace complex movement code with intuitive visual graphs. 
 
 Instead of writing code to create movement, you define a velocity curve: a simple graph where the horizontal axis is time and the vertical axis is speed. Kurveball reads this graph, performs the necessary calculus integration, and drives your character's velocity, position, and rotation automatically. Motion can be looped, blended, time-stretched, speed-stretched, bound to 3D splines, masked by axis, and more.
 
@@ -11,7 +11,7 @@ Instead of writing code to create movement, you define a velocity curve: a simpl
 
 Character movement is a complex math problem, but *designers* should see it as a visual art. They should be able to tweak a jump, dash, or slide by shaping a curve, *not* by memorizing dozens of physics parameters or changing numbers by trial and error.
 
-Kurveball is engine-agnostic. It is written in modern C++ in a dependency-injected "C with classes" style, similarly to ImGui.
+Kurveball is engine-agnostic. It is written in C++23 in a dependency-injected "C with classes" style, similarly to ImGui.
 
 ---
 

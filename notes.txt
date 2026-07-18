@@ -11,11 +11,6 @@ some way to drive the x of velocity curves from variables other than time. like 
 * example use case: a buoyancy volume where the x is sampled from the actor's penetration into the volume
 
 
-optional "cancel on collision" functionality
-	if there was a collision, and the dot between the direction to the collision point and the direction the curve is going, cancel the curve
-BUT how will i handle restitution from the engine sim? OR do i want to just do restitution myself based on a curve from the user?
-hub world in demo?
-
 need to be able to check stick intent -- have a function that checks against a target to see if the world input vector is pointed toward that target or not (within some degree measure)
 
 

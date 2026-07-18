@@ -89,6 +89,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     const FVector position = owner->GetActorLocation();
     Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
 
+    // Use the variable tick callpoint, since this component runs from Unreal's variable tick
     Kurveball::VariableTickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));
 
     // The velocity curve context doesn't care which world units we use as long as we're consistent.
@@ -310,6 +311,7 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     {
         // Player started moving the controls again while the curve is winding down.
         // Seek to the beginning
+        // TODO: Use FindClosestSpeed() to seek to the starting point that matches the current speed output of the curve.
         Kurveball::SeekToX(mCurveContext, curveID, 0.f);
     }*/
     else

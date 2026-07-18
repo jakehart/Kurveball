@@ -2,17 +2,15 @@
 This summarizes all the features and fixes that are needed in order to to get to the first release of Kurveball (v1.0).
 
 ## Core
-need subticking  
-	this is probably also what's causing the remaining glitch through floor at EXTREMELY low framerates (5 FPS)
-	allow user to choose between calling from their own fixed tick and calling the tick scheduler from their dynamic tick (by using different functions)  
 util to reach position using curve instance by setting its mStretchDuration and/or mPlayCount. some of this gap in functionality is already filled by GenerateParabolicSpline, but that doesn't cover the base case of e.g. walking somewhere, and we shouldn't need splines just to reach a destination.  
 bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal
-All-in-one editor
-Unreal quickstart video from zero  
 Early out from jump when button is released
-bugfix: fix coordinate space issue when RespectCollision==true
+bugfix: turning causes weird speed drops, since the rotation curve eats part of the forward curve velocity
+All-in-one mechanic/curve editor
+Unreal quickstart video from zero  
+bugfix: fix coordinate space issue when RespectCollision==true. Could be in InputAxisToVelocityCurve()?
 bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need to require a certain distance range in order to stop the curve (within one frame of zero, or negative y in any amount), and then correct to the proper height
 Convert to and from BezierCurveSegment (pack-in curve implementation)  
 
