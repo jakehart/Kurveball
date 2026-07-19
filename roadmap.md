@@ -7,11 +7,10 @@ bugfix: no velocity or direction output on the first tick (since there's no accu
 
 ## Unreal
 Early out from jump when button is released
-bugfix: turning causes weird speed drops, since the rotation curve eats part of the forward curve velocity. project axes using dot?
 All-in-one mechanic/curve editor
 Unreal quickstart video from zero  
 bugfix: fix coordinate space issue when RespectCollision==true. Could be in InputAxisToVelocityCurve()?
-bugfix: occasionally landing just above or below the floor. currently just stopping the Gravity curve if ANY part of the ray hits. need to require a certain distance range in order to stop the curve (within one frame of zero, or negative y in any amount), and then correct to the proper height
+bugfix: very occasionally landing just above or below the floor.
 Convert to and from BezierCurveSegment (pack-in curve implementation)  
 
 ## BezierCurveSegment: Pack-in curve implementation
@@ -26,6 +25,9 @@ Lower priority features that will make it into the next release.
 
 ## Core
 Logging wrapper lambda to expose internal logs to arbitrary engines
+
+## Unreal
+Add climb mechanics
 
 ## Godot wrapper
 

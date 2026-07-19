@@ -273,7 +273,6 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
         localInputDir.Set(-inputAxes.Y, inputAxes.X, 0);
     }
 
-    // Unreal input axes are -1 to 1, which is already what we want
 
     const FRotator cameraRotation = GetCameraRotation();
 
@@ -283,7 +282,8 @@ void UVelocityCurveComponent::InputToVelocityCurves(const UCurveMechanic* forwar
     // Transform into character-local space
     localInputDir = owner->GetActorRotation().RotateVector(worldInputDir);
 
-    // Clamp the axes separately in local space so they remain independent
+    // Unreal input axes are -1 to 1, which is already what we want, but clamp to make sure.
+    // Clamp the axes separately in local space so they remain independent.
     // Preserve vector lengths below 1 to allow for slow analog movement, but disallow length above 1
     localInputDir.X = Kurveball::Clamp(localInputDir.X, -1.0, 1.0);
     localInputDir.Y = Kurveball::Clamp(localInputDir.Y, -1.0, 1.0);
