@@ -6,11 +6,10 @@ util to reach position using curve instance by setting its mStretchDuration and/
 bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal
-Early out from jump when button is released
 All-in-one mechanic/curve editor
 Unreal quickstart video from zero  
 bugfix: fix coordinate space issue when RespectCollision==true. Could be in InputAxisToVelocityCurve()?
-bugfix: very occasionally landing just above or below the floor.
+bugfix: very occasionally landing just above or below the floor. test at low FPS
 Convert to and from BezierCurveSegment (pack-in curve implementation)  
 
 ## BezierCurveSegment: Pack-in curve implementation

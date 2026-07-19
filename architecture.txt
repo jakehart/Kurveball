@@ -2,8 +2,6 @@
 Q: should curve names be case-insensitive? what about space-insensitive?
 Q: (ref illustration in Downloads folder) in cases where there are loop start/endpoints, what should mStretchDuration affect? only the looped portion, or the intro and outro too? should the stretch duration be the duration of the looped portion, or the total duration?
 CURRENTLY the whole thing gets stretched to your chosen stretch duration, THEN looping is applied, so the total duration can be greater than the stretch duration. so e.g. you could stretch your whole curve to 10 seconds and then loop the middle second 10 times. but the loop points are in raw asset x coordinates, mostly so that they get preserved when the asset is stretched.
-Q: names? curveball?
-Q: anything else you would do differently from zoe with a fresh start?
 
 
 It's vitally important that smoothly syncing speeds between velocity curves is as easy as possible, and all gotchas are handled for the user as reasonably as they can be. Looking up a sync point is easy enough, but where there's a gap due to the geom of the curves, a sudden cutover can feel abrupt. therefore, syncing should always have a blend time. the user can say zero time for an instant switch, or have a blend to bridge that gap.

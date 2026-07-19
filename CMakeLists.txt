@@ -51,3 +51,12 @@ set_target_properties(Kurveball PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CM
 
 #set_target_properties(Kurveball PROPERTIES VS_STARTUP_PROJECT KurveballTests)
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT KurveballTests)
+
+# "Observe" the Unreal wrapper files so that they are visible to MSVS without trying to compile them in the main Kurveball solution.
+# (They must be compiled in an Unreal-generated solution because they depend on UE types.)
+file(GLOB_RECURSE OBSERVATION_FILES CONFIGURE_DEPENDS 
+    "${CMAKE_SOURCE_DIR}/Source/UnrealWrapper/*.cpp"
+    "${CMAKE_SOURCE_DIR}/Source/UnrealWrapper/*.h"
+    "${CMAKE_SOURCE_DIR}/Source/UnrealWrapper/*.inl"
+)
+add_custom_target(ObservationSources SOURCES ${OBSERVATION_FILES})
