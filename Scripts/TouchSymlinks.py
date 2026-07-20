@@ -33,4 +33,4 @@ for symlink in UNREAL_PLUGIN_DIR.rglob("*"):
         os.symlink(target_path_str, symlink)  # Recreate it
         print(f"Recycled: {target.name} -> {symlink}")
 
-input("Done.")
+print("Done.")

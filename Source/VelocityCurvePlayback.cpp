@@ -245,7 +245,7 @@ namespace Kurveball
             }
 
             const float rawSpeedSample = ioCurveInstance.mDistanceAccumulator.GetLatestSample().Y;
-            singleOutput.mSpeed = rawSpeedSample;
+            singleOutput.mSpeed = ThresholdToZero(rawSpeedSample);
 
             singleOutput.mVelocity = singleOutput.mDirection * singleOutput.mSpeed;
 

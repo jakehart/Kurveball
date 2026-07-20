@@ -27,8 +27,9 @@ namespace Kurveball
     void StopAllVelocityCurves(VelocityCurveContext& ioContext, bool stopTranslationCurves = true, bool stopRotationCurves = true);
     
     // Stops looping the curve, seeks to its mLoopEnd, plays the outro of the curve, and
-    // allows it to end naturally.
-    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID);
+    // allows it to end naturally. If matchSpeed is true, seek to the portion of the outro
+    // that most closely matches the curve's current speed output.
+    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, bool matchSpeed = true);
 
     // Immediately sends the playhead of the velocity curve to a certain x coordinate. This x is relative to the curve
     // asset itself, before any stretching or looping is applied.
@@ -67,14 +68,14 @@ namespace Kurveball
     // Transfers the speed from one curve onto another. First, it syncs the toCurve's playback to the speed that
     // most closely matches the fromCurve. Then it executes a blend of your choosing. This is a convenience function
     // that has the same effect as calling SyncToX(FindClosestSpeed()) and then Crossfade().
-    void TransferCurve(VelocityCurveContext& ioContext, CurveInstanceID fromCurveID, const CurveInstanceID toCurveID, BlendType blendType = BlendType::Linear, Seconds blendDuration = Seconds{ 0.4f });
+    void TransferCurve(VelocityCurveContext& ioContext, CurveInstanceID fromCurveID, const CurveInstanceID toCurveID, BlendType blendType = BlendType::Linear, Seconds blendDuration = Seconds{ 0.4f }, float searchStartX = 0.f, float searchEndX = 0.f);
     
     // This overload is able to start the "to" curve if it's not already running, since you're passing in a full
     // CurveMechanic description of it.
-    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration = Seconds{ 0.4f }, bool startToCurveIfNotFound = true);
+    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration = Seconds{ 0.4f }, bool startToCurveIfNotFound = true, float searchStartX = 0.f, float searchEndX = 0.f);
     
     // Searches an entire velocity curve to find the speed that is closest to desired.
-    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float stepSize = 0.05f);
+    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX = 0.f, float searchEndX = 1.f, float stepSize = 0.05f);
 
     void Crossfade(VelocityCurveContext& ioContext, CurveInstanceID from, CurveInstanceID to, BlendType blendType, Seconds duration);
     void Blend(VelocityCurveContext& ioContext, CurveInstanceID instanceID, BlendType blendType, Seconds duration, bool isBlendIn);

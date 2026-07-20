@@ -98,7 +98,7 @@ namespace Kurveball
         }
     }
     
-    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID)
+    void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, bool matchSpeed)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, instanceID);
         if (!curveInstance)
@@ -114,10 +114,17 @@ namespace Kurveball
             return;
         }
 
-        // If the playhead is currently before the outro...
-        if (CalculateCurveX(ioContext, instanceID) < curveInstance->mMechanic.mLoopEndX)
+        if (matchSpeed)
         {
-            // Seek to the outro and let it play
+            Pair<float, MetersPerSecond> foundXandSpeed = FindClosestSpeed(ioContext, curveInstance->mMechanic.mInstanceID, curveInstance->mOutput.mSpeed, curveInstance->mMechanic.mLoopEndX, 0.f);
+            if (foundXandSpeed.first >= 0.f)
+            {
+                SeekToX(ioContext, curveInstance->mMechanic.mInstanceID, foundXandSpeed.first);
+            }
+        }
+        else if (CalculateCurveX(ioContext, instanceID) < curveInstance->mMechanic.mLoopEndX)
+        {
+            // If the playhead is currently before the outro, seek to the outro and let it play
             SeekToX(ioContext, instanceID, curveInstance->mMechanic.mLoopEndX + sFloatEpsilon);
         }
         //else
@@ -324,7 +331,7 @@ namespace Kurveball
         curveInstance->mXSampler = func;
     }
 
-    void TransferCurve(VelocityCurveContext& ioContext, CurveInstanceID fromCurveID, const CurveInstanceID toCurveID, BlendType blendType, Seconds blendDuration)
+    void TransferCurve(VelocityCurveContext& ioContext, CurveInstanceID fromCurveID, const CurveInstanceID toCurveID, BlendType blendType, Seconds blendDuration, float searchStartX, float searchEndX)
     {
         VelocityCurveInstance* fromCurve = AccessCurveInstance(ioContext, fromCurveID);
         KURVEBALL_ERROR_RETURN(fromCurve != nullptr, ioContext, ErrorCode::CurveNotFound);
@@ -332,10 +339,10 @@ namespace Kurveball
         VelocityCurveInstance* toCurve = AccessCurveInstance(ioContext, toCurveID);
         KURVEBALL_ERROR_RETURN(toCurve != nullptr, ioContext, ErrorCode::CurveNotFound);
 
-        return TransferCurve(ioContext, *fromCurve, *toCurve, blendType, blendDuration, false);
+        return TransferCurve(ioContext, *fromCurve, *toCurve, blendType, blendDuration, false, searchStartX, searchEndX);
     }
 
-    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound)
+    void TransferCurve(VelocityCurveContext& ioContext, const VelocityCurveInstance& fromCurveDescriptor, const VelocityCurveInstance& toCurveDescriptor, BlendType blendType, Seconds blendDuration, bool startToCurveIfNotFound, float searchStartX, float searchEndX)
     {
         VelocityCurveInstance* fromCurve = AccessCurveInstance(ioContext, fromCurveDescriptor.mMechanic.mInstanceID);
         VelocityCurveInstance* toCurve = AccessCurveInstance(ioContext, toCurveDescriptor.mMechanic.mInstanceID);
@@ -346,6 +353,7 @@ namespace Kurveball
         {
             speedToTransfer = fromCurve->mOutput.mSpeed;
         }
+        KURVEBALL_ERROR_RETURN(fromCurve, ioContext, ErrorCode::CurveNotFound);
 
         if (!toCurve && startToCurveIfNotFound)
         {
@@ -354,34 +362,42 @@ namespace Kurveball
             // Slight inefficiency in fetching this, but we need the real, in-memory, sanitized version, not the descriptor that was passed in
             toCurve = AccessCurveInstance(ioContext, toCurveDescriptor.mMechanic.mInstanceID);
         }
-        
-        KURVEBALL_ERROR_RETURN(toCurve != nullptr, ioContext, ErrorCode::CurveNotFound);
+        KURVEBALL_ERROR_RETURN(toCurve, ioContext, ErrorCode::CurveNotFound);
 
         // On the "to" curve, find the speed that most closely matches the one being output from the "from" curve
         if (speedToTransfer > 0.f)
         {
-            Pair<float, MetersPerSecond> foundXandSpeed = FindClosestSpeed(ioContext, toCurve->mMechanic.mInstanceID, speedToTransfer);
-            if (foundXandSpeed.first > 0.f)
+            Pair<float, MetersPerSecond> foundXandSpeed = FindClosestSpeed(ioContext, toCurve->mMechanic.mInstanceID, speedToTransfer, searchStartX, searchEndX);
+            if (foundXandSpeed.first >= 0.f)
             {
                 SeekToX(ioContext, toCurve->mMechanic.mInstanceID, foundXandSpeed.first);
             }
         }
 
         // Blend from the old curve to the new one
-        Crossfade(ioContext, fromCurve ? fromCurve->mMechanic.mInstanceID : -1, toCurve ? toCurve->mMechanic.mInstanceID : -1, blendType, blendDuration);
+        if (toCurve != fromCurve)
+        {
+            Crossfade(ioContext, fromCurve ? fromCurve->mMechanic.mInstanceID : -1, toCurve ? toCurve->mMechanic.mInstanceID : -1, blendType, blendDuration);
+        }
     }
     
-    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX, float stepSize)
+    Pair<float, MetersPerSecond> FindClosestSpeed(VelocityCurveContext& ioContext, CurveInstanceID curveID, MetersPerSecond desiredSpeed, float searchStartX, float searchEndX, float stepSize)
     {
         VelocityCurveInstance* curveInstance = AccessCurveInstance(ioContext, curveID);
         KURVEBALL_ERROR_RETURN(curveInstance != nullptr, ioContext, ErrorCode::CurveNotFound, {0.f, 0.f});
 
-        float closestSpeed = 0.f;
+        // By convention, searchEndX == 0 means that we should stop searching at the end of the curve asset.
+        if (searchEndX == 0.f)
+        {
+            searchEndX = curveInstance->mMechanic.mRawAssetDuration.count();
+        }
+
+        float closestSpeed = -1.f; // Sentinel value
         float bestDelta = sFloatMax;
         float bestXCoordinate = 0.f;
         // Choosing plain iteration because binary search is only good for sorted sets and easily gets
         // tricked by local maxima
-        for (float x = searchStartX; x < curveInstance->mMechanic.mRawAssetDuration.count(); x += stepSize)
+        for (float x = searchStartX; x < curveInstance->mMechanic.mRawAssetDuration.count() && x < searchEndX; x += stepSize)
         {
             float sampledSpeed{ curveInstance->mSpeedSampler(x) * curveInstance->mMechanic.mSpeedMultiplier };
             const float delta = std::abs(desiredSpeed - sampledSpeed);

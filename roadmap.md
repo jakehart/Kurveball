@@ -6,10 +6,10 @@ util to reach position using curve instance by setting its mStretchDuration and/
 bugfix: no velocity or direction output on the first tick (since there's no accumulator area yet). solution is to calculate them directly  
 
 ## Unreal
-All-in-one mechanic/curve editor
 Unreal quickstart video from zero  
-bugfix: fix coordinate space issue when RespectCollision==true. Could be in InputAxisToVelocityCurve()?
-bugfix: very occasionally landing just above or below the floor. test at low FPS
+All-in-one mechanic/curve editor
+bugfix: fix coordinate space issue when RespectCollision==true. output velocity is in the wrong coordinate space?
+bugfix: very occasionally landing just above the floor. test at low FPS using t.MaxFPS
 Convert to and from BezierCurveSegment (pack-in curve implementation)  
 
 ## BezierCurveSegment: Pack-in curve implementation
@@ -34,6 +34,7 @@ Add climb mechanics
 Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)  
 
 ## Developer Quality of Life
+Debug output from Kurveball core to screen  
 Movement line/subway map  
 UI wrapper to expose same widgets to the user regardless of their UI framework. UI primitives exposed to me would make it easier to create debug UI across the board. DrawGraph(someArray), DrawCircle, etc. This is superior to rendering everything to a texture myself because the wrapped function would take care of the annoying stuff
 

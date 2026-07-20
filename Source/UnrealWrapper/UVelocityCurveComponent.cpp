@@ -308,15 +308,14 @@ void UVelocityCurveComponent::InputAxisToVelocityCurve(const UCurveMechanic* mec
     if (Kurveball::IsZero(inputAxis))
     {
         // Player released the controls, so seek to the outro of the curve, or to its end if there's no outro
-        Kurveball::SoftStopVelocityCurve(mCurveContext, curveID);
+        Kurveball::SoftStopVelocityCurve(mCurveContext, curveID, true);
     }
-    /*else if (playheadPosition > mechanic->LoopEndX + Kurveball::sFloatMinDenormal)
+    else if (playheadPosition > mechanic->LoopEndX + Kurveball::sFloatMinDenormal)
     {
         // Player started moving the controls again while the curve is winding down.
-        // Seek to the beginning
-        // TODO: Use FindClosestSpeed() to seek to the starting point that matches the current speed output of the curve.
-        Kurveball::SeekToX(mCurveContext, curveID, 0.f);
-    }*/
+        // Seek to the nearest speed in the first half of the curve (windup portion).
+        Kurveball::TransferCurve(mCurveContext, curveID, curveID, Kurveball::BlendType::Cut, Kurveball::Seconds(0.f), 0.f, 0.5f);
+    }
     else
     {
         // Nonzero input
