@@ -24,7 +24,7 @@ CurveMechanic is the definition of your movement mechanic. It points to the velo
 * Curve Instance Name: A unique name that you specify. You'll use this to start, update, and stop the mechanic.
 * Direction: The direction you want to go, specified in terms of the Coordinate Space you choose below.
 * Coordinate Space: Choose whether you want the velocity curve to run in local space (relative to the actor's rotation) or in world space (absolute coordinates).
-* Speed Multiplier: The scale factor for your mechanic. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
+* Speed Multiplier: The scale factor for your mechanic in world units per second. This is automatically multiplied with the vertical axis of your Velocity Curve Asset to generate the final speed.
 * Axis Mode: Masks the mechanic's output so that it only affects the axes you want, leaving the others alone. Possibilities are allMovementAxes, horizontal, vertical, yaw, pitch, and roll.
 * Start Time: If zero, start now. Or specify a positive number of seconds to start later.
 * Stretch Duration: Zero means to play the velocity curve with no stretching, at its authored duration. Otherwise, specify a number of seconds to smoothly timestretch the curve's duration.

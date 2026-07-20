@@ -12,6 +12,8 @@ import time
 UNREAL_PLUGIN_DIR = pathlib.Path("../Examples/UnrealCurveDemo/Plugins/KurveballPlugin/Source")
 now = time.time()
 
+print("Touching symlinks of updated files...")
+
 for symlink in UNREAL_PLUGIN_DIR.rglob("*"):
     if not symlink.is_symlink():
         continue
@@ -29,6 +31,6 @@ for symlink in UNREAL_PLUGIN_DIR.rglob("*"):
         target_path_str = str(target.absolute())
         symlink.unlink()  # Delete the symlink (not the target)
         os.symlink(target_path_str, symlink)  # Recreate it
-        print(f"Recycled: {symlink.name} -> {target.name}")
+        print(f"Recycled: {target.name} -> {symlink}")
 
-print("Done.")
+input("Done.")
