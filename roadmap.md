@@ -35,8 +35,8 @@ Spline recording (Construct Catmull-Rom from network breadcrumb circular buffer)
 
 ## Developer Quality of Life
 Debug output from Kurveball core to screen  
-Movement line/subway map  
 UI wrapper to expose same widgets to the user regardless of their UI framework. UI primitives exposed to me would make it easier to create debug UI across the board. DrawGraph(someArray), DrawCircle, etc. This is superior to rendering everything to a texture myself because the wrapped function would take care of the annoying stuff
+Movement line/subway map  
 
 ## Curve Editor
 Integration - Show area under curve and distance travelled at each x on mouseover - use mechanic data
