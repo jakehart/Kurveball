@@ -18,9 +18,10 @@ namespace Kurveball
     void AreaAccumulator::Reset()
     {
         mTotalArea = 0.f;
+        mLatestStepArea = 0.f;
+        mHasUpdated = false;
         mLatestSample.X = 0.f;
         mLatestSample.Y = 0.f;
-        mHasUpdated = false;
     }
 
     bool AreaAccumulator::HasEverUpdated() const

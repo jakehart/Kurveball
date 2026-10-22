@@ -25,6 +25,8 @@ namespace Kurveball
     void UpdateVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, std::optional<MetersPerSecond> speedMultiplier, std::optional<Float3> direction);
     void StopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID);
     void StopAllVelocityCurves(VelocityCurveContext& ioContext, bool stopTranslationCurves = true, bool stopRotationCurves = true);
+
+    void ResetAllVelocityCurves(VelocityCurveContext& ioContext);
     
     // Stops looping the curve, seeks to its mLoopEnd, plays the outro of the curve, and
     // allows it to end naturally. If matchSpeed is true, seek to the portion of the outro

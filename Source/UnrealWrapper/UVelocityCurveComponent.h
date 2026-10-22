@@ -44,6 +44,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void StopAllVelocityCurves();
 
+    UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
+    void ResetAllVelocityCurves();
+
     // Seeks the velocity curve playhead to a specific coordinate on the curve asset.
     UFUNCTION(BlueprintCallable, Category = "VelocityCurves")
     void SeekToX(const UCurveMechanic* mechanic, float curveXCoordinate);

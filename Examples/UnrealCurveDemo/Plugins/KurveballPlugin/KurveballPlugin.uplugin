@@ -10,6 +10,7 @@
 	"DocsURL": "https://github.com/jakehart/Kurveball",
 	"MarketplaceURL": "",
 	"SupportURL": "",
+	"EnabledByDefault": true,
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,

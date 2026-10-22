@@ -205,6 +205,11 @@ void UVelocityCurveComponent::StopAllVelocityCurves()
     Kurveball::StopAllVelocityCurves(mCurveContext);
 }
 
+void UVelocityCurveComponent::ResetAllVelocityCurves()
+{
+    Kurveball::ResetAllVelocityCurves(mCurveContext);
+}
+
 void UVelocityCurveComponent::SeekToX(const UCurveMechanic* mechanic, float curveXCoordinate)
 {
     if (!mechanic)

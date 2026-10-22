@@ -97,6 +97,29 @@ namespace Kurveball
             ioContext.mRotationCurves.clear();
         }
     }
+
+    void ResetAllVelocityCurves(VelocityCurveContext& ioContext)
+    {
+        for (auto& [curveInstanceID, curveInstance] : ioContext.mLinearCurves)
+        {
+            curveInstance.mOutput.mHasUpdated = false;
+            curveInstance.mDistanceAccumulator.Reset();
+            curveInstance.mMechanic.mStartTime = ioContext.mAbsoluteTime;
+
+            curveInstance.mOutput.mVelocity.Set(0.f, 0.f, 0.f);
+            curveInstance.mOutput.mSpeed = 0.f;
+        }
+
+        for (auto& [curveInstanceID, curveInstance] : ioContext.mRotationCurves)
+        {
+            curveInstance.mOutput.mHasUpdated = false;
+            curveInstance.mDistanceAccumulator.Reset();
+            curveInstance.mMechanic.mStartTime = ioContext.mAbsoluteTime;
+
+            curveInstance.mOutput.mRotation.Set(0.f, 0.f, 0.f);
+            curveInstance.mOutput.mAngularVelocity.Set(0.f, 0.f, 0.f);
+        }
+    }
     
     void SoftStopVelocityCurve(VelocityCurveContext& ioContext, CurveInstanceID instanceID, bool matchSpeed)
     {

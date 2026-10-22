@@ -103,9 +103,10 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
         
         std::stringstream curveDebugStr;
         curveDebugStr << curveName << ": " <<
-		curveInstance.mDistanceAccumulator.GetLatestSample().Y << "cm/s, " <<
-		curveInstance.mDistanceAccumulator.GetTotalArea() << "cm, " <<
-		curveInstance.mMechanic.mDirection.ToString();
+            curveInstance.mDistanceAccumulator.GetLatestSample().Y << "cm/s, " <<
+            curveInstance.mDistanceAccumulator.GetTotalArea() << "cm, Dir: " <<
+            curveInstance.mMechanic.mDirection.ToString() << ", CurveX: "
+            << curveInstance.mDistanceAccumulator.GetLatestSample().X;
 		
         FSlateDrawElement::MakeText(outDrawElements, layerID, AllottedGeometry.ToPaintGeometry(textTransform), UTF8_TO_TCHAR(curveDebugStr.str().c_str()), sLegendFont, ESlateDrawEffect::None, CurveDebuggerOptions::sLegendTextColor);
 
