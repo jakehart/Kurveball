@@ -88,6 +88,10 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // Tell Kurveball about any position change that happened due to collision or simulated physics
     const FVector position = owner->GetActorLocation();
     Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
+	
+	const FRotator rotation = owner->GetActorRotation();
+    const FVector euler = rotation.Euler();
+    Kurveball::SetRotation(mCurveContext, euler.Y, euler.X, euler.Z);
 
     // Use the variable tick callpoint, since this component runs from Unreal's variable tick
     Kurveball::VariableTickPlayback(mCurveContext, Kurveball::Seconds(absoluteTime));

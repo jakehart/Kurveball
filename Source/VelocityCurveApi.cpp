@@ -329,6 +329,7 @@ namespace Kurveball
     void SetRotation(VelocityCurveContext& ioCurveContext, float x, float y, float z)
     {
         ioCurveContext.mOutput.mRotation.Set(x, y, z);
+        ioCurveContext.mOutput.mRotationDelta.Set(0, 0, 0);
     }
 
     uint32_t CalculateCurveDebugColor(CurveInstanceID curveID)
