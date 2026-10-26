@@ -490,6 +490,7 @@ void UVelocityCurveComponent::ShowCurveDebugger(bool show)
 
         if (mCurveDebugger)
         {
+			mCurveDebugger->SetVelocityCurveComponent(this);
             mCurveDebugger->AddToViewport();
             mCurveDebugger->SetVisibility(ESlateVisibility::Visible);
         }

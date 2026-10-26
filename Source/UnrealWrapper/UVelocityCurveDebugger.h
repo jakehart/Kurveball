@@ -24,6 +24,9 @@ class UVelocityCurveDebugger : public UUserWidget
 {
     GENERATED_BODY()
 
+public:
+    void SetVelocityCurveComponent(const UVelocityCurveComponent* curveComponent);
+	
 protected:
     // This is the C++ equivalent of the Blueprint OnPaint function.
     // It is called every frame to draw the widget.
@@ -37,7 +40,7 @@ protected:
         bool bParentEnabled) const override;
 private:
     // Returns the UVelocityCurveComponent from the currently possessed actor, or nullptr if none.
-    const UVelocityCurveComponent* GetCurveComponent() const;
+    const UVelocityCurveComponent* GetVelocityCurveComponent() const;
 
     void DrawLegend(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const;
 
@@ -54,4 +57,6 @@ private:
         }
         return unrealPoints;
     }
+	
+	const UVelocityCurveComponent* mCurveComponent = nullptr;
 };

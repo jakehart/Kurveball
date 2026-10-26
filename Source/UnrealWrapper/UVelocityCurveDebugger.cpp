@@ -8,6 +8,11 @@
 #include "ContainerUtils.h"
 #include "VelocityCurveApi.h"
 
+void UVelocityCurveDebugger::SetVelocityCurveComponent(const UVelocityCurveComponent* curveComponent)
+{
+	mCurveComponent = curveComponent;
+}
+
 int32 UVelocityCurveDebugger::NativePaint(
     const FPaintArgs& Args,
     const FGeometry& AllottedGeometry,
@@ -21,7 +26,7 @@ int32 UVelocityCurveDebugger::NativePaint(
     // Always call the parent implementation first
     layerID = Super::NativePaint(Args, AllottedGeometry, MyCullingRect, outDrawElements, layerID, InWidgetStyle, bParentEnabled);
 
-    const auto* curveComponent = GetCurveComponent();
+    const auto* curveComponent = GetVelocityCurveComponent();
     if (!curveComponent)
     {
         return layerID + 1;
@@ -48,8 +53,14 @@ int32 UVelocityCurveDebugger::NativePaint(
     return layerID + 1;
 }
 
-const UVelocityCurveComponent* UVelocityCurveDebugger::GetCurveComponent() const
+const UVelocityCurveComponent* UVelocityCurveDebugger::GetVelocityCurveComponent() const
 {
+	if(mCurveComponent)
+	{
+		return mCurveComponent;
+	}
+	
+	// Try to get the curve component from the active pawn
     const APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     if (!controller)
     {
@@ -71,7 +82,7 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
     static FSlateBrush legendBackgroundBrush;
     legendBackgroundBrush.DrawAs = ESlateBrushDrawType::Box;
 
-    const auto* curveComponent = GetCurveComponent();
+    const auto* curveComponent = GetVelocityCurveComponent();
     if (!curveComponent)
     {
         return;
@@ -116,7 +127,7 @@ void UVelocityCurveDebugger::DrawLegend(FSlateWindowElementList& outDrawElements
 
 void UVelocityCurveDebugger::DrawCurveGraph(FSlateWindowElementList& outDrawElements, int32 layerID, const FGeometry& AllottedGeometry) const
 {
-    const auto* curveComponent = GetCurveComponent();
+    const auto* curveComponent = GetVelocityCurveComponent();
     if (!curveComponent)
     {
         return;
