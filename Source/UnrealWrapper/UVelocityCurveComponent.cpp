@@ -85,11 +85,13 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
     const auto absoluteTime = world->TimeSeconds;
 
+	const auto transform = owner->GetTransform();
+
     // Tell Kurveball about any position change that happened due to collision or simulated physics
-    const FVector position = owner->GetActorLocation();
+    const FVector position = transform.GetLocation();
     Kurveball::SetPosition(mCurveContext, position.X, position.Y, position.Z);
 	
-	const FRotator rotation = owner->GetActorRotation();
+	const FRotator rotation = FRotator(transform.GetRotation());
     const FVector euler = rotation.Euler();
     Kurveball::SetRotation(mCurveContext, euler.Y, euler.X, euler.Z);
 
@@ -108,7 +110,7 @@ void UVelocityCurveComponent::TickComponent(float DeltaTime, ELevelTick TickType
     }
     else
     {
-        owner->TeleportTo(newPosition, newRotation, false, true);
+		owner->SetActorTransform(FTransform(newRotation, newPosition, FVector(1, 1, 1)));
     }
 }
 
